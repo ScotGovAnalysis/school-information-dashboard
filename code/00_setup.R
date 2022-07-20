@@ -77,15 +77,15 @@ walk(list.files(here("functions"), full.names = TRUE), source)
 
 ### 2 - Create folders ----
 
-# Note: Would prefer to use usethis::use_directory here but getting
-# error message. See https://github.com/r-lib/fs/issues/147
-
 # If output folder for run_label specified above 
 # doesn't already exist, create it
 
 if(!file.exists(here("output", run_label))) {
   dir.create(here("output", run_label))
 }
+
+# Note: Would prefer to use usethis::use_directory here but getting
+# error message. See https://github.com/r-lib/fs/issues/147
 
 
 ### END OF SCRIPT ###
