@@ -81,6 +81,9 @@ walk(list.files(here("functions"), full.names = TRUE), source)
 # doesn't already exist, create it
 
 if(!file.exists(here("output", run_label))) {
+  if(!file.exists(here("output"))) {
+    dir.create(here("output"))
+  }
   dir.create(here("output", run_label))
 }
 
