@@ -35,17 +35,19 @@ run_label <- "2022-July"
 year_contacts <- 2022
 year_bge      <- 2021
 
-# For datasets that require multiple files, update with range of years 
-# Update following the convention: year_start:year_end
-# e.g. 2017:2021 includes years 2017, 2018, 2019, 2020, 2021. 
+# Summary data requires multiple files but is only updated in odd-numbered
+# years; e.g. 2021, 2023, etc.
+# Update the vector with the new year; e.g. c(2021, 2023)
 
-# Note: Insight data uses a rolling five year trend; ensure both start and
-# end years are updated. 
+year_summary  <- c(2021)
+
+# Insight data uses a rolling five year trend; ensure both start and
+# end years are updated following the convention: year_start:year_end
+# e.g. 2017:2021 includes years 2017, 2018, 2019, 2020, 2021. 
 
 # Insights datasets include; attainment by deprivation, 
 # attainment for all, breadth/depth, destinations and literacy/numeracy data
 
-year_summary  <- 2021
 year_insight  <- 2017:2021
 
   
