@@ -17,7 +17,8 @@
 
 import_summary_data <- function(sheet_name, calendar_year) {
   
-  # Define pipe
+  # Define pipe - this ensures that the pipe operator is available for use 
+  # within the function even if magrittr package is not loaded.
   `%>%` <- magrittr::`%>%`
   
   filepath <- here::here("data", 
@@ -25,7 +26,8 @@ import_summary_data <- function(sheet_name, calendar_year) {
                           paste0(calendar_year, 
                                  "_school_summary_statistics.xlsx"))
   
-  # Check datafile exists and if not produce error
+  # Check the file exists for given year and if not stop running the function
+  # and print an error message
   if(!file.exists(filepath)) {
     stop("File does not exist:\n", filepath, ".")
   }

@@ -35,9 +35,9 @@ run_label <- "2022-July"
 year_contacts <- 2022
 year_bge      <- 2021
 
-# Summary data requires multiple files but is only updated in odd-numbered
-# years; e.g. 2021, 2023, etc.
-# Update the vector with the new year; e.g. c(2021, 2023)
+# Summary data requires multiple files but is typically only updated in 
+# odd-numbered years; e.g. 2021, 2023, etc.
+# Update the vector (list) with the new year; e.g. c(2021, 2023)
 
 year_summary  <- c(2021)
 
