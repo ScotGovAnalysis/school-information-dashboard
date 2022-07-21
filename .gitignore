@@ -17,3 +17,6 @@ output/
 # R data files #
 *.[rR][dD][aA][tT][aA]
 *.[rR][dD][sS]
+
+# Exceptions #
+!lookups/la_websites.xlsx
