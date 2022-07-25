@@ -1,5 +1,5 @@
 #########################################################################
-# Name of file - 02_attendance.R
+# Name of file - 03_attendance.R
 # Data release - School Information Dashboard
 #
 # Type - Reproducible Analytical Pipeline (RAP)
@@ -36,6 +36,8 @@ attendance_files <-
     sheet = c("Attendance", "Att by Stage")
   ) %>%
   
+  # Attendance by stage is required for latest year only
+  # Remove Att by Stage rows for any other years
   filter(!(year != max(year_summary) & sheet == "Att by Stage"))
 
 attendance <- 
@@ -51,7 +53,8 @@ attendance <-
     ~ here("data", "school_summary_statistics", 
            paste0(.x, "_school_summary_statistics.xlsx")) %>%
       read_xlsx(sheet = .y, col_types = "text") %>%
-      clean_names()
+      clean_names() %>%
+      rename_with(~ "stage", matches("^student_stage$"))
   ) %>%
   
   mutate(seed_code = as.character(seed_code)) %>%
@@ -64,7 +67,11 @@ attendance <-
   select(-la_code, -la_name, -school) %>%
   
   # Filter school list and recode names
-  inner_join(school_lookup, by = c("seed_code", "school_type"))
+  inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
+   
+   # Reorder columns
+   select(year, seed_code, la_code, la_name, school_name, school_type,
+          stage, attendance, auth_absence, unauth_absence, temp_exclusions)
 
 
 
@@ -108,7 +115,7 @@ writexl::write_xlsx(
 
 # Save special school file
 
-special_attendance <- attendance %>% filter(school_type == "special")
+special_attendance <- attendance %>% filter(school_type == "Special")
 
 write_rds(
   special_attendance,

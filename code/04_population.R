@@ -1,5 +1,5 @@
 #########################################################################
-# Name of file - 03_population.R
+# Name of file - 04_population.R
 # Data release - School Information Dashboard
 #
 # Type - Reproducible Analytical Pipeline (RAP)
