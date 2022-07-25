@@ -60,7 +60,7 @@ attendance <-
   mutate(seed_code = as.character(seed_code)) %>%
   
   # Data from Attendance sheet is for All Stages - recode NAs to All Stages
-  mutate(student_stage = replace_na(student_stage, "All Stages")) %>%
+  mutate(stage = replace_na(stage, "All Stages")) %>%
   
   # Recode seed_code for LA/Scotland summary rows
   mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%

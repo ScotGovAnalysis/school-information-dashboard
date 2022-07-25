@@ -42,20 +42,13 @@ population <-
   
   pmap_dfr(
     population_files,
-    ~ here("data", "school_summary_statistics", 
-           paste0(.x, "_school_summary_statistics.xlsx")) %>%
-      read_xlsx(sheet = .y, col_types = "text") %>%
-      clean_names()
+    ~ import_summary_data(.y, .x)
   ) %>%
-  
-  mutate(seed_code = as.character(seed_code)) %>%
 
-  ### 2 - Join data, filter schools, update school names and recode NAs  ----
 
 
   # Data from LA sheet is for All publicly funded schools - recode NAs to All publicly funded schools
 
-  mutate(school = replace_na(school, "All publicly funded schools")) %>%
   
   # Recode seed_code for LA/Scotland summary rows
   mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%
@@ -65,24 +58,14 @@ population <-
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
 
-  # Select collumns to keep
-  select(year, seed_code, la_name, school_name, fte_teacher_numbers, roll, ptr, average_class,school_type) %>%
-
-  #replace remaining NA with Z
-  #mutate(fte_teacher_numbers = replace_na(fte_teacher_numbers,"z"))  %>%
-  #mutate(roll = replace_na(roll,"z"))  %>%
-  #mutate(ptr = replace_na(ptr,"z"))  %>%
-  #mutate(average_class = replace_na(average_class,"z")) 
 
   # Recode missing / suppressed values
-  mutate(fte_teacher_numbers = recode_missing_values(fte_teacher_numbers, label = TRUE),
-         roll = recode_missing_values(roll, label = TRUE),
-         average_class = recode_missing_values(average_class, label = TRUE),
-         ptr = recode_missing_values(ptr, label = TRUE)) %>%
+  mutate(across(c(fte_teacher_numbers, roll, average_class, ptr),
+         ~ recode_missing_values(., label = TRUE)) %>%
   
 
   # Reorder columns
-  select(year, seed_code, la_name, school_name, school_type, roll, fte_teacher_numbers, ptr,average_class)
+  select(year, seed_code, la_code, la_name, school_name, school_type, roll, fte_teacher_numbers, ptr, average_class)
  
 
 ### 2 - Save population data sets ----
@@ -110,7 +93,8 @@ writexl::write_xlsx(
 # Save secondary school file
 
 secondary_population <- 
-  population %>% filter(school_type == "Secondary")
+  population %>% filter(school_type == "Secondary") %>%
+  select(-average_class)
 
 write_rds(
   secondary_population,
@@ -127,7 +111,7 @@ writexl::write_xlsx(
 # Save special school file
 
 special_population <- 
-  population %>% filter(school_type == "special")
+  population %>% filter(school_type == "Special")
 
 write_rds(
   special_population,
