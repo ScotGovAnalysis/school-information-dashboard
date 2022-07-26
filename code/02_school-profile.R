@@ -119,12 +119,13 @@ if(nrow(dupes) > 0) {
 # Once there are no duplicates remaining, remove school name
 estate %<>% select(-school_name)
 
+# 
+
 
 ### 3 - Healthy Living Data ----
 
 ## Code to pull in the Healthy Living Survey data. This data includes a flag to
-## indicate whether a school is meeting the PE target. The percentage of schools
-## meeting the target is then calculated for each Local Authority and Scotland.
+## indicate whether a school is meeting the PE target. 
 
 hl_schools <-
   
@@ -148,6 +149,10 @@ hl_schools <-
     TRUE ~ "Target Not Met"
   )) %>%
   select(-matches("pe_provision$"))
+
+
+## Aggregate data to get percentage of schools meeting target in each Local 
+## Authority and Scotland
 
 hl_la_scot <-
   
