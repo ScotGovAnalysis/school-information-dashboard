@@ -120,4 +120,65 @@ if(nrow(dupes) > 0) {
 estate %<>% select(-school_name)
 
 
+### 3 - Healthy Living Data ----
+
+## Code to pull in the Healthy Living Survey data. This data includes a flag to
+## indicate whether a school is meeting the PE target. The percentage of schools
+## meeting the target is then calculated for each Local Authority and Scotland.
+
+hl_schools <-
+  
+  # Read in school level data
+  here("data", "healthy_living_survey", 
+       paste0(year_healthy_living, "_healthy_living_survey.xlsx")) %>%
+  read_excel(sheet = "Table 6", col_types = "text") %>%
+  
+  # Clean names and remove columns not needed
+  clean_names() %>%
+  select(seed_code, school_type, matches("pe_provision$")) %>%
+  
+  # Convert PE provision columns to numeric (recode # to NA)
+  mutate(across(matches("pe_provision$"), ~ as.numeric(na_if(., "#")))) %>%
+
+  # Derive Target Met / Not Met for each school
+  mutate(pe_target = case_when(
+    school_type == "Primary" & primary_pe_provision == 1 ~ "Target Met",
+    school_type == "Secondary" & 
+      reduce(select(., matches("^s[1-4]_pe_provision")), `+`) == 4 ~ "Target Met",
+    TRUE ~ "Target Not Met"
+  )) %>%
+  select(-matches("pe_provision$"))
+
+hl_la_scot <-
+  
+  hl_schools %>%
+  
+  # Join school lookup to get Local Authority for each school
+  inner_join(school_lookup %>% select(seed_code, la_code, school_type),
+             by = c("seed_code", "school_type")) %>%
+  
+  # Aggregate data to Local Authority level
+  group_by(school_type, la_code) %>%
+  summarise(target_met = sum(pe_target == "Target Met"),
+            n = n(),
+            .groups = "drop") %>%
+  rename(seed_code = la_code) %>%
+  
+  # Add summary rows for Scotland
+  bind_rows(
+    group_by(., school_type) %>%
+      summarise(target_met = sum(target_met),
+                n = sum(n),
+                .groups = "drop") %>%
+      mutate(seed_code = "0")
+  ) %>%
+  
+  # Calculate percentage of schools meeting PE target
+  mutate(pe_target = paste0(round_half_up(target_met / n * 100, 1), "%")) %>%
+  select(-target_met, -n)
+
+# Join school, Local Authority and Scotland level data into one dataset
+healthy_living <- bind_rows(hl_schools, hl_la_scot)
+    
+
 ### END OF SCRIPT ###
