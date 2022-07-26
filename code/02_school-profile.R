@@ -37,18 +37,19 @@ contacts <-
   
   # Clean names and remove columns not needed
   clean_names() %>%
-  select(seed_code, centre_type, la_name, school_name,
-         matches("^address_line[12]$"), 
+  select(seed_code, matches("^address_line[12]$"), 
          post_code, email, phone_number, website_address, 
          matches("^(primary|secondary|special)_department$"),
          denomination) %>%
   mutate(seed_code = as.character(seed_code)) %>%
+  rename(postcode = post_code,
+         website = website_address) %>%
   
   # Combine address into one column
-  mutate(address = paste(address_line1, address_line2, post_code, 
+  mutate(address = paste(address_line1, address_line2, postcode, 
                          sep = ", "),
          address = str_remove_all(address, "NA, ")) %>%
-  select(-address_line1, -address_line2, -post_code) %>%
+  select(-address_line1, -address_line2) %>%
   
   # Create school_type column (Primary, Secondary, Special)
   pivot_longer(
@@ -58,7 +59,30 @@ contacts <-
   ) %>%
   filter(flag == "Yes") %>%
   select(-flag) %>%
-  mutate(school_type = str_to_title(str_remove(school_type, "_department")))
+  mutate(school_type = str_to_title(str_remove(school_type, "_department"))) %>%
+  
+  # Filter school list and recode names using school_lookup
+  inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
+  
+  # Add rows for Local Authorities and Scotland
+  bind_rows(
+    school_lookup %>% filter(seed_code == la_code)
+  ) %>%
+  
+  # Add LA Website
+  left_join(here("lookups", "la_websites.xlsx") %>% 
+              read_xlsx(col_type = "text") %>% 
+              select(la_code, la_website, la_postcode = postcode),
+            by = "la_code") %>%
+  
+  # Merge school and LA postcodes
+  mutate(postcode = ifelse(seed_code == la_code, la_postcode, postcode)) %>%
+  select(-la_postcode) %>%
+  
+  # Reorder columns
+  select(seed_code, la_code, la_name, school_name, school_type,
+         denomination, address, phone_number, email, website, la_website, 
+         postcode)
 
 
 ### 2 - School Estate Statistics ----
@@ -119,7 +143,40 @@ if(nrow(dupes) > 0) {
 # Once there are no duplicates remaining, remove school name
 estate %<>% select(-school_name)
 
-# 
+
+## Aggregate estate data to calculate percentage of school in condition A or B
+## by Local Authority and Scotland
+
+estate_la_scot <-
+  
+  estate %>%
+  
+  # Join school lookup to get Local Authority for each school
+  inner_join(school_lookup %>% select(seed_code, la_code, school_type),
+             by = c("seed_code", "school_type")) %>%
+  
+  # Aggregate data to Local Authority level
+  group_by(school_type, la_code) %>%
+  summarise(target_met = sum(condition %in% c("A", "B")),
+            n = n(),
+            .groups = "drop") %>%
+  rename(seed_code = la_code) %>%
+  
+  # Add summary rows for Scotland
+  bind_rows(
+    group_by(., school_type) %>%
+      summarise(target_met = sum(target_met),
+                n = sum(n),
+                .groups = "drop") %>%
+      mutate(seed_code = "0")
+  ) %>%
+  
+  # Calculate percentage of schools meeting PE target
+  mutate(condition = paste0(round_half_up(target_met / n * 100, 1), "%")) %>%
+  select(-target_met, -n)
+
+# Add Local Authority and Scotland level data to schools level data
+estate %<>% bind_rows(estate_la_scot)
 
 
 ### 3 - Healthy Living Data ----
@@ -127,7 +184,7 @@ estate %<>% select(-school_name)
 ## Code to pull in the Healthy Living Survey data. This data includes a flag to
 ## indicate whether a school is meeting the PE target. 
 
-hl_schools <-
+healthy_living <-
   
   # Read in school level data
   here("data", "healthy_living_survey", 
@@ -145,7 +202,8 @@ hl_schools <-
   mutate(pe_target = case_when(
     school_type == "Primary" & primary_pe_provision == 1 ~ "Target Met",
     school_type == "Secondary" & 
-      reduce(select(., matches("^s[1-4]_pe_provision")), `+`) == 4 ~ "Target Met",
+      reduce(select(., matches("^s[1-4]_pe_provision")), `+`) == 4 ~ 
+      "Target Met",
     TRUE ~ "Target Not Met"
   )) %>%
   select(-matches("pe_provision$"))
@@ -156,7 +214,7 @@ hl_schools <-
 
 hl_la_scot <-
   
-  hl_schools %>%
+  healthy_living %>%
   
   # Join school lookup to get Local Authority for each school
   inner_join(school_lookup %>% select(seed_code, la_code, school_type),
@@ -182,8 +240,8 @@ hl_la_scot <-
   mutate(pe_target = paste0(round_half_up(target_met / n * 100, 1), "%")) %>%
   select(-target_met, -n)
 
-# Join school, Local Authority and Scotland level data into one dataset
-healthy_living <- bind_rows(hl_schools, hl_la_scot)
+# Add Local Authority and Scotland level data to schools level data
+healthy_living %<>% bind_rows(hl_la_scot)
     
 
 ### END OF SCRIPT ###
