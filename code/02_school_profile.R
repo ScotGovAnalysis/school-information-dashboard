@@ -242,6 +242,141 @@ hl_la_scot <-
 
 # Add Local Authority and Scotland level data to schools level data
 healthy_living %<>% bind_rows(hl_la_scot)
-    
+
+
+### 4 - School Summary Statistics ----
+
+## Code to pull in the school summary statistics dataset. This file contains
+## various summary statistics for Scotland, Local Authorities and 
+## individual schools. Only the latest year of data is required for the 
+## school_profile data file.
+
+summary <- 
+  
+  # Import School and LA/Scotland sheets from latest year
+  map_dfr(
+    c("SCH", "LA and SCOT"),
+    ~ import_summary_data(.x, max(year_summary))
+  ) %>%
+  
+  # Set seed_code to la_code for summary rows
+  mutate(seed_code = ifelse(is.na(seed_code), la_code, seed_code)) %>%
+  select(seed_code, school_type, 
+         roll, fte_teacher_numbers, ptr, average_class) %>%
+  
+  # Round figures to whole number
+  mutate(
+    across(c(roll, fte_teacher_numbers),
+           ~ . %>% as.numeric() %>% round_half_up(0) %>% as.character()),
+    across(c(ptr, average_class),
+           ~ . %>% as.numeric() %>% round_half_up(1) %>% as.character())
+  )
+
+
+### 5 - Attendance ----
+
+attendance <-
+  
+  import_summary_data("Attendance", year_summary) %>%
+  
+  # For LA and Scotland rows, use la_code in seed_code column
+  mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
+                            la_code, 
+                            seed_code)) %>%
+  select(seed_code, school_type, attendance) %>%
+  
+  # Check coding of missing/suppressed values is correct and round values
+  # to one decimal place
+  mutate(
+    attendance_label = recode_missing_values(attendance, label = TRUE),
+    attendance_value = recode_missing_values(attendance),
+    attendance = ifelse(is.na(attendance_value), 
+                        attendance_label, 
+                        paste0(round_half_up(attendance_value, 1), "%"))
+  ) %>%
+  select(-matches("^attendance_(label|value)$"))
+
+
+### 6 - Join data together into full school_profile dataset ----
+
+school_profile <-
+  
+  # Start with school contact data - this is already filtered and standardised
+  # against the school_lookup file
+  contacts %>%
+  
+  # Join estate data
+  left_join(estate, by = c("seed_code", "school_type")) %>%
+  
+  # Join summary data
+  left_join(summary, by = c("seed_code", "school_type")) %>%
+  
+  # Join attendance data
+  left_join(attendance, by = c("seed_code", "school_type")) %>%
+  
+  # Join healthy living survey data
+  left_join(healthy_living, by = c("seed_code", "school_type"))
+
+
+### 7 - Save data files ----
+
+# Primary
+
+primary_school_profile <- school_profile %>% filter(school_type == "Primary")
+
+write_rds(
+  primary_school_profile,
+  here("output", run_label, "primary_school_profile.rds"),
+  compress = "gz"
+)
+
+# Temp - save as xlsx for checking
+writexl::write_xlsx(
+  primary_school_profile,
+  here("output", run_label, "primary_school_profile.xlsx")
+)
+
+
+# Secondary
+
+secondary_school_profile <- 
+  school_profile %>%
+  filter(school_type == "Secondary") %>%
+  # Remove columns not applicable to secondary schools
+  select(-average_class)
+
+write_rds(
+  secondary_school_profile,
+  here("output", run_label, "secondary_school_profile.rds"),
+  compress = "gz"
+)
+
+# Temp - save as xlsx for checking
+writexl::write_xlsx(
+  secondary_school_profile,
+  here("output", run_label, "secondary_school_profile.xlsx")
+)
+
+
+# Special
+
+special_school_profile <- 
+  school_profile %>%
+  filter(school_type == "Special") %>%
+  # Remove columns not applicable to special schools
+  select(-average_class, -pe_target)
+
+write_rds(
+  special_school_profile,
+  here("output", run_label, "special_school_profile.rds"),
+  compress = "gz"
+)
+
+# Temp - save as xlsx for checking
+writexl::write_xlsx(
+  special_school_profile,
+  here("output", run_label, "special_school_profile.xlsx")
+)
+            
 
 ### END OF SCRIPT ###
