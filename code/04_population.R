@@ -61,61 +61,17 @@ population <-
         year != max(year_summary))
   ) %>%
   
-  # Add measure category
-  mutate(measure_category = case_when(
-    measure %in% c("roll", "fte_teacher_numbers", "ptr", "average_class") ~ 
-      "trend",
-    str_detect(measure, "^p[1-7]$") ~ "primary_stage",
-    str_detect(measure, "^s[1-6]$") ~ "secondary_stage",
-    str_detect(measure, "^sp_(13_15|16plus|9_12|to_8)$") ~ "special_stage",
-    str_detect(measure, "^(fe)?male$") ~ "sex",
-    str_detect(measure, "^simd([1-5]|_unknown)") ~ "deprivation",
-    str_detect(measure, "fsm") ~ "free_school_meals",
-    str_detect(measure, "asn") ~ "additional_support_needs",
-    str_detect(measure, "eal") ~ "english_additional_language",
-    str_detect(measure, "gaelic") ~ "gaelic",
-    str_detect(measure, "(urban|rural|small_town)") ~ "urban_rural",
-    str_detect(measure, "(white|ethnic)") ~ "ethnicity"
-  ), .before = measure) %>%
+  mutate(
+    measure_category = recode_population_measures(measure, category = TRUE),
+    measure = recode_population_measures(measure),
+    .before = measure
+  ) %>%
   
   # Remove stage rows not applicable for school type
   filter(
     !(str_ends(measure_category, "_stage") &
         tolower(school_type) != word(measure_category, 1, sep = "_"))
   ) %>%
-  
-  # Recode measure column
-  mutate(measure = case_when(
-    str_detect(measure_category, "^(primary|secondary)_stage") ~
-      toupper(measure),
-    str_detect(measure, "^simd[1-5]$") ~ 
-      paste0("SIMD Q", str_sub(measure, -1)),
-    str_detect(measure, "^(asn|eal|fsm)$") ~ toupper(measure),
-    str_detect(measure, "^no_(asn|eal|fsm)$") ~ 
-      paste("No", toupper(word(measure, 2, sep = "_"))),
-    measure_category == "sex" ~ str_to_title(measure),
-    measure == "urban_rural_missing" ~ "Urban Rural Not Known",
-    measure_category == "urban_rural" ~ 
-      str_replace_all(measure, "_", " ") %>% str_to_title(),
-    TRUE ~ 
-      recode(measure,
-             roll = "Pupil Numbers",
-             average_class = "Average Class",
-             fte_teacher_numbers = "Teacher Numbers (FTE)",
-             ptr = "Pupil Teacher Ratio",
-             sp_to_8 = "0-8",
-             sp_9_12 = "9-12",
-             sp_13_15 = "13-15",
-             sp_16plus = "16+",
-             simd_unknown = "SIMD Unknown",
-             gaelic = "Taught in Gaelic",
-             no_gaelic = "Not Taught in Gaelic",
-             white_british = "White UK",
-             white_other = "White Other",
-             min_ethnic = "Ethnic Minority",
-             unknown_ethnicity = "Ethnicity Not Known"
-      )
-  )) %>%
   
   # Recode missing / suppressed values
   mutate(
