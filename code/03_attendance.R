@@ -24,7 +24,7 @@ source(here::here("code", "00_setup.R"))
 school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
 
 
-### 1 - Attainment data ----
+### 1 - Attendance data ----
 
 # This code creates a table of every combination of year and sheet name
 # of data to be read in.
@@ -84,7 +84,7 @@ attendance <-
          stage, measure, value, value_label)
 
 
-### 2 - Save summary and pupil profile data sets ----
+### 2 - Save attendance data sets ----
 
 # Save primary school file
 
