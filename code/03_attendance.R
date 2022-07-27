@@ -43,7 +43,8 @@ attendance_files <-
 attendance <- 
 
   # This combines the attendance tabs in all of the school summary data sheets
-  # Stage data is included for all years but "all stage" data is only included for the current year
+  # Stage data is included for all years but "all stage" data is only included 
+  # for the current year
   # .x refers to the first column of attendance files (year)
   # .y refers to the second column of attendance files (sheet name)
   
@@ -59,17 +60,31 @@ attendance <-
   mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%
   select(-la_code, -la_name, -school) %>%
   
+  # Restructure data to long format with column for measure name, value and
+  # value label
+  pivot_longer(cols = !c(year, seed_code, school_type, stage),
+               names_to = "measure",
+               values_to = "value") %>%
+  mutate(measure = recode(measure,
+    attendance = "Attendance",
+    auth_absence = "Authorised Absence",
+    unauth_absence = "Unauthorised Absence",
+    temp_exclusions = "Temporary Exclusions"
+  )) %>%
+  
+  # Recode missing/suppressed values
+  mutate(value_label = recode_missing_values(value, label = TRUE),
+         value = recode_missing_values(value)) %>%
+  
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
-   
-   # Reorder columns
-   select(year, seed_code, la_code, la_name, school_name, school_type,
-          stage, attendance, auth_absence, unauth_absence, temp_exclusions)
-
+  
+  # Reorder columns
+  select(year, seed_code, la_code, la_name, school_name, school_type,
+         stage, measure, value, value_label)
 
 
 ### 2 - Save summary and pupil profile data sets ----
-
 
 # Save primary school file
 
