@@ -1,3 +1,15 @@
+#' @title Recode population measures
+#'
+#' @param measure 
+#' @param category 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' recode_population_measures("p1", category = TRUE)
+#' recode_population_measures("gaelic")
+
 recode_population_measures <- function(measure, category = FALSE) {
 
   recode_category <- case_when(
