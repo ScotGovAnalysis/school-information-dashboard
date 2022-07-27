@@ -13,8 +13,8 @@
 
 ### 0 - Setup ----
 
-## this sets a directory for the code to ensure if the folder is copied 
-## and moved elsewhere it will contunie to work
+## Run setup script where years for each dataset are defined and
+## packages/functions are loaded.
 
 source(here::here("code", "00_setup.R"))
 
