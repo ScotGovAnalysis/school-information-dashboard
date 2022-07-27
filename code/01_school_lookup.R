@@ -117,12 +117,7 @@ school_lookup %<>%
                 la_code = "0",
                 la_name = "Scotland",
                 .groups = "drop")
-  ) %>%
-  
-  # Recode school_name for Grant aided summary rows
-  mutate(school_name = ifelse(seed_code == "900", 
-                              "All grant aided schools",
-                              school_name))
+  )
 
 # Save file
 write_rds(
