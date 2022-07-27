@@ -78,7 +78,7 @@ contacts <-
   # Merge school and LA postcodes
   mutate(postcode = ifelse(seed_code == la_code, la_postcode, postcode)) %>%
   select(-la_postcode) %>%
-  
+
   # Reorder columns
   select(seed_code, la_code, la_name, school_name, school_type,
          denomination, address, phone_number, email, website, la_website, 
