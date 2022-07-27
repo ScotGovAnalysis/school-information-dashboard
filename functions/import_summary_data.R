@@ -1,7 +1,7 @@
 #' @title Import and clean School Summary Statistics data
 #' 
 #' @description This function reads in the desired sheet of the Summary
-#' Statistics dataset and cleans variable names.
+#' Statistics dataset (including attendance data) and cleans variable names.
 #'
 #' @param sheet_name Name of data sheet to import
 #' @param calendar_year Year of dataset to import in calendar year format; 
