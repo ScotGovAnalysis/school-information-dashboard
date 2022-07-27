@@ -29,7 +29,6 @@ school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
 # This code creates a table of every combination of year and sheet name
 # of data to be read in.
 
-
 attendance_files <-
   expand_grid(
     year = c(year_summary, "timeseries"),
@@ -40,8 +39,8 @@ attendance_files <-
   # Remove Att by Stage rows for any other years
   filter(!(year != max(year_summary) & sheet == "Att by Stage"))
 
+
 attendance <- 
-  
 
   # This combines the attendance tabs in all of the school summary data sheets
   # Stage data is included for all years but "all stage" data is only included for the current year
@@ -50,14 +49,8 @@ attendance <-
   
   pmap_dfr(
     attendance_files,
-    ~ here("data", "school_summary_statistics", 
-           paste0(.x, "_school_summary_statistics.xlsx")) %>%
-      read_xlsx(sheet = .y, col_types = "text") %>%
-      clean_names() %>%
-      rename_with(~ "stage", matches("^student_stage$"))
+    ~ import_summary_data(.y, .x)
   ) %>%
-  
-  mutate(seed_code = as.character(seed_code)) %>%
   
   # Data from Attendance sheet is for All Stages - recode NAs to All Stages
   mutate(stage = replace_na(stage, "All Stages")) %>%
