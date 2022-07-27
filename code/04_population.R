@@ -61,7 +61,7 @@ population <-
 
   # Recode missing / suppressed values
   mutate(across(c(fte_teacher_numbers, roll, average_class, ptr),
-         ~ recode_missing_values(., label = TRUE)) %>%
+         ~ recode_missing_values(., label = TRUE))) %>%
   
 
   # Reorder columns
