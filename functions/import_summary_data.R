@@ -46,7 +46,7 @@ import_summary_data <- function(sheet_name, calendar_year) {
     dplyr::rename_with(~ "fsm", tidyselect::matches("^universal_fsm$")) %>%
     dplyr::rename_with(~ "no_fsm", tidyselect::matches("^other_fsm$")) %>%
     
-    # Ensure school_type is capatilised
+    # Ensure school_type is capitalised
     dplyr::mutate(across(any_of("school_type"), ~ stringr::str_to_title(.)))
   
 }
