@@ -47,7 +47,13 @@ import_summary_data <- function(sheet_name, calendar_year) {
     dplyr::rename_with(~ "no_fsm", tidyselect::matches("^other_fsm$")) %>%
     
     # Ensure school_type is capitalised
-    dplyr::mutate(across(any_of("school_type"), ~ stringr::str_to_title(.)))
+    dplyr::mutate(across(any_of("school_type"), ~ stringr::str_to_title(.))) %>%
+    
+    # For LA and Scotland rows, use Local Authority code in place of Seed Code
+    mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA" &
+                                "la_code" %in% names(.), 
+                              la_code, 
+                              seed_code))
   
 }
 
