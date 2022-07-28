@@ -1,14 +1,21 @@
 #' @title Recode population measures
 #'
-#' @param measure 
-#' @param category 
+#' @param measure Character vector of measure names
+#' @param category Logical; if `TRUE`, function will recode measures into
+#' categories.
 #'
-#' @return
+#' @return Default behaviour is to return a character vector of measures recoded
+#' into 'clean' readable format; e.g. 'ptr' is recoded to 'Pupil Teacher Ratio'.
+#' If `category = TRUE`, then a character vector of measure categories 
+#' corresponding to each element of `measure` supplied is returned; 
+#' e.g. 'simd1' is categorised at 'deprivation'. 
+#' 
 #' @export
 #'
 #' @examples
 #' recode_population_measures("p1", category = TRUE)
 #' recode_population_measures("gaelic")
+
 
 recode_population_measures <- function(measure, category = FALSE) {
 
@@ -64,7 +71,7 @@ recode_population_measures <- function(measure, category = FALSE) {
   # Check that all measures have been categorised and recoded
   # If not, then the function will stop and an error message will be printed
   # If this happens, it's likely that some column names in one of the
-  # school_summary_statistics data files has changed.
+  # school_summary_statistics data files have changed.
   if(any(recode_category == "unmatched", recode_measure == "unmatched")) {
     abort(
       c("At least one measure has not been categorised and/or recoded.",
