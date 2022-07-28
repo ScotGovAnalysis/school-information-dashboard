@@ -76,7 +76,7 @@ acel <-
 ## Writing.
 
 bge <- 
-  here("data", "bge_tool", paste0(year_acel, "_bge_tool.xlsx")) %>%
+  here("data", "bge_tool", paste0(year_bge, "_bge_tool.xlsx")) %>%
   read_excel(col_types = "text") %>%
   
   # Clean names and ensure they follow a consistent naming convention
