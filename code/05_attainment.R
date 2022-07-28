@@ -95,7 +95,8 @@ bge <-
   
   # Suppress comparator values if pupil numbers 20 or less
   mutate(
-    comparator = ifelse(as.numeric(pupil_numbers) <= 20, "c", comparator)
+    across(c(actual, comparator),
+           ~ ifelse(as.numeric(pupil_numbers) <= 20, "c", .))
   ) %>%
   select(-pupil_numbers) %>%
   
