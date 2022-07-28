@@ -61,6 +61,7 @@ population <-
         year != max(year_summary))
   ) %>%
   
+  # Recode measure to readable format and add measure category
   mutate(
     measure_category = recode_population_measures(measure, category = TRUE),
     measure = recode_population_measures(measure),
@@ -78,6 +79,13 @@ population <-
     value_label = recode_missing_values(value, label = TRUE),
     value = recode_missing_values(value)
   ) %>%
+  
+  # Add roll as value to every row to allow percentage calculations
+  mutate(roll = ifelse(measure == "Pupil Numbers", value, NA)) %>%
+  group_by(year, seed_code, school_type) %>%
+  # Some roll values are missing or suppressed, code these as NA
+  mutate(roll = ifelse(all(is.na(roll)), NA, max(roll, na.rm = TRUE))) %>%
+  ungroup() %>%
   
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
