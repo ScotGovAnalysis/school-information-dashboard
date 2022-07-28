@@ -46,7 +46,9 @@ population <-
   ) %>%
 
   # Recode seed_code for LA/Scotland summary rows
-  mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%
+  mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
+                            la_code, 
+                            seed_code)) %>%
   select(-la_code, -la_name, -school, -sp) %>%
   
   # Restructure data to long format with column for measure name, value and
@@ -70,22 +72,71 @@ population <-
   
   # Remove stage rows not applicable for school type
   filter(
-    !(str_ends(measure_category, "_stage") &
+    !(str_detect(measure_category, "stage") &
         tolower(school_type) != word(measure_category, 1, sep = "_"))
   ) %>%
   
   # Recode missing / suppressed values
   mutate(
+    value = ifelse(measure_category != "free_school_meals",
+                   replace_na(value, "0"),
+                   value),
     value_label = recode_missing_values(value, label = TRUE),
     value = recode_missing_values(value)
   ) %>%
   
-  # Add roll as value to every row to allow percentage calculations
+  # Add roll as seperate column to allow percentage calculations
   mutate(roll = ifelse(measure == "Pupil Numbers", value, NA)) %>%
   group_by(year, seed_code, school_type) %>%
   # Some roll values are missing or suppressed, code these as NA
   mutate(roll = ifelse(all(is.na(roll)), NA, max(roll, na.rm = TRUE))) %>%
-  ungroup() %>%
+  ungroup()
+  
+
+## Apply suppression rules (to both value and value_label)
+## Stage Meaures - 
+##    Suppress if less than 5, otherwise percentage of roll
+## Measures other than Stage and Trend -
+##    Suppress if roll <= 20, otherwise percentage of roll
+##    If school level data, convert to percentage banding
+
+population %<>% 
+  
+  mutate(
+    value_label = case_when(
+      str_detect(measure_category, "stage") & value < 5 ~ "c",
+      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ "c",
+      measure_category != "trend" ~ 
+        paste0(round_half_up(value / roll * 100, 1), "%"),
+      TRUE ~ value_label
+    
+    ),
+    value = case_when(
+      str_detect(measure_category, "stage") & value < 5 ~ NA_real_,
+      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ NA_real_,
+      measure_category != "trend" ~ value / roll * 100,
+      TRUE ~ value
+    )
+  ) %>%
+  
+  # Apply percentage bandings to non stage and trend measures at school level
+  mutate(
+    value_label = case_when(
+      !str_detect(measure_category, "(stage|trend)") & 
+        nchar(seed_code) > 3 & !is.na(value) ~
+        percentage_band(value),
+      TRUE ~ value_label
+    ),
+    value = case_when(
+      !str_detect(measure_category, "(stage|trend)") & 
+        nchar(seed_code) > 3 & !is.na(value) ~
+        percentage_band(value, numeric = TRUE),
+      TRUE ~ value
+    )
+  ) %>%
+  
+  # Remove roll column as only needed for percentage calculations
+  select(-roll) %>%
   
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
@@ -119,8 +170,7 @@ writexl::write_xlsx(
 # Save secondary school file
 
 secondary_population <- 
-  population %>% filter(school_type == "Secondary") %>%
-  select(-average_class)
+  population %>% filter(school_type == "Secondary")
 
 write_rds(
   secondary_population,
