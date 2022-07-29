@@ -13,8 +13,8 @@
 
 ### 0 - Setup ----
 
-## this sets a directory for the code to ensure if the folder is copied 
-## and moved elsewhere it will contunie to work
+## Run setup script where years for each dataset are defined and
+## packages/functions are loaded.
 
 source(here::here("code", "00_setup.R"))
 
@@ -24,11 +24,10 @@ source(here::here("code", "00_setup.R"))
 school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
 
 
-### 1 - Attainment data ----
+### 1 - Attendance data ----
 
 # This code creates a table of every combination of year and sheet name
 # of data to be read in.
-
 
 attendance_files <-
   expand_grid(
@@ -40,24 +39,19 @@ attendance_files <-
   # Remove Att by Stage rows for any other years
   filter(!(year != max(year_summary) & sheet == "Att by Stage"))
 
+
 attendance <- 
-  
 
   # This combines the attendance tabs in all of the school summary data sheets
-  # Stage data is included for all years but "all stage" data is only included for the current year
+  # Stage data is included for all years but "all stage" data is only included 
+  # for the current year
   # .x refers to the first column of attendance files (year)
   # .y refers to the second column of attendance files (sheet name)
   
   pmap_dfr(
     attendance_files,
-    ~ here("data", "school_summary_statistics", 
-           paste0(.x, "_school_summary_statistics.xlsx")) %>%
-      read_xlsx(sheet = .y, col_types = "text") %>%
-      clean_names() %>%
-      rename_with(~ "stage", matches("^student_stage$"))
+    ~ import_summary_data(.y, .x)
   ) %>%
-  
-  mutate(seed_code = as.character(seed_code)) %>%
   
   # Data from Attendance sheet is for All Stages - recode NAs to All Stages
   mutate(stage = replace_na(stage, "All Stages")) %>%
@@ -66,17 +60,31 @@ attendance <-
   mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%
   select(-la_code, -la_name, -school) %>%
   
+  # Restructure data to long format with column for measure name, value and
+  # value label
+  pivot_longer(cols = !c(year, seed_code, school_type, stage),
+               names_to = "measure",
+               values_to = "value") %>%
+  mutate(measure = recode(measure,
+    attendance = "Attendance",
+    auth_absence = "Authorised Absence",
+    unauth_absence = "Unauthorised Absence",
+    temp_exclusions = "Temporary Exclusions"
+  )) %>%
+  
+  # Recode missing/suppressed values
+  mutate(value_label = recode_missing_values(value, label = TRUE),
+         value = recode_missing_values(value)) %>%
+  
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
-   
-   # Reorder columns
-   select(year, seed_code, la_code, la_name, school_name, school_type,
-          stage, attendance, auth_absence, unauth_absence, temp_exclusions)
+  
+  # Reorder columns
+  select(year, seed_code, la_code, la_name, school_name, school_type,
+         stage, measure, value, value_label)
 
 
-
-### 2 - Save summary and pupil profile data sets ----
-
+### 2 - Save attendance data sets ----
 
 # Save primary school file
 

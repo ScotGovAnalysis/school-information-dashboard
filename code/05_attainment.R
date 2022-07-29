@@ -76,7 +76,7 @@ acel <-
 ## Writing.
 
 bge <- 
-  here("data", "bge_tool", paste0(year_acel, "_bge_tool.xlsx")) %>%
+  here("data", "bge_tool", paste0(year_bge, "_bge_tool.xlsx")) %>%
   read_excel(col_types = "text") %>%
   
   # Clean names and ensure they follow a consistent naming convention
@@ -95,7 +95,8 @@ bge <-
   
   # Suppress comparator values if pupil numbers 20 or less
   mutate(
-    comparator = ifelse(as.numeric(pupil_numbers) <= 20, "c", comparator)
+    across(c(actual, comparator),
+           ~ ifelse(as.numeric(pupil_numbers) <= 20, "c", .))
   ) %>%
   select(-pupil_numbers) %>%
   

@@ -13,8 +13,8 @@
 
 ### 0 - Setup ----
 
-## this sets a directory for the code to ensure if the folder is copied 
-## and moved elsewhere it will contunie to work
+## Run setup script where years for each dataset are defined and
+## packages/functions are loaded.
 
 source(here::here("code", "00_setup.R"))
 
@@ -23,20 +23,20 @@ source(here::here("code", "00_setup.R"))
 
 school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
 
+
 ### 1 - School Summary data ----
 
-population_files <-    
+# This code creates a table of every combination of year and sheet name
+# of data to be read in.
 
-    expand_grid(year = c(year_summary,"timeseries"),
-                sheet = c("SCH", "LA and SCOT")
-    )
+population_files <-    
+    expand_grid(year = c(year_summary, "timeseries"),
+                sheet = c("SCH", "LA and SCOT"))
  
 
 population <- 
   
-  
   # This combines the population tabs in all of the school summary data sheets
-  # Stage data is included for all years but "all stage" data is only included for the current year
   # .x refers to the first column of population files (year)
   # .y refers to the second column of population files (sheet name)
   
@@ -45,31 +45,108 @@ population <-
     ~ import_summary_data(.y, .x)
   ) %>%
 
-
-
-  # Data from LA sheet is for All publicly funded schools - recode NAs to All publicly funded schools
-
-  
   # Recode seed_code for LA/Scotland summary rows
-  mutate(seed_code = ifelse(seed_code == "NA", la_code, seed_code)) %>%
-  select(-la_code, -la_name, -school) %>%
+  mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
+                            la_code, 
+                            seed_code)) %>%
+  select(-la_code, -la_name, -school, -sp) %>%
   
+  # Restructure data to long format with column for measure name, value and
+  # value label
+  pivot_longer(cols = !c(year, seed_code, school_type),
+               names_to = "measure",
+               values_to = "value") %>%
+  
+  # Remove data for stage and demographic measures that is not for latest year
+  filter(
+    !(!measure %in% c("roll", "fte_teacher_numbers", "ptr", "average_class") &
+        year != max(year_summary))
+  ) %>%
+  
+  # Recode measure to readable format and add measure category
+  mutate(
+    measure_category = recode_population_measures(measure, category = TRUE),
+    measure = recode_population_measures(measure),
+    .before = measure
+  ) %>%
+  
+  # Remove stage rows not applicable for school type
+  filter(
+    !(str_detect(measure_category, "stage") &
+        tolower(school_type) != word(measure_category, 1, sep = "_"))
+  ) %>%
+  
+  # Recode missing / suppressed values
+  mutate(
+    value = ifelse(measure_category != "free_school_meals",
+                   replace_na(value, "0"),
+                   value),
+    value_label = recode_missing_values(value, label = TRUE),
+    value = recode_missing_values(value)
+  ) %>%
+  
+  # Add roll as seperate column to allow percentage calculations
+  mutate(roll = ifelse(measure == "Pupil Numbers", value, NA)) %>%
+  group_by(year, seed_code, school_type) %>%
+  # Some roll values are missing or suppressed, code these as NA
+  mutate(roll = ifelse(all(is.na(roll)), NA, max(roll, na.rm = TRUE))) %>%
+  ungroup()
+  
+
+## Apply suppression rules (to both value and value_label)
+## Stage Meaures - 
+##    Suppress if less than 5, otherwise percentage of roll
+## Measures other than Stage and Trend -
+##    Suppress if roll <= 20, otherwise percentage of roll
+##    If school level data, convert to percentage banding
+
+population %<>% 
+  
+  mutate(
+    value_label = case_when(
+      str_detect(measure_category, "stage") & value < 5 ~ "c",
+      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ "c",
+      measure_category != "trend" ~ 
+        paste0(round_half_up(value / roll * 100, 1), "%"),
+      TRUE ~ value_label
+    
+    ),
+    value = case_when(
+      str_detect(measure_category, "stage") & value < 5 ~ NA_real_,
+      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ NA_real_,
+      measure_category != "trend" ~ value / roll * 100,
+      TRUE ~ value
+    )
+  ) %>%
+  
+  # Apply percentage bandings to non stage and trend measures at school level
+  mutate(
+    value_label = case_when(
+      !str_detect(measure_category, "(stage|trend)") & 
+        nchar(seed_code) > 3 & !is.na(value) ~
+        percentage_band(value),
+      TRUE ~ value_label
+    ),
+    value = case_when(
+      !str_detect(measure_category, "(stage|trend)") & 
+        nchar(seed_code) > 3 & !is.na(value) ~
+        percentage_band(value, numeric = TRUE),
+      TRUE ~ value
+    )
+  ) %>%
+  
+  # Remove roll column as only needed for percentage calculations
+  select(-roll) %>%
   
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
 
-
-  # Recode missing / suppressed values
-  mutate(across(c(fte_teacher_numbers, roll, average_class, ptr),
-         ~ recode_missing_values(., label = TRUE)) %>%
-  
-
   # Reorder columns
-  select(year, seed_code, la_code, la_name, school_name, school_type, roll, fte_teacher_numbers, ptr, average_class)
+  select(year, seed_code, la_code, la_name, school_name, school_type, 
+         measure_category, measure, value, value_label)
  
 
 ### 2 - Save population data sets ----
-
 
 # Save primary school file
 
@@ -93,8 +170,7 @@ writexl::write_xlsx(
 # Save secondary school file
 
 secondary_population <- 
-  population %>% filter(school_type == "Secondary") %>%
-  select(-average_class)
+  population %>% filter(school_type == "Secondary")
 
 write_rds(
   secondary_population,
