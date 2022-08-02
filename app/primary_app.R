@@ -173,6 +173,9 @@ ui <-
         
         box(
           
+          width = 12,
+          collapsible = FALSE,
+          
           column(
             
             width = 4,
@@ -208,13 +211,10 @@ ui <-
           ),
           
           # School Profile Text
-          column(
-            school_profile_output("primary_school_profile"),
-            width = 8),
+          column(school_profile_output("primary_school_profile"),
+                 width = 8)
           
-          width = 12,
-          collapsible = FALSE),
-          
+        ),
           
         # School Profile Value Boxes 
         valueBoxOutput('attendance', width = 4),
@@ -232,7 +232,7 @@ ui <-
       fluidRow(
         
         # Pupil Profile Title Box
-        section_header_ui("pupil_header"),
+        section_header_output("pupil_header"),
         
         # Pupil Profile Content Box 
         box(
@@ -257,7 +257,7 @@ ui <-
         # 2 - UI - Attendance ----
         
         # Attendance Title Box 
-        section_header_ui("attendance_header"),
+        section_header_output("attendance_header"),
         
         # Attendance Content Box
         box(
@@ -283,7 +283,7 @@ ui <-
         # 2 - UI - Attainment ----
         
         # Attainment Title Box
-        section_header_ui("attainment_header"),
+        section_header_output("attainment_header"),
         
         # Attainment Content Box
         box(
@@ -328,7 +328,7 @@ ui <-
         # 2 - UI - Population ----
         
         # Population Title Box 
-        section_header_ui("population_header"),
+        section_header_output("population_header"),
         
         # Population Content Box 
         box(
@@ -359,10 +359,10 @@ ui <-
 
 server <- function(input, output, session) {
   
-  callModule(section_header, "pupil_header", "Pupil", box_colour = "navy")
-  callModule(section_header, "attendance_header", "Attendance")
-  callModule(section_header, "attainment_header", "Attainment")
-  callModule(section_header, "population_header", "Population")
+  callModule(section_header_server, "pupil_header", "Pupil", box_colour = "navy")
+  callModule(section_header_server, "attendance_header", "Attendance")
+  callModule(section_header_server, "attainment_header", "Attainment")
+  callModule(section_header_server, "population_header", "Population")
   
     
   # Introduction Popup ----
@@ -491,21 +491,7 @@ server <- function(input, output, session) {
   })
   
   # Plot the postcode locations on a map
-  
-  callModule(map, "map", filter_type)
-  # output$map <- renderLeaflet({
-  #   leaflet() %>% 
-  #     addTiles() %>% 
-  #     setView(-4.140078, 57.837990, zoom = 5.3) %>%
-  #     addCircleMarkers(
-  #       data = filter_type(),
-  #       lng = ~ lng, lat = ~ lat,
-  #       radius = 6,
-  #       stroke = FALSE,
-  #       opacity = 1,
-  #       fillOpacity = 1,
-  #       color = "navy")
-  # })
+  callModule(map_server, "map", filter_type)
   
   
   ## Population chart ----

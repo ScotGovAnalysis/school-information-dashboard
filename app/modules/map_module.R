@@ -9,7 +9,7 @@ map_output <- function(id) {
   
 }
 
-map <- function(input, output, session, data) {
+map_server <- function(input, output, session, data) {
   
   # Plot latitude and longitude on map
   output$map <- renderLeaflet({

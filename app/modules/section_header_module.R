@@ -1,5 +1,5 @@
 
-section_header_ui <- function(id) {
+section_header_output <- function(id) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -9,7 +9,7 @@ section_header_ui <- function(id) {
   
 }
 
-section_header <- function(input, output, session, section_name, box_colour = "yellow") {
+section_header_server <- function(input, output, session, section_name, box_colour = "yellow") {
   
   # Render Value Box
   output$header <- renderValueBox({
