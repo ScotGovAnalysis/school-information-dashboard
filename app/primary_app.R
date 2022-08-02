@@ -125,9 +125,14 @@ ui <-
 
       # Text instruction to click on boxes for further info
       h3("Click on any box for more information", align = "center"),
+      
+      br(),
+      br(),
       br(),
       
-     
+      HTML(paste0("<center>", 
+                  img(src = "smarter-scotland.jpg", width = 200),
+                  "</center>")),
       
       disable = FALSE, 
       width = NULL, 
