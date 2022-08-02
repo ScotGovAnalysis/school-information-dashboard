@@ -163,14 +163,11 @@ ui <-
       
       fluidRow(
         
-     
         # School Profile Title Box 
         valueBox(paste(school_type, "School Information Dashboard"), 
                  tags$p(h4(textOutput("la_school_title"))),
                  color = "yellow",
                  width = 12),
-        
-       
         
         # School Profile Content Box
         
@@ -178,52 +175,43 @@ ui <-
           
           column(
             
+            width = 4,
+            
             map_output("map"),
             br(),
           
-            
-            # Button to click for further COVID-19 information
-            fluidRow (
+            fluidRow(
+              
+              # Button to click for further COVID-19 information
               actionButton(
                 "COVID", 
                 "COVID-19", 
                 style = "color: white; background-color: purple; border-color:purple",
                 width = "49%"),
               
-              
               # Button to click for FAQs
-              
               actionButton(
                 "showTable",
                 "FAQ's",
                 style="color: white; background-color: purple; border-color:purple",
                 width = "49%"),
               
-              
+              # Popup window to display FAQs
               bsModal("modalExample", "Data Table", "showTable", size = "large",
                       selectInput("section",
                                   "Section:",
                                   c("Select",
                                     unique(as.character(FAQ$Section)))),
                       DT::dataTableOutput("table")),
-            ), 
+            )
             
-            width = 4),
-          
-          
+          ),
           
           # School Profile Text
-          column(uiOutput("school_name_text"),
-                 uiOutput("school_la_text"),
-                 uiOutput("school_seed_code"),
-                 uiOutput("school_denomination"),
-                 uiOutput("school_condition"),
-                 uiOutput("school_address"),
-                 uiOutput("school_telephone"),
-                 uiOutput("school_email"),
-                 uiOutput("school_website"),
-                 uiOutput("school_la_website"),
-                 width = 8),
+          column(
+            school_profile_output("primary_school_profile"),
+            width = 8),
+          
           width = 12,
           collapsible = FALSE),
           
@@ -691,67 +679,7 @@ server <- function(input, output, session) {
   })
   
   # School Profile Summary Text
-  
-  output$school_name_text <- renderUI({
-    h3("School Name: ", filter_profile()$school_name)
-  })
-  
-  output$school_seed_code <- renderUI({
-    h3("Seed Code: ", filter_profile()$seed_code)
-  })
-  
-  output$school_la_text <- renderUI({
-    h3("Local Authority/Area: ", filter_profile()$la_name)
-  })
-  
-  output$school_denomination <- renderUI({
-    if(!is.na(filter_profile()$denomination)) {
-      h3("Denomination: ", filter_profile()$denomination)
-    }
-  })
-  
-  output$school_condition <- renderUI({
-    h3("School condition: ", 
-       filter_profile()$condition,
-       ifelse(str_starts(filter_profile()$school_name, "All "),
-              " in A or B",
-              ""))
-  })
-  
-  output$school_address <- renderUI({
-    if(!is.na(filter_profile()$address)) {
-      h3("Address: ", filter_profile()$address)
-    }
-  })
-  
-  output$school_telephone <- renderUI({
-    if(!is.na(filter_profile()$phone_number)) {
-      h3("Telephone: ", filter_profile()$phone_number)
-    }
-  })
-  
-  output$school_email <- renderUI({
-    if(!is.na(filter_profile()$email)) {
-      h3("Email: ", a(href = paste0("mailto:", filter_profile()$email),
-                      filter_profile()$email))
-    }
-  })
-  
-  output$school_website <- renderUI({
-    if(!is.na(filter_profile()$website)) {
-      h3("Website: ", a(href = filter_profile()$website, 
-                        filter_profile()$website))
-    }
-  })
-  
-  output$school_la_website <- renderUI({
-    if(!is.na(filter_profile()$la_website)) {
-      h3("Local Authority Website: ", 
-         a(href = filter_profile()$la_website, 
-           filter_profile()$la_website))
-    }
-  })
-  
+  callModule(school_profile_server, "primary_school_profile", filter_profile)
   
   # School Profile Value Box Values
   
