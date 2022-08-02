@@ -176,25 +176,23 @@ ui <-
           width = 12,
           collapsible = FALSE,
           
+          # Create column for map and Covid-19/FAQ buttons
           column(
-            
             width = 4,
             
+            # Insert map
             map_output("map"),
             br(),
           
+            # Insert buttons for Covid-19 and FAQs
             fluidRow(
-              
-              # Button to click for further COVID-19 information
               covid19_ui("covid19"),
-              
-              # Button to click for FAQs
               faq_ui("faq")
             )
             
           ),
           
-          # School Profile Text
+          # Create column for school profile text
           column(
             width = 8,
             school_profile_output("school_profile_text")
@@ -207,47 +205,11 @@ ui <-
         
       ),
       
-      # 2 - UI - Pupil Profile ---- 
-      
+      # Insert sections
       pupil_profile_ui("pupil_profile"),
-
-      
-      # 2 - UI - Measure Options ----
-      
-      # 2 - UI - Attendance ----
-      
       attendance_ui("attendance"),
-      
-      # 2 - UI - Attainment ----
-      
       attainment_ui("attainment", unique(attainment$year)),
-      
-      fluidRow(
-        
-        # 2 - UI - Population ----
-        
-        # Population Title Box 
-        section_header_output("population_header"),
-        
-        # Population Content Box 
-        box(
-          title = NULL,
-          width = 12,
-          collapsible = FALSE,
-          
-          # Dropdown Filter - Population Measure
-          selectInput("pop_var", 
-                      label = "Select population measure",
-                      choices = c("Pupil Numbers", "Teacher Numbers (FTE)",
-                                  "Pupil Teacher Ratio", "Average Class"),
-                      selected = "Pupil Numbers"),
-          
-          # Population Trend Line Chart
-          plotlyOutput('population_graph'),
-          
-        ),   
-        
-      ),
+      population_ui("population"),
       
     )
     
@@ -319,7 +281,6 @@ server <- function(input, output, session) {
                                        "Attainment Profile")
       )}
   )
-
   
   ## Map ----
   
@@ -336,21 +297,13 @@ server <- function(input, output, session) {
   
   
   ## Population chart ----
-  
-  output$population_graph <- renderPlotly({
-    
-    ggplotly(population %>%
-      filter(la_name == input$la 
-             & school_name == input$school 
-             & measure == input$pop_var) %>%
-      ggplot(aes(year,value,group = 1)) + 
-      geom_line() +
-      scale_y_continuous(limits = c(0,NA)) +
-      labs(x = "Year", y = input$pop_var))
-    
+  population_filtered <- reactive({
+    population %>%
+      filter(la_name == input$la & school_name == input$school)
   })
   
-  
+  callModule(population_server, "population", population_filtered)
+
   
   # Attendance ----
   
