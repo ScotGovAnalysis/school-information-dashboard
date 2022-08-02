@@ -22,7 +22,17 @@ population <- read_rds(
   here("output", shiny_run_label,
        paste0(school_type, "_population.rds"))
 ) %>%
-  mutate(value_label = prettyNum(value_label, big.mark = ","))
+  mutate(value_label = prettyNum(value_label, big.mark = ",")) %>%
+  mutate(measure = factor(
+    measure,
+    c("Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio",
+      "Average Class", "Female", "Male", paste0("P", 1:7), 
+      paste0("SIMD Q", 1:5), "SIMD Unknown", 
+      "ASN", "No ASN", "FSM", "No FSM", "EAL", "No EAL", 
+      "White UK", "White Other", "Ethnic Minority", "Ethnicity Not Known",
+      "Taught in Gaelic", "Not Taught in Gaelic",
+      "Urban", "Small Town", "Rural", "Urban Rural Not Known")
+  ))
       
 attainment <- read_rds(
   here("output", shiny_run_label,
@@ -631,36 +641,42 @@ server <- function(input, output, session) {
   
   output$pup_pop_graph <- renderPlotly({
     
-    ggplotly(population %>%
-      filter(la_name == input$la 
-             & school_name == input$school
-             & measure_category 
-              %in% c("sex",
-                     "primary_stage",
-                     "deprivation"))%>%
-      ggplot(aes(measure,value, group = 1)) + 
-      geom_col() +
-        
-      labs(x = NULL , y = NULL))
+    ggplotly(
+      population %>%
+        filter(la_name == input$la 
+               & school_name == input$school
+               & measure_category 
+               %in% c("sex",
+                      "primary_stage",
+                      "deprivation"))%>%
+        ggplot(aes(measure,value, group = 1)) + 
+        geom_col() +
+        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+        labs(x = NULL , y = NULL)
+    )
     
   })
   
   output$pup_pop_graph2 <- renderPlotly({
     
-    ggplotly(population %>%
-      filter(la_name == input$la 
-             & school_name == input$school
-             & measure_category 
-             %in% c("free_school_meals",
-                    "additional_support_needs",
-                    "english_additional_language",
-                    "ethnicity",
-                    "urban_rural"))%>%
-      ggplot(aes(measure,value, group = 1)) + 
-      geom_col() +
-      
-      labs(x = NULL , y = NULL))
-    
+    ggplotly(
+      population %>%
+        filter(la_name == input$la 
+               & school_name == input$school
+               & measure_category 
+               %in% c("free_school_meals",
+                      "additional_support_needs",
+                      "english_additional_language",
+                      "ethnicity",
+                      "urban_rural"))%>%
+        ggplot(aes(measure,value, group = 1)) + 
+        geom_col() +
+        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+        labs(x = NULL , y = NULL)
+    )
+
   })
   
   
