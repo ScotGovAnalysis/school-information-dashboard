@@ -17,6 +17,7 @@ library(plotly)
 library(ggiraph)
 library(ggrepel)
 library(purrr)
+library(stringr)
 
 
 # Turn off scientific notation format
@@ -34,9 +35,9 @@ shiny_run_label <- "2022-July"
 school_type <- "Primary"
 
 
-# Load functions and modules
+# Load ggplot theme and modules
 
-source(here("functions", "sid_theme.R"))
+source(here("app", "sid_theme.R"))
 
 walk(list.files(here("app", "modules"), full.names = TRUE), source)
 
