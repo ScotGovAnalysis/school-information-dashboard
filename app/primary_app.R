@@ -3,8 +3,6 @@
 
 source(here::here("app", "00_shiny_setup.R"))
 
-source(here("app", "modules", "section_header.R"))
-
 
 ### 1 - Load data files ----
 
@@ -221,7 +219,7 @@ ui <-
         valueBoxOutput('ptr', width = 4),
         
        
-      ),  
+      ),
       
       # 2 - UI - Pupil Profile ---- 
       
