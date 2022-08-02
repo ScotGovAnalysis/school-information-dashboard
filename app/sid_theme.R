@@ -32,6 +32,7 @@ sid_theme <- function() {
       # Sets all text to size 16
       # Sets x-axis text to be angled
       text = ggplot2::element_text(size = 16),
+      plot.title = ggplot2::element_text(size = 16, hjust = 0.5),
 
       # Legend:
       # Set legend key size and background to be transparant

@@ -234,52 +234,11 @@ ui <-
       
       attendance_ui("attendance"),
       
+      # 2 - UI - Attainment ----
+      
+      attainment_ui("attainment", unique(attainment$year)),
+      
       fluidRow(
-        
-        # 2 - UI - Attainment ----
-        
-        # Attainment Title Box
-        section_header_output("attainment_header"),
-        
-        # Attainment Content Box
-        box(
-          title = NULL,
-          width = 12,
-          collapsible = TRUE,
-          
-         
-          # Dropdown Filter - Attainment Year
-          column(selectInput("attainment_year", 
-                      label = "Select year",
-                      choices = c("2016/17", "2017/18",
-                                  "2018/19", "2020/21"),
-                      selected = "2020/21"), width = 4),
-          
-          # Dropdown Filter - Attainment BGE Measure
-          column(selectInput("attainment_bge", 
-                             label = "Select attainment measure",
-                             choices = c("Reading", "Listening & Talking",
-                                         "Numeracy", "Writing"),
-                             selected = "Reading"), width = 4),
-          
-          # Dropdown Filter - Attainment Stage
-          column(selectInput("attainment_stage", 
-                             label = "Select stage",
-                             choices = c("P1", "P4", "P1, P4 & P7 combined",
-                                         "P7"),
-                             selected = "P4"), width = 4),
-          
-          # Attainment BGE Bar Chart
-          column(h3("Adverage curriculum for excellence level achieved", align = "center"),
-                 plotlyOutput('attainment_bar_graph'), width = 7),
-          
-          # Attainment BGE Doughnut Chart
-          column(h3("Precentage of students meeting curriculum for excellence level",align = "center"),
-            ggiraphOutput("donut_plot"), width = 4),
-          
-        ),      
-        
-        
         
         # 2 - UI - Population ----
         
@@ -314,11 +273,6 @@ ui <-
 ### 3 - Server ----
 
 server <- function(input, output, session) {
-  
-  callModule(section_header_server, "attendance_header", "Attendance")
-  callModule(section_header_server, "attainment_header", "Attainment")
-  callModule(section_header_server, "population_header", "Population")
-  
     
   # Introduction Popup ----
   
@@ -478,61 +432,12 @@ server <- function(input, output, session) {
   
   # Attainment charts ----
   
-  output$attainment_bar_graph <- renderPlotly({
-    
-    ggplotly(attainment %>%
-      filter(la_name == input$la 
-             & school_name == input$school 
-             & measure == input$attainment_bge 
-             & stage == input$attainment_stage 
-             & year == input$attainment_year 
-             & dataset == "bge") %>%
-      ggplot(aes(comparator, value)) + 
-      geom_col() +
-      labs(x = NULL , y = NULL))
-    
+  attainment_filtered <- reactive({
+    attainment %>%
+      filter(la_name == input$la & school_name == input$school)
   })
   
- 
-  
- 
-  #Doughnut chart 
-  output$donut_plot <- renderggiraph({
-    
-   att_data <- attainment %>% 
-      filter(la_name == input$la 
-             & school_name == input$school 
-             & str_starts(measure, input$attainment_bge)
-             & stage == input$attainment_stage 
-             & year == input$attainment_year 
-             & dataset == "acel") 
-              
-    
-    p <- ggplot(att_data, aes(y = value, fill = rev(measure))) +
-    geom_bar_interactive(
-      aes(x = 1, #tooltip = hover_text
-          ),
-      width = 0.5,
-      stat = "identity",
-      show.legend = FALSE
-    ) +
-    annotate(
-    geom = "text",
-    x = 0,
-    y = 0,
-    label = paste0(filter(att_data,
-                         str_ends(measure, "% Meeting Level")) %>%
-                           pull(value_label),"%"),
-    size = 20,
-    color = "#3182bd"
-    ) +
-      scale_fill_manual(values = c("white","#3182bd")) +
-    coord_polar(theta = "y") +
-    theme_void()
-  
-  ggiraph(ggobj = p)
-  
-  })
+  callModule(attainment_server, "attainment", attainment_filtered)
   
   
   ## Pupil profile ----
