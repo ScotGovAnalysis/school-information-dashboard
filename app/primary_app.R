@@ -217,14 +217,14 @@ ui <-
         ),
           
         # School Profile Value Boxes 
-        valueBoxOutput('attendance', width = 4),
-        valueBoxOutput('adver_class', width = 4),
-        valueBoxOutput('pe', width = 4),
-        valueBoxOutput('pup_num', width = 4),
-        valueBoxOutput('teach_num', width = 4),
-        valueBoxOutput('ptr', width = 4),
+        school_value_box_output("primary_profile_boxes")
+        # valueBoxOutput('attendance', width = 4),
+        # valueBoxOutput('adver_class', width = 4),
+        # valueBoxOutput('pe', width = 4),
+        # valueBoxOutput('pup_num', width = 4),
+        # valueBoxOutput('teach_num', width = 4),
+        # valueBoxOutput('ptr', width = 4)
         
-       
       ),
       
       # 2 - UI - Pupil Profile ---- 
@@ -668,120 +668,7 @@ server <- function(input, output, session) {
   callModule(school_profile_server, "primary_school_profile", filter_profile)
   
   # School Profile Value Box Values
-  
-
-  output$attendance <- renderValueBox({
-    valueBox(value = tags$p("Attendance", style = "font-size: 75%;"),
-    tags$p(h3(paste(filter_profile()$attendance))),
-    icon = icon("line-chart"), 
-    color = "teal")
-
-  })
-  
-  output$adver_class <- renderValueBox({
-    valueBox(value = tags$p("Average Class Size", style = "font-size: 75%;"),
-             tags$p(h3(paste(filter_profile()$average_class))),
-             icon = icon("user"), 
-             color = "teal")
-    
-  })
-  
- 
-  
-  output$pe <- renderValueBox({
-    valueBox(value = tags$p("Meeting PE Target", style = "font-size: 75%;"),
-             tags$p(h3(paste(filter_profile()$pe_target))),
-             icon = icon("fa-solid fa-bullseye"), 
-             color = "teal")
-    
-  })
- 
-  
-  
-  output$pup_num <- renderValueBox({
-    valueBox(value = tags$p("Pupil Numbers", style = "font-size: 75%;"),
-             tags$p(h3(paste(filter_profile()$roll))),
-             icon = icon("bar-chart-o"), 
-             color = "teal")
-    
-  })
-  
- 
-  output$teach_num <- renderValueBox({
-    valueBox(value = tags$p("Teacher Numbers", style = "font-size: 75%;"),
-             tags$p(h3(paste(filter_profile()$fte_teacher_numbers))),
-             icon = icon("fa-regular fa-user-graduate"), 
-             color = "teal")
-    
-  })
-  
- 
-  
-  output$ptr <- renderValueBox({
-    valueBox(value = tags$p("Attendance", style = "font-size: 75%;"),
-             tags$p(h3(paste(filter_profile()$ptr))),
-             icon = icon("fa-solid fa-chart-pie"), 
-             color = "teal")
-    
-  })
- 
-  
-  
-  
-  
-  # Click for info - School Profile Value Boxes
-  
-  onclick('attendance', showModal(modalDialog(
-    title = "Attendance",
-    p("This shows you the attendance rate for your chosen school/area"),
-    p("Attendance and absence data is collected from publicly funded schools every two years")
-  ))
-  )
-  
-  onclick('adver_class', showModal(modalDialog(
-    title = "Average Class Size",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
-  ))
-  )
-  
-  onclick('pe', showModal(modalDialog(
-    title = "Meeting PE Target",
-    p("Primary schools have a target to provide 120 minutes of Physical Education (PE) a week for pupils."),
-    p("This shows whether the school (or the percetnage of schools in your chosen area) is meeting this target or not."),
-    p("Information is collected in February every year in the Healthy Living Survey. A link to the Halthy Living Survey can be found here: ")
-  ))
-  )
-  
-  onclick('pup_num', showModal(modalDialog(
-    title = "Pupil Numbers",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
-  ))
-  )
-  
-  onclick('teach_num', showModal(modalDialog(
-    title = "Teacher Numbers",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
-  ))
-  )
-  
-  onclick('ptr', showModal(modalDialog(
-    title = "Pupil Teacher Ratio",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
-  ))
-  )
-  
+  callModule(school_value_box_server, "primary_profile_boxes", filter_profile)
   
   ### Dashboard heading ----
   
