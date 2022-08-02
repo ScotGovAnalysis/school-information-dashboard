@@ -211,44 +211,22 @@ ui <-
           ),
           
           # School Profile Text
-          column(school_profile_output("primary_school_profile"),
-                 width = 8)
+          column(
+            width = 8,
+            school_profile_output("school_profile_text")
+          )
           
         ),
           
         # School Profile Value Boxes 
-        school_value_box_output("primary_profile_boxes")
-        # valueBoxOutput('attendance', width = 4),
-        # valueBoxOutput('adver_class', width = 4),
-        # valueBoxOutput('pe', width = 4),
-        # valueBoxOutput('pup_num', width = 4),
-        # valueBoxOutput('teach_num', width = 4),
-        # valueBoxOutput('ptr', width = 4)
+        school_value_box_output("school_profile_boxes")
         
       ),
       
       # 2 - UI - Pupil Profile ---- 
       
-      fluidRow(
-        
-        # Pupil Profile Title Box
-        section_header_output("pupil_header"),
-        
-        # Pupil Profile Content Box 
-        box(
-          title = NULL,
-          width = 12,
-          collapsible = FALSE,
-          
-          column(plotlyOutput('pup_pop_graph'), width = 12),
-          column(plotlyOutput('pup_pop_graph2'), width = 12),
-          
-         
-        ),
-        
-      ),
-      
-      
+      pupil_profile_ui("pupil_profile"),
+
       
       # 2 - UI - Measure Options ----
       
@@ -359,7 +337,6 @@ ui <-
 
 server <- function(input, output, session) {
   
-  callModule(section_header_server, "pupil_header", "Pupil", box_colour = "navy")
   callModule(section_header_server, "attendance_header", "Attendance")
   callModule(section_header_server, "attainment_header", "Attainment")
   callModule(section_header_server, "population_header", "Population")
@@ -611,49 +588,12 @@ server <- function(input, output, session) {
   
   ## Pupil profile ----
   
-  
-  
-  output$pup_pop_graph <- renderPlotly({
-    
-    ggplotly(
-      population %>%
-        filter(la_name == input$la 
-               & school_name == input$school
-               & measure_category 
-               %in% c("sex",
-                      "primary_stage",
-                      "deprivation"))%>%
-        ggplot(aes(measure,value, group = 1)) + 
-        geom_col() +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL)
-    )
-    
+  pupil_profile_filtered <- reactive({
+    population %>%
+      filter(la_name == input$la & school_name == input$school)
   })
   
-  output$pup_pop_graph2 <- renderPlotly({
-    
-    ggplotly(
-      population %>%
-        filter(la_name == input$la 
-               & school_name == input$school
-               & measure_category 
-               %in% c("free_school_meals",
-                      "additional_support_needs",
-                      "english_additional_language",
-                      "ethnicity",
-                      "urban_rural"))%>%
-        ggplot(aes(measure,value, group = 1)) + 
-        geom_col() +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL)
-    )
-
-  })
-  
-  
+  callModule(pupil_profile_server, "pupil_profile", pupil_profile_filtered)
   
   
   ## School profile ----
@@ -665,18 +605,16 @@ server <- function(input, output, session) {
   })
   
   # School Profile Summary Text
-  callModule(school_profile_server, "primary_school_profile", filter_profile)
+  callModule(school_profile_server, "school_profile_text", filter_profile)
   
   # School Profile Value Box Values
-  callModule(school_value_box_server, "primary_profile_boxes", filter_profile)
+  callModule(school_value_box_server, "school_profile_boxes", filter_profile)
   
   ### Dashboard heading ----
   
   output$la_school_title <- renderText({
     paste(input$la, "-",input$school)
   })
-  
- 
   
 }
 
