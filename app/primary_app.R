@@ -9,22 +9,26 @@ source(here::here("app", "00_shiny_setup.R"))
 school_profile <- read_rds(
   here("output", shiny_run_label, 
        paste0(school_type, "_school_profile.rds"))
-)
+) %>%
+  mutate(across(c(roll, fte_teacher_numbers), ~ prettyNum(., big.mark = ",")))
 
 attendance <- read_rds(
   here("output", shiny_run_label,
        paste0(school_type, "_attendance.rds"))
-)
+) %>%
+  mutate(value_label = prettyNum(value_label, big.mark = ","))
 
 population <- read_rds(
   here("output", shiny_run_label,
        paste0(school_type, "_population.rds"))
-)
+) %>%
+  mutate(value_label = prettyNum(value_label, big.mark = ","))
       
 attainment <- read_rds(
   here("output", shiny_run_label,
        paste0(school_type, "_attainment.rds"))
-)
+) %>%
+  mutate(value_label = prettyNum(value_label, big.mark = ","))
 
 FAQ <- 
   read_excel(here("lookups", "FAQ.xlsx")) %>%
@@ -60,13 +64,13 @@ ui <-
     
   dashboardPage(
     
-    title = paste(school_type, "School Information Dashboard"),
+    title = "Primary School Information Dashboard",
     
     skin = "blue",
                     
     dashboardHeader(
       
-      title = h1(paste(school_type, "School Information Dashboard")), 
+      title = h1("Primary School Information Dashboard"), 
       titleWidth = NULL, 
       disable = TRUE
       
@@ -80,13 +84,13 @@ ui <-
         JS("document.getElementsByClassName('sidebar-toggle')[0]",
            ".style.visibility = 'hidden';")
       ),
-      
+
       useShinyjs(),
       
-      #choses the colour of the side bar          
+      # Set the colour of the side bar          
       tags$style(
-        HTML(".main-sidebar.main-sidebar-solid.main-sidebar-primary>.",
-             "main-sidebar-header {color:white; background:#100f3a}",
+        HTML(".main-sidebar.main-sidebar-solid.main-sidebar-primary>",
+             ".main-sidebar-header {color:white; background:#100f3a}",
              ".skin-blue .main-sidebar {background-color: #100f3a;}")
       ),
       
