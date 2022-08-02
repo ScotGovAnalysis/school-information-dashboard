@@ -186,11 +186,7 @@ ui <-
             fluidRow(
               
               # Button to click for further COVID-19 information
-              actionButton(
-                "COVID", 
-                "COVID-19", 
-                style = "color: white; background-color: purple; border-color:purple",
-                width = "49%"),
+              covid19_ui("covid19"),
               
               # Button to click for FAQs
               faq_ui("faq")
@@ -323,41 +319,7 @@ server <- function(input, output, session) {
                                        "Attainment Profile")
       )}
   )
-  
-  
-  ## COVID-19 Popup ----
-  
-  observeEvent(input$COVID, {
-    showModal(modalDialog(
-      title = "COVID-19",
-      p("Impact on data collection: The Scottish Government did not collect Achievement of CfE Levels data for any pupils in 2019/20."),
-      p("Schools were closed in Scotland in March 2020 and January 2021 as a result of the pandemic. This is likely to have had a 
-        negative effect on some pupils' progress and attainment. Attainment of socio-economically deprived children may have been 
-        amongst those most negatively affected."),
-      p("It is therefore likely to have had an impact on the CfE levels some children have achieved. This will be reflected in the 
-        2020/21 figures and should be kept in mind when interpreting these. In particular, when comparing with figures for 2018/19 and 
-        before."),
-      uiOutput("acel_link")
-    )
-    ) 
-  }) 
-  
-  # Attainment, leaver destination and healthy living link
-  url <- a("Attainment, leaver destinations and healthy living: summary statistics", 
-           href="https://www.gov.scot/publications/attainment-leaver-destinations-healthy-living-summary-statistics/pages/2/")
-  
-  output$link <- renderUI({
-    tagList("More detail is available using this link here:", url)
-  })
-  
-  # ACEL data link
-  url <- a("Scottish Exchange of Data: achievement of Curriculum for Excellence levels", 
-           href="https://www.gov.scot/publications/scottish-exchange-of-data-achievement-of-curriculum-for-excellence-levels")
-  
-  output$acel_link <- renderUI({
-    tagList("More detail is available using this link here:", url)
-  })
-  
+
   
   ## Map ----
   
