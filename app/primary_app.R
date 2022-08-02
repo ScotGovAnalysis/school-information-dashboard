@@ -193,19 +193,7 @@ ui <-
                 width = "49%"),
               
               # Button to click for FAQs
-              actionButton(
-                "showTable",
-                "FAQ's",
-                style="color: white; background-color: purple; border-color:purple",
-                width = "49%"),
-              
-              # Popup window to display FAQs
-              bsModal("modalExample", "Data Table", "showTable", size = "large",
-                      selectInput("section",
-                                  "Section:",
-                                  c("Select",
-                                    unique(as.character(FAQ$Section)))),
-                      DT::dataTableOutput("table")),
+              faq_ui("faq")
             )
             
           ),
@@ -305,26 +293,8 @@ server <- function(input, output, session) {
   showModal(intro_modal)
 
   
-  # FAQ Button Functions ----
-  
-  choices_FAQs <- reactive({
-    choices_FAQs <- FAQ %>%
-      arrange(desc(Section)) 
-    
-  })
-  
-  observe({
-    updateSelectInput(session = session, inputId = "Section", choices = choices_FAQs())
-  })
-  
-  # Table format   
-  output$table <- 
-    DT::renderDataTable(DT::datatable({
-      data <- FAQ
-      if (input$section != "ALL") {
-        data <- data[data$Section == input$section, -1]#remove the row numbering
-      }
-    }, rownames = FALSE))
+  # FAQ Button ----
+  callModule(faq_server, "faq", FAQ)
   
   
   # School Filter Dropdown - Updated based on LA selected ----
