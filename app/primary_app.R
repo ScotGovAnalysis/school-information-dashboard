@@ -230,33 +230,11 @@ ui <-
       
       # 2 - UI - Measure Options ----
       
+      # 2 - UI - Attendance ----
+      
+      attendance_ui("attendance"),
+      
       fluidRow(
-        
-        # 2 - UI - Attendance ----
-        
-        # Attendance Title Box 
-        section_header_output("attendance_header"),
-        
-        # Attendance Content Box
-        box(
-          title = NULL,
-          width = 12,
-          collapsible = FALSE,
-          
-          # Dropdown Filter - Attendance Measure
-          selectInput("att_var", 
-                      label = "Select attadance measure",
-                      choices = c("Attendance", "Authorised Absence",
-                                  "Unauthorised Absence"),
-                      selected = "Attendance"),
-          
-          # Attendance Trend Line Chart
-          column(plotlyOutput('attendance_graph'), width = 7),
-          
-          # Attendance Stage Bar Chart
-          column(plotlyOutput('attendance_stage_graph'), width = 5)
-          
-        ),      
         
         # 2 - UI - Attainment ----
         
@@ -488,43 +466,14 @@ server <- function(input, output, session) {
   
   
   
-  # Attendance trend chart ----
+  # Attendance ----
   
-  output$attendance_graph <- renderPlotly({
-    
-    ggplotly(attendance %>%
-      filter(la_name == input$la & 
-               school_name == input$school & 
-               measure == input$att_var &
-               stage == "All Stages") %>%
-      ggplot(aes(year, value, group = 1)) + 
-    geom_line() +
-      geom_text_repel(aes(label = paste(value_label,"%")),
-                      na.rm = TRUE,
-                      nudge_x = 0,
-                      check_overlap = TRUE) +
-      scale_y_continuous(limits = c(0,NA)) +
-      labs(x = "Academic Year", y = paste("%",input$att_var))) 
-    
-    
-    
+  attendance_filtered <- reactive({
+    attendance %>%
+      filter(la_name == input$la & school_name == input$school)
   })
   
-  # Attendance by stage bar chart ----
-  
-  output$attendance_stage_graph <- renderPlotly({
-    
-    ggplotly(attendance %>%
-      filter(la_name == input$la & 
-               school_name == input$school &
-               measure == input$att_var & 
-               stage != "All Stages") %>%
-      ggplot(aes(value, stage)) + 
-      geom_col() +
-        
-        labs(x ="Percentage Attendance" , y = "Pupil Stage"))
-    
-  })
+  callModule(attendance_server, "attendance", attendance_filtered)
   
   
   # Attainment charts ----
@@ -588,12 +537,12 @@ server <- function(input, output, session) {
   
   ## Pupil profile ----
   
-  pupil_profile_filtered <- reactive({
+  population_filtered <- reactive({
     population %>%
       filter(la_name == input$la & school_name == input$school)
   })
   
-  callModule(pupil_profile_server, "pupil_profile", pupil_profile_filtered)
+  callModule(pupil_profile_server, "pupil_profile", population_filtered)
   
   
   ## School profile ----
