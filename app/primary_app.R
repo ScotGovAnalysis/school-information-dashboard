@@ -176,42 +176,41 @@ ui <-
         
         box(
           
-        
-          # Map
           column(
-            fluidRow (
-              leafletOutput("map")),
             
+            map_output("map"),
             br(),
           
-          
-          # Button to click for further COVID-19 information
+            
+            # Button to click for further COVID-19 information
             fluidRow (
               actionButton(
-            "COVID", 
-            "COVID-19", 
-            style = "color: white; background-color: purple; border-color:purple",
-            width = "49%"),
-         
+                "COVID", 
+                "COVID-19", 
+                style = "color: white; background-color: purple; border-color:purple",
+                width = "49%"),
+              
+              
+              # Button to click for FAQs
+              
+              actionButton(
+                "showTable",
+                "FAQ's",
+                style="color: white; background-color: purple; border-color:purple",
+                width = "49%"),
+              
+              
+              bsModal("modalExample", "Data Table", "showTable", size = "large",
+                      selectInput("section",
+                                  "Section:",
+                                  c("Select",
+                                    unique(as.character(FAQ$Section)))),
+                      DT::dataTableOutput("table")),
+            ), 
+            
+            width = 4),
           
-          # Button to click for FAQs
           
-          actionButton(
-            "showTable",
-            "FAQ's",
-            style="color: white; background-color: purple; border-color:purple",
-            width = "49%"),
-          
-          
-          bsModal("modalExample", "Data Table", "showTable", size = "large",
-                  selectInput("section",
-                              "Section:",
-                              c("Select",
-                                unique(as.character(FAQ$Section)))),
-                  DT::dataTableOutput("table")),
-           ), width = 4),
-          
-        
           
           # School Profile Text
           column(uiOutput("school_name_text"),
@@ -505,19 +504,20 @@ server <- function(input, output, session) {
   
   # Plot the postcode locations on a map
   
-  output$map <- renderLeaflet({
-    leaflet() %>% 
-      addTiles() %>% 
-      setView(-4.140078, 57.837990, zoom = 5.3) %>%
-      addCircleMarkers(
-        data = filter_type(),
-        lng = ~ lng, lat = ~ lat,
-        radius = 6,
-        stroke = FALSE,
-        opacity = 1,
-        fillOpacity = 1,
-        color = "navy")
-  })
+  callModule(map, "map", filter_type)
+  # output$map <- renderLeaflet({
+  #   leaflet() %>% 
+  #     addTiles() %>% 
+  #     setView(-4.140078, 57.837990, zoom = 5.3) %>%
+  #     addCircleMarkers(
+  #       data = filter_type(),
+  #       lng = ~ lng, lat = ~ lat,
+  #       radius = 6,
+  #       stroke = FALSE,
+  #       opacity = 1,
+  #       fillOpacity = 1,
+  #       color = "navy")
+  # })
   
   
   ## Population chart ----
