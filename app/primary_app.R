@@ -3,6 +3,8 @@
 
 source(here::here("app", "00_shiny_setup.R"))
 
+source(here("app", "modules", "section_header.R"))
+
 
 ### 1 - Load data files ----
 
@@ -225,8 +227,8 @@ ui <-
       
       fluidRow(
         
-        # Pupil Profile Title Box .
-        valueBox("Pupil Profile", "", color = "navy", width = 12),
+        # Pupil Profile Title Box
+        section_header_ui("pupil_header"),
         
         # Pupil Profile Content Box 
         box(
@@ -251,7 +253,7 @@ ui <-
         # 2 - UI - Attendance ----
         
         # Attendance Title Box 
-        valueBox("Attendance Profile", "", color = "yellow", width = 12),
+        section_header_ui("attendance_header"),
         
         # Attendance Content Box
         box(
@@ -277,7 +279,7 @@ ui <-
         # 2 - UI - Attainment ----
         
         # Attainment Title Box
-        valueBox("Attainment Profile", "", color = "yellow", width = 12),
+        section_header_ui("attainment_header"),
         
         # Attainment Content Box
         box(
@@ -322,8 +324,8 @@ ui <-
         # 2 - UI - Population ----
         
         # Population Title Box 
-        valueBox("Population Profile", "", color = "yellow", width = 12),
-               
+        section_header_ui("population_header"),
+        
         # Population Content Box 
         box(
           title = NULL,
@@ -353,6 +355,12 @@ ui <-
 
 server <- function(input, output, session) {
   
+  callModule(section_header, "pupil_header", "Pupil", box_colour = "navy")
+  callModule(section_header, "attendance_header", "Attendance")
+  callModule(section_header, "attainment_header", "Attainment")
+  callModule(section_header, "population_header", "Population")
+  
+    
   # Introduction Popup ----
   
   intro_modal <- 
