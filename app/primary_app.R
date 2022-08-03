@@ -80,46 +80,7 @@ ui <-
     # 2 - UI - Sidebar ----
     
     dashboardSidebar(
-      
-      tags$script(
-        JS("document.getElementsByClassName('sidebar-toggle')[0]",
-           ".style.visibility = 'hidden';")
-      ),
-
-      useShinyjs(),
-      
-      # Set the colour of the side bar          
-      tags$style(
-        HTML(".main-sidebar.main-sidebar-solid.main-sidebar-primary>",
-             ".main-sidebar-header {color:white; background:#100f3a}",
-             ".skin-blue .main-sidebar {background-color: #100f3a;}")
-      ),
-      
-      # Text instruction to use dropdown filers
-      h2("Select options from the drop downs below", align = "center"),
-      
-      # Dropdown Filter - Local Authority
-      school_filter_input("la_school_filter", unique(school_profile$la_name)),
-      
-      # Dropdown Filter - Measure
-      measure_filter_input("measure_filter"),
-      
-      # Text instruction to click on boxes for further info
-      h3("Click on any box for more information", align = "center"),
-      
-      br(),
-      br(),
-      br(),
-      
-      # Smarter Scotland Logo
-      HTML(paste0("<center>", 
-                  img(src = "smarter-scotland.jpg", width = 200),
-                  "</center>")),
-      
-      disable = FALSE, 
-      width = NULL, 
-      collapsed = FALSE
-      
+      sidebar_ui("sidebar", unique(school_profile$la_name))
     ),
     
     
@@ -159,36 +120,34 @@ server <- function(input, output, session) {
   callModule(introduction_server, "introduction")
   
   
-  # School Filter Dropdown - Updated based on LA selected ----
-  la_school <- callModule(school_filter_server, 
-                          "la_school_filter", 
-                          school_profile)
+  # Sidebar filters ----
+  filters <- callModule(sidebar_server, "sidebar", school_profile)
   
   
   # Filter datasets by LA and School ----
   school_profile_filtered <- reactive({
     school_profile %>% 
-      filter(la_name == la_school()$la & school_name == la_school()$school)
+      filter(la_name == filters()$la & school_name == filters()$school)
   })
   
   attendance_filtered <- reactive({
     attendance %>% 
-      filter(la_name == la_school()$la & school_name == la_school()$school)
+      filter(la_name == filters()$la & school_name == filters()$school)
   })
   
   population_filtered <- reactive({
     population %>% 
-      filter(la_name == la_school()$la & school_name == la_school()$school)
+      filter(la_name == filters()$la & school_name == filters()$school)
   })
     
   attainment_filtered <- reactive({
     attainment %>% 
-      filter(la_name == la_school()$la & school_name == la_school()$school)
+      filter(la_name == filters()$la & school_name == filters()$school)
   })
   
   
   # Dashboard heading ----
-  callModule(dashboard_title_server, "title", "Primary", la_school)
+  callModule(dashboard_title_server, "title", "Primary", filters)
 
   
   ## Profile sections ----
