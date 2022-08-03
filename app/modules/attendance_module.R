@@ -15,13 +15,18 @@ attendance_ui <- function(id) {
       collapsible = FALSE,
       
       # Dropdown Filter - Attendance Measure
-      selectInput(ns("measure_filter"), 
-                  label = "Select attadance measure",
-                  choices = c("Attendance", 
-                              "Authorised Absence",
-                              "Unauthorised Absence",
-                              "Temporary Exclusions"),
-                  selected = "Attendance"),
+      column(
+        width = 10,
+        selectInput(ns("measure_filter"), 
+                    label = "Select attadance measure",
+                    choices = c("Attendance", 
+                                "Authorised Absence",
+                                "Unauthorised Absence",
+                                "Temporary Exclusions"),
+                    selected = "Attendance")
+      ),
+        
+      column(width = 2, download_data_ui("download")),
       
       # Attendance Trend Line Chart
       column(plotlyOutput(ns("trend")), width = 7),
@@ -38,6 +43,8 @@ attendance_ui <- function(id) {
 attendance_server <- function(input, output, session, data) {
   
   callModule(section_header_server, "attendance_header", "Attendance")
+  
+  callModule(download_data_server, "download", "Attendance", data)
   
   output$trend <- renderPlotly({
     

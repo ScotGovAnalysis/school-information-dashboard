@@ -150,12 +150,12 @@ server <- function(input, output, session) {
   
   ## Profile sections ----
   
-  # Pupil Profile
-  callModule(pupil_profile_server, "pupil_profile", population_filtered)
-  
   # School profile
   callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ)
   callModule(school_value_box_server, "school_profile_boxes", school_profile_filtered)
+  
+  # Pupil Profile
+  callModule(pupil_profile_server, "pupil_profile", population_filtered)
   
   # Attendance
   callModule(attendance_server, "attendance", attendance_filtered)

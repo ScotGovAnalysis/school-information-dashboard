@@ -38,11 +38,16 @@ pupil_profile_server <- function(input, output, session, data) {
       data() %>%
         filter(measure_category %in% 
                  c("sex", "stage", "deprivation")) %>%
-        ggplot(aes(measure, value, group = 1)) + 
+        ggplot(aes(measure, 
+                   value, 
+                   group = 1,
+                   text = paste0("Measure: ", measure, "<br>",
+                                 "% of Pupils: ", value_label))) + 
         geom_col() +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL)
+        labs(x = NULL , y = NULL),
+      tooltip = "text"
     )
     
   })
@@ -55,11 +60,16 @@ pupil_profile_server <- function(input, output, session, data) {
                  c("free_school_meals", "additional_support_needs",
                    "english_additional_language", "ethnicity", 
                    "urban_rural")) %>%
-        ggplot(aes(measure, value, group = 1)) + 
+        ggplot(aes(measure, 
+                   value, 
+                   group = 1,
+                   text = paste0("Measure: ", measure, "<br>",
+                                 "% of Pupils: ", value_label))) + 
         geom_col() +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL)
+        labs(x = NULL , y = NULL),
+      tooltip = "text"
     )
     
   })
