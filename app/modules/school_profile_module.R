@@ -32,9 +32,9 @@ school_profile_output <- function(id) {
 
 }
 
-school_profile_server <- function(input, output, session, map_data, data, faq_data) {
+school_profile_server <- function(input, output, session, data, faq_data) {
   
-  callModule(map_server, "map", map_data)
+  callModule(map_server, "map", data)
  
   callModule(faq_server, "faq", faq_data)
    
