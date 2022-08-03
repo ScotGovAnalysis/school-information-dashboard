@@ -14,6 +14,9 @@ pupil_profile_ui <- function(id) {
       width = 12,
       collapsible = FALSE,
       
+      column(width = 10),
+      column(download_data_ui(ns("download")), width = 2),
+      
       column(plotlyOutput(ns("chart1")), width = 12),
       column(plotlyOutput(ns("chart2")), width = 12)
       
@@ -26,6 +29,8 @@ pupil_profile_ui <- function(id) {
 pupil_profile_server <- function(input, output, session, data) {
   
   callModule(section_header_server, "pupil_header", "Pupil", box_colour = "navy")
+  
+  callModule(download_data_server, "download", "Pupil Profile", data)
   
   output$chart1 <- renderPlotly({
     

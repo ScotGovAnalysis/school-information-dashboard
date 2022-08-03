@@ -96,7 +96,7 @@ ui <-
         school_profile_output("school_profile"),
           
         # School Profile Value Boxes 
-        school_value_box_output("school_profile_boxes", "Primary"),
+        school_value_box_output("school_profile_boxes", "Primary")
         
       ),
       
