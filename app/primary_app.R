@@ -128,15 +128,18 @@ ui <-
       ),
       
       # Dropdown Filter - Measure
-      
+      # measure_filter_input("measure_filter"),
       selectInput(
-        inputId = "measure",
+        inputId = "measure_filter",
         label = "Measure",
-        choices = NULL,
+        choices = c("Select",
+                    "Attendance Profile", 
+                    "Population Profile", 
+                    "Attainment Profile"),
         selected = "Select",
         multiple = FALSE
       ),
-
+      
       # Text instruction to click on boxes for further info
       h3("Click on any box for more information", align = "center"),
       
@@ -170,46 +173,19 @@ ui <-
                  width = 12),
         
         # School Profile Content Box
-        
-        box(
-          
-          width = 12,
-          collapsible = FALSE,
-          
-          # Create column for map and Covid-19/FAQ buttons
-          column(
-            width = 4,
-            
-            # Insert map
-            map_output("map"),
-            br(),
-          
-            # Insert buttons for Covid-19 and FAQs
-            fluidRow(
-              covid19_ui("covid19"),
-              faq_ui("faq")
-            )
-            
-          ),
-          
-          # Create column for school profile text
-          column(
-            width = 8,
-            school_profile_output("school_profile_text")
-          )
-          
-        ),
+        school_profile_output("school_profile"),
           
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes")
         
       ),
       
+      
       # Insert sections
       pupil_profile_ui("pupil_profile"),
       attendance_ui("attendance"),
       attainment_ui("attainment", unique(attainment$year)),
-      population_ui("population"),
+      population_ui("population")
       
     )
     
@@ -220,6 +196,17 @@ ui <-
 
 server <- function(input, output, session) {
     
+  observeEvent(
+    input$measure_filter, {
+    
+    if(input$measure_filter == "Population Profile"){
+      shinyjs::show(id = "population")
+    }else{
+      shinyjs::hide(id = "population")
+    }
+  })
+  
+  
   # Introduction Popup ----
   
   intro_modal <- 
@@ -249,11 +236,6 @@ server <- function(input, output, session) {
 
   # Create popup intro modal
   showModal(intro_modal)
-
-  
-  # FAQ Button ----
-  callModule(faq_server, "faq", FAQ)
-  
   
   # School Filter Dropdown - Updated based on LA selected ----
   
@@ -266,21 +248,7 @@ server <- function(input, output, session) {
                             filter(la_name %in% input$la) %>%
                             pull(school_name))
     })
-  
-  
-  # Measure Filter Dropdown
-  # Doesn't do anything just now - placeholder for when measure filter 
-  # operational
-  
-  observeEvent(
-    input$la, {
-      updateSelectizeInput(session, 
-                           input = "measure",
-                           choices = c("Attendance Profile", 
-                                       "Population Profile", 
-                                       "Attainment Profile")
-      )}
-  )
+
   
   ## Map ----
   
@@ -291,10 +259,6 @@ server <- function(input, output, session) {
     dat %>%
       filter(la_name == input$la & school_name == input$school)
   })
-  
-  # Plot the postcode locations on a map
-  callModule(map_server, "map", filter_type)
-  
   
   ## Population chart ----
   population_filtered <- reactive({
@@ -344,7 +308,7 @@ server <- function(input, output, session) {
   })
   
   # School Profile Summary Text
-  callModule(school_profile_server, "school_profile_text", filter_profile)
+  callModule(school_profile_server, "school_profile", filter_type, filter_profile, FAQ)
   
   # School Profile Value Box Values
   callModule(school_value_box_server, "school_profile_boxes", filter_profile)
