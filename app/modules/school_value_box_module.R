@@ -8,11 +8,11 @@ school_value_box_output <- function(id, school_type) {
   tagList(
     valueBoxOutput(ns("attendance"), width = 4),
     
-    if(school_type != "Special") {
+    if(school_type == "Primary") {
     valueBoxOutput(ns("average_class"), width = 4)
     },
     
-    if(school_type != "Special") {
+    if(school_type %in% c("Primary", "Secondary")) {
     valueBoxOutput(ns("pe"), width = 4)
     },
     
