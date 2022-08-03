@@ -32,7 +32,7 @@ pupil_profile_server <- function(input, output, session, data) {
     ggplotly(
       data() %>%
         filter(measure_category %in% 
-                 c("sex", "primary_stage", "deprivation")) %>%
+                 c("sex", "stage", "deprivation")) %>%
         ggplot(aes(measure, value, group = 1)) + 
         geom_col() +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
