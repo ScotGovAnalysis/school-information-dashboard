@@ -19,7 +19,8 @@ attendance_ui <- function(id) {
                   label = "Select attadance measure",
                   choices = c("Attendance", 
                               "Authorised Absence",
-                              "Unauthorised Absence"),
+                              "Unauthorised Absence",
+                              "Temporary Exclusions"),
                   selected = "Attendance"),
       
       # Attendance Trend Line Chart
