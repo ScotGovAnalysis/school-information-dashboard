@@ -24,6 +24,9 @@ attendance <- read_rds(
 population <- read_rds(
   here("output", shiny_run_label, "primary_population.rds")
 ) %>%
+  mutate(measure_category = ifelse(measure_category == "primary_stage",
+                                   "stage",
+                                   measure_category)) %>%
   mutate(value_label = prettyNum(value_label, big.mark = ",")) %>%
   mutate(measure = factor(
     measure,
@@ -111,7 +114,6 @@ ui <-
 
 server <- function(input, output, session) {
     
-  
   # Introduction Popup ----
   callModule(introduction_server, "introduction")
   
