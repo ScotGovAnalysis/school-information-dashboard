@@ -1,5 +1,5 @@
 
-school_value_box_output <- function(id) {
+school_value_box_output <- function(id, school_type) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -7,8 +7,15 @@ school_value_box_output <- function(id) {
   # Value Box Output
   tagList(
     valueBoxOutput(ns("attendance"), width = 4),
-    valueBoxOutput(ns("average_class"), width = 4),
-    valueBoxOutput(ns("pe"), width = 4),
+    
+    if(school_type != "Special") {
+    valueBoxOutput(ns("average_class"), width = 4)
+    },
+    
+    if(school_type != "Special") {
+    valueBoxOutput(ns("pe"), width = 4)
+    },
+    
     valueBoxOutput(ns("pup_num"), width = 4),
     valueBoxOutput(ns("teach_num"), width = 4),
     valueBoxOutput(ns("ptr"), width = 4)

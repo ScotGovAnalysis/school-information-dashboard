@@ -30,11 +30,6 @@ options(scipen = 999)
 shiny_run_label <- "2022-July"
 
 
-# Set school type for app
-
-school_type <- "Primary"
-
-
 # Load ggplot theme and modules
 
 source(here("app", "sid_theme.R"))

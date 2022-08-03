@@ -7,8 +7,7 @@ source(here::here("app", "00_shiny_setup.R"))
 ### 1 - Load data files ----
 
 school_profile <- read_rds(
-  here("output", shiny_run_label, 
-       paste0(school_type, "_school_profile.rds"))
+  here("output", shiny_run_label, "primary_school_profile.rds")
 ) %>%
   arrange(as.numeric(la_code), nchar(seed_code), school_name) %>%
   mutate(across(c(roll, fte_teacher_numbers), ~ prettyNum(., big.mark = ","))) %>%
@@ -18,14 +17,12 @@ school_profile <- read_rds(
   )
 
 attendance <- read_rds(
-  here("output", shiny_run_label,
-       paste0(school_type, "_attendance.rds"))
+  here("output", shiny_run_label, "primary_attendance.rds")
 ) %>%
   mutate(value_label = prettyNum(value_label, big.mark = ","))
 
 population <- read_rds(
-  here("output", shiny_run_label,
-       paste0(school_type, "_population.rds"))
+  here("output", shiny_run_label, "primary_population.rds")
 ) %>%
   mutate(value_label = prettyNum(value_label, big.mark = ",")) %>%
   mutate(measure = factor(
@@ -40,8 +37,7 @@ population <- read_rds(
   ))
       
 attainment <- read_rds(
-  here("output", shiny_run_label,
-       paste0(school_type, "_attainment.rds"))
+  here("output", shiny_run_label, "primary_attainment.rds")
 ) %>%
   mutate(value_label = prettyNum(value_label, big.mark = ","))
 
@@ -97,7 +93,7 @@ ui <-
         school_profile_output("school_profile"),
           
         # School Profile Value Boxes 
-        school_value_box_output("school_profile_boxes"),
+        school_value_box_output("school_profile_boxes", "Primary"),
         
       ),
       
