@@ -70,7 +70,7 @@ dat <-
 
 ui <- 
 
-  # 2 - UI - Dashboard title and header ----
+  # 2 - UI - Dashboard Title and Header ----
     
   dashboardPage(
     
@@ -162,8 +162,6 @@ ui <-
 
     dashboardBody(
       
-      # 2 - UI - School profile ----
-      
       fluidRow(
         
         # School Profile Title Box 
@@ -176,12 +174,10 @@ ui <-
         school_profile_output("school_profile"),
           
         # School Profile Value Boxes 
-        school_value_box_output("school_profile_boxes")
+        school_value_box_output("school_profile_boxes"),
         
       ),
       
-      
-      # Insert sections
       pupil_profile_ui("pupil_profile"),
       attendance_ui("attendance"),
       attainment_ui("attainment", unique(attainment$year)),
@@ -196,46 +192,8 @@ ui <-
 
 server <- function(input, output, session) {
     
-  observeEvent(
-    input$measure_filter, {
-    
-    if(input$measure_filter == "Population Profile"){
-      shinyjs::show(id = "population")
-    }else{
-      shinyjs::hide(id = "population")
-    }
-  })
-  
-  
   # Introduction Popup ----
-  
-  intro_modal <- 
-    modalDialog(
-      title = "Introduction",
-      p("The School Information Dashboards bring together a range of published information. "),
-      p("There are three dashboards -  Primary , Secondary and Special School Dashboards."),
-      p("The School Information Dashboards add to the information already provided by schools. 
-      This information is designed to help better understand schools and encourage communication between parents/carers and schools."),  
-      p("It is important to remember that statistical data alone is not a measure of how well a school is doing. All schools are unique. 
-      To understand how well a school is doing it is important to look at a range of different data sources."),
-      uiOutput("nif_link"),
-      br(),
-      p("If you have questions about the information on the dashboard for a particular school, then you should contact that school directly. 
-      School contact details are available on the dashboard. School website details are available on Parentzone Scotland."),
-      easyClose = TRUE,
-      footer = modalButton("OK")
-    )
-  
-  #National Improvement Framework in a Nutshell link
-  url <- a("National Improvement Framework in a Nutshell - National Parent Forum of Scotland", 
-           href="https://www.npfs.org.uk")
-  
-  output$nif_link <- renderUI({
-    tagList("For more detail on the importance of gathering and sharing accurate information follow this link:", url)
-  })
-
-  # Create popup intro modal
-  showModal(intro_modal)
+  callModule(introduction_server, "introduction")
   
   # School Filter Dropdown - Updated based on LA selected ----
   
