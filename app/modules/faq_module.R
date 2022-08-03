@@ -14,7 +14,7 @@ faq_ui <- function(id) {
     # Popup window to display FAQs
     bsModal(
       id = ns("popup_window"), 
-      title = "Data Table", 
+      title = "FAQ", 
       trigger = ns("button"), 
       size = "large",
       

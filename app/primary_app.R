@@ -60,9 +60,9 @@ FAQ <-
 
 ui <- 
 
-  # 2 - UI - Dashboard Title and Header ----
-    
   dashboardPage(
+    
+    # 2 - UI - Dashboard Title and Header ----
     
     title = "Primary School Information Dashboard",
     
@@ -76,6 +76,7 @@ ui <-
       
     ),
           
+    
     # 2 - UI - Sidebar ----
     
     dashboardSidebar(
@@ -122,17 +123,14 @@ ui <-
     ),
     
     
-    # 2 - UI - Main dashboard body ----
+    # 2 - UI - Main body ----
 
     dashboardBody(
       
       fluidRow(
         
         # School Profile Title Box 
-        valueBox(paste(school_type, "School Information Dashboard"), 
-                 tags$p(h4(textOutput("la_school_title"))),
-                 color = "yellow",
-                 width = 12),
+        dashboard_title_output("title"),
         
         # School Profile Content Box
         school_profile_output("school_profile"),
@@ -190,9 +188,7 @@ server <- function(input, output, session) {
   
   
   # Dashboard heading ----
-  output$la_school_title <- renderText({
-    paste(la_school()$la, "-",la_school()$school)
-  })
+  callModule(dashboard_title_server, "title", "Primary", la_school)
 
   
   ## Profile sections ----
