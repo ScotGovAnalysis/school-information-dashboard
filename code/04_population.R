@@ -75,6 +75,9 @@ population <-
     !(str_detect(measure_category, "stage") &
         tolower(school_type) != word(measure_category, 1, sep = "_"))
   ) %>%
+  mutate(measure_category = ifelse(str_detect(measure_category, "stage"),
+                                   "stage",
+                                   measure_category)) %>%
   
   # Recode missing / suppressed values
   mutate(

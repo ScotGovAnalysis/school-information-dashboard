@@ -24,10 +24,6 @@ attendance <- read_rds(
 population <- read_rds(
   here("output", shiny_run_label, "primary_population.rds")
 ) %>%
-  mutate(measure_category = ifelse(measure_category == "primary_stage",
-                                   "stage",
-                                   measure_category)) %>%
-  mutate(value_label = prettyNum(value_label, big.mark = ",")) %>%
   mutate(measure = factor(
     measure,
     c("Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio",
@@ -41,8 +37,7 @@ population <- read_rds(
       
 attainment <- read_rds(
   here("output", shiny_run_label, "primary_attainment.rds")
-) %>%
-  mutate(value_label = prettyNum(value_label, big.mark = ","))
+)
 
 FAQ <- 
   read_excel(here("lookups", "FAQ.xlsx")) %>%

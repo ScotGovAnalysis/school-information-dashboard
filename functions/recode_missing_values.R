@@ -53,7 +53,9 @@ recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
         # Round value column
         round_value = ifelse(
           is.na(recode),
-          janitor::round_half_up(as.numeric(value), label_digits),
+          janitor::round_half_up(as.numeric(value), label_digits) %>%
+            prettyNum(big.mark = ",") %>%
+            trimws(),
           NA_character_
         ),
         

@@ -44,7 +44,7 @@ percentage_band <- function(x, numeric = FALSE) {
   # of the upper limit; e.g. recode 10-20% as 2
   # Otherwise, return perc_band as a character vector
   if(numeric) {
-    as.numeric(stringr::str_extract(perc_band, "^\\d{2}")) + 10
+    as.numeric(stringr::str_extract(perc_band, "^\\d{1,2}")) + 10
   } else {
     as.character(perc_band)
   }

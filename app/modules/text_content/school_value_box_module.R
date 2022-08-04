@@ -43,8 +43,10 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick('attendance', showModal(modalDialog(
     title = "Attendance",
-    p("This shows you the attendance rate for your chosen school/area"),
-    p("Attendance and absence data is collected from publicly funded schools every two years")
+    ("This shows you the attendance rate for your chosen school/area"),
+    p("Attendance and absence data is collected from publicly funded schools every two years"),
+    p("More information can be found here:",
+      a("Schools Summary Statistics Link", href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland"))
   ))
   )
   
@@ -60,8 +62,10 @@ school_value_box_server <- function(input, output, session, data) {
     title = "Average Class Size",
     p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, 
+    as local authorities may have teahcers recorded at virtual schools. 
+       For more information please see Section 7 in the Requently Asked Questions or you can find the data publication here:",
+      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -77,7 +81,10 @@ school_value_box_server <- function(input, output, session, data) {
     title = "Meeting PE Target",
     p("Primary schools have a target to provide 120 minutes of Physical Education (PE) a week for pupils."),
     p("This shows whether the school (or the percetnage of schools in your chosen area) is meeting this target or not."),
-    p("Information is collected in February every year in the Healthy Living Survey. A link to the Halthy Living Survey can be found here: ")
+    p("Information is collected in February every year in the Healthy Living Survey. A link to the Healthy Living Survey can be found here:",
+      a(href="https://www.gov.scot/publications/attainment-leaver-destinations-healthy-living-summary-statistics/pages/2/)"))
+    
+    
   ))
   )
   
@@ -94,7 +101,8 @@ school_value_box_server <- function(input, output, session, data) {
     p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+       For more information please see Section 7 in the Requently Asked Questions or you can find the data publication here:",
+      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -111,7 +119,8 @@ school_value_box_server <- function(input, output, session, data) {
     p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+       For more information please see Section 7 in the Requently Asked Questions or you can find the data publication here:",
+      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -128,7 +137,8 @@ school_value_box_server <- function(input, output, session, data) {
     p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+       For more information please see Section 7 in the Requently Asked Questionsor you can find the data publication here:",
+      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -145,10 +155,13 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick('condition', showModal(modalDialog(
     title = "School Condition",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+    p("school condition: shows the recorded condition of your chosen school/area."),
+    p("A - Goood"),
+    p("B - Satisfactory"),
+    p("C - Poor"),
+    p("D - Bad"),
+    p("Information is collected in April every year as part of the schols estate collection which can be found using this link:",
+      a(href="https://www.gov.scot/collections/school-education-statistics/#schoolestatesstatistics"))
   ))
   )
   
@@ -164,10 +177,9 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick('denomination', showModal(modalDialog(
     title = "Denomination",
-    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
-    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
-    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
-       For more information please see Section 7 in the Requently Asked Questions"),
+    p("This reports the denomintion of the school"),
+    p("The publication can be found using this link:",
+      a(href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland"))
   ))
   )
   
