@@ -28,7 +28,7 @@ attendance_ui <- function(id) {
         
       column(width = 2, 
              br(),
-             download_data_ui("download")
+             download_data_ui(ns("download"))
       ),
       
       # Attendance Trend Line Chart
