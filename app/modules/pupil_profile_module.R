@@ -32,21 +32,32 @@ pupil_profile_server <- function(input, output, session, data) {
   
   callModule(download_data_server, "download", "Pupil Profile", data)
   
+  colours <- c("#3182bd", "#9ecae1", "#deebf7")
+  
   output$chart1 <- renderPlotly({
     
     ggplotly(
       data() %>%
         filter(measure_category %in% 
                  c("sex", "stage", "deprivation")) %>%
-        ggplot(aes(measure, 
-                   value, 
-                   group = 1,
-                   text = paste0("Measure: ", measure, "<br>",
-                                 "% of Pupils: ", value_label))) + 
-        geom_col() +
+        ggplot() + 
+        geom_col(aes(measure, 
+                     value, 
+                     fill = measure_category,
+                     colour = measure_category,
+                     text = paste0("Measure: ", measure, "<br>",
+                                   "% of Pupils: ", value_label))) +
+        geom_text(aes(x = measure, y = value, label = value_label, text = ""),
+                  hjust = 0.5, nudge_y = 5) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL),
+        scale_fill_manual(values = colours) +
+        scale_colour_manual(values = colours) +
+        labs(x = NULL , y = NULL) +
+        theme(axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.line.y = element_blank(),
+              legend.position = "none"),
       tooltip = "text"
     )
     
@@ -60,15 +71,24 @@ pupil_profile_server <- function(input, output, session, data) {
                  c("free_school_meals", "additional_support_needs",
                    "english_additional_language", "ethnicity", 
                    "urban_rural")) %>%
-        ggplot(aes(measure, 
-                   value, 
-                   group = 1,
-                   text = paste0("Measure: ", measure, "<br>",
-                                 "% of Pupils: ", value_label))) + 
-        geom_col() +
+        ggplot() + 
+        geom_col(aes(measure, 
+                     value, 
+                     fill = measure_category,
+                     colour = measure_category,
+                     text = paste0("Measure: ", measure, "<br>",
+                                   "% of Pupils: ", value_label))) +
+        geom_text(aes(x = measure, y = value, label = value_label, text = ""),
+                  hjust = 0.5, nudge_y = 5) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL),
+        labs(x = NULL , y = NULL) +
+        scale_fill_manual(values = c(colours, colours[1:2])) +
+        scale_colour_manual(values = c(colours, colours[1:2])) +
+        theme(axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.line.y = element_blank(),
+              legend.position = "none"),
       tooltip = "text"
     )
     
