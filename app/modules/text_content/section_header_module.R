@@ -24,6 +24,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
     section_name == "Attendance" ~ "Add attendance profile text here",
     section_name == "Attainment" ~ "Add attainment profile text here",
     section_name == "Population" ~ "Add population profile text here"
+    # Add content for any new section headers here
   )
   
   # When user clicks value box, display pop up with information text

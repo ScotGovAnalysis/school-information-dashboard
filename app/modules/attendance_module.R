@@ -26,7 +26,10 @@ attendance_ui <- function(id) {
                     selected = "Attendance")
       ),
         
-      column(width = 2, download_data_ui("download")),
+      column(width = 2, 
+             br(),
+             download_data_ui("download")
+      ),
       
       # Attendance Trend Line Chart
       column(plotlyOutput(ns("trend")), width = 7),

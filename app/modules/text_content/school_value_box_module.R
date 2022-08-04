@@ -16,6 +16,14 @@ school_value_box_output <- function(id, school_type) {
     valueBoxOutput(ns("pe"), width = 4)
     },
     
+    if(school_type %in% c("Secondary", "Special")) {
+      valueBoxOutput(ns("condtion"), width = 4)
+    },
+    
+    if(school_type == "Special") {
+      valueBoxOutput(ns("denomination"), width = 4)
+    },
+    
     valueBoxOutput(ns("pup_num"), width = 4),
     valueBoxOutput(ns("teach_num"), width = 4),
     valueBoxOutput(ns("ptr"), width = 4)
@@ -109,7 +117,7 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Pupil Teacher Ratio
   output$ptr <- renderValueBox({
-    valueBox(value = tags$p("Attendance", style = "font-size: 75%;"),
+    valueBox(value = tags$p("Pupil Teacher Ratio", style = "font-size: 75%;"),
              tags$p(h3(data()$ptr)),
              icon = icon("fa-solid fa-chart-pie"), 
              color = "teal")
@@ -117,6 +125,40 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick('ptr', showModal(modalDialog(
     title = "Pupil Teacher Ratio",
+    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
+    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
+    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
+       For more information please see Section 7 in the Requently Asked Questions"),
+  ))
+  )
+  
+  # Condition
+  output$condition <- renderValueBox({
+    valueBox(value = tags$p("School Condition", style = "font-size: 75%;"),
+             tags$p(h3(data()$condition)),
+             icon = icon("fa-solid fa-chart-pie"), 
+             color = "teal")
+  })
+  
+  onclick('condition', showModal(modalDialog(
+    title = "School Condition",
+    p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
+    p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
+    p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 
+       For more information please see Section 7 in the Requently Asked Questions"),
+  ))
+  )
+  
+  # Denomination
+  output$denomination <- renderValueBox({
+    valueBox(value = tags$p("Denomination", style = "font-size: 75%;"),
+             tags$p(h3(data()$denomination)),
+             icon = icon("fa-solid fa-chart-pie"), 
+             color = "teal")
+  })
+  
+  onclick('denomination', showModal(modalDialog(
+    title = "Denomination",
     p("Information on the pupil numbers, teacher numbers and Class sizes are collected from publicly funded schools every year."),
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authroity level data may not be the same as the sum of all school data within that local authroity, as local authorities may have teahcers recorded at virtual schools. 

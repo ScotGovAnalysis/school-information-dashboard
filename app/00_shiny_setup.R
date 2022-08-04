@@ -34,7 +34,8 @@ shiny_run_label <- "2022-July"
 
 source(here("app", "sid_theme.R"))
 
-walk(list.files(here("app", "modules"), full.names = TRUE), source)
+walk(list.files(here("app", "modules"), pattern = ".R$", full.names = TRUE), source)
+walk(list.files(here("app", "modules", "text_content"), full.names = TRUE), source)
 
 
 # Set default ggplot themes and colours
