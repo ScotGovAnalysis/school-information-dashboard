@@ -97,10 +97,9 @@ attainment_server <- function(input, output, session, data) {
       data() %>%
       filter(dataset == "acel" & year == input$year &
                str_starts(measure, input$bge) & stage == input$stage)
-    
     girafe(
       ggobj =
-        ggplot(acel_data, aes(y = value, fill = rev(measure))) +
+        ggplot(acel_data, aes(y = rev(value), fill = measure)) +
         geom_bar_interactive(
           aes(x = 1,
               tooltip = paste0(measure, ": ", value_label)),
@@ -119,7 +118,7 @@ attainment_server <- function(input, output, session, data) {
           size = 12,
           color = "#3182bd"
         ) +
-        scale_fill_manual(values = c("white","#3182bd")) +
+        scale_fill_manual(values = c("white", "#3182bd")) +
         coord_polar(theta = "y") +
         theme_void() +
         theme(plot.title = element_text(size = 16, hjust = 0.5)) +
