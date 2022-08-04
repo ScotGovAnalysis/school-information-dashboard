@@ -8,7 +8,7 @@ school_profile_text_output <- function(id) {
 
 }
 
-school_profile_text_server <- function(input, output, session, data) {
+school_profile_text_server <- function(input, output, session, data, school_type) {
   
   output$school_profile <- renderUI({
     
@@ -20,11 +20,11 @@ school_profile_text_server <- function(input, output, session, data) {
       
       h3("Local Authority/Area: ", data()$la_name),
       
-      if(!is.na(data()$denomination)) {
+      if(!is.na(data()$denomination) & school_type != "Special") {
         h3("Denomination: ", data()$denomination)
       },
       
-      if(!is.na(data()$condition)) {
+      if(!is.na(data()$condition) & school_type == "Primary") {
         h3("School condition: ",
            data()$condition,
            ifelse(str_starts(data()$school_name, "All "),

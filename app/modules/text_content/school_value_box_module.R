@@ -17,7 +17,7 @@ school_value_box_output <- function(id, school_type) {
     },
     
     if(school_type %in% c("Secondary", "Special")) {
-      valueBoxOutput(ns("condtion"), width = 4)
+      valueBoxOutput(ns("condition"), width = 4)
     },
     
     if(school_type == "Special") {
@@ -35,8 +35,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Attendance Value Box
   output$attendance <- renderValueBox({
-    valueBox(value = tags$p("Attendance", style = "font-size: 75%;"),
-             subtitle = tags$p(h3(paste(data()$attendance))),
+    valueBox(value = p("Attendance", style = "font-size: 75%;"),
+             subtitle = h3(data()$attendance),
              icon = icon("line-chart"), 
              color = "teal")
   })
@@ -50,8 +50,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Average Class
   output$average_class <- renderValueBox({
-    valueBox(value = tags$p("Average Class Size", style = "font-size: 75%;"),
-             tags$p(h3(data()$average_class)),
+    valueBox(value = p("Average Class Size", style = "font-size: 75%;"),
+             subtitle = h3(data()$average_class),
              icon = icon("user"), 
              color = "teal")
   })
@@ -67,8 +67,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # PE Target
   output$pe <- renderValueBox({
-    valueBox(value = tags$p("Meeting PE Target", style = "font-size: 75%;"),
-             tags$p(h3(data()$pe_target)),
+    valueBox(value = p("Meeting PE Target", style = "font-size: 75%;"),
+             subtitle = h3(data()$pe_target),
              icon = icon("fa-solid fa-bullseye"), 
              color = "teal")
   })
@@ -83,8 +83,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Pupil Numbers
   output$pup_num <- renderValueBox({
-    valueBox(value = tags$p("Pupil Numbers", style = "font-size: 75%;"),
-             tags$p(h3(data()$roll)),
+    valueBox(value = p("Pupil Numbers", style = "font-size: 75%;"),
+             subtitle = h3(data()$roll),
              icon = icon("bar-chart-o"), 
              color = "teal")
   })
@@ -100,8 +100,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Teacher Numbers
   output$teach_num <- renderValueBox({
-    valueBox(value = tags$p("Teacher Numbers", style = "font-size: 75%;"),
-             tags$p(h3(data()$fte_teacher_numbers)),
+    valueBox(value = p("Teacher Numbers", style = "font-size: 75%;"),
+             subtitle = h3(data()$fte_teacher_numbers),
              icon = icon("fa-regular fa-user-graduate"), 
              color = "teal")
   })
@@ -117,8 +117,8 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Pupil Teacher Ratio
   output$ptr <- renderValueBox({
-    valueBox(value = tags$p("Pupil Teacher Ratio", style = "font-size: 75%;"),
-             tags$p(h3(data()$ptr)),
+    valueBox(value = p("Pupil Teacher Ratio", style = "font-size: 75%;"),
+             subtitle = h3(data()$ptr),
              icon = icon("fa-solid fa-chart-pie"), 
              color = "teal")
   })
@@ -134,8 +134,11 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Condition
   output$condition <- renderValueBox({
-    valueBox(value = tags$p("School Condition", style = "font-size: 75%;"),
-             tags$p(h3(data()$condition)),
+    valueBox(value = p("School Condition", style = "font-size: 75%;"),
+             subtitle = h3(paste(data()$condition, 
+                                 ifelse(str_starts(data()$school_name, "All "),
+                                        " in A or B",
+                                        ""))),
              icon = icon("fa-solid fa-chart-pie"), 
              color = "teal")
   })
@@ -151,8 +154,10 @@ school_value_box_server <- function(input, output, session, data) {
   
   # Denomination
   output$denomination <- renderValueBox({
-    valueBox(value = tags$p("Denomination", style = "font-size: 75%;"),
-             tags$p(h3(data()$denomination)),
+    valueBox(value = p("Denomination", style = "font-size: 75%;"),
+             subtitle = h3(ifelse(str_starts(data()$school_name, "All "),
+                                  "z",
+                                  data()$denomination)),
              icon = icon("fa-solid fa-chart-pie"), 
              color = "teal")
   })

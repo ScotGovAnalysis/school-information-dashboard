@@ -93,7 +93,7 @@ ui <-
         dashboard_title_output("title"),
         
         # School Profile Content Box
-        school_profile_output("school_profile"),
+        school_profile_output("school_profile", "Primary"),
           
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes", "Primary")
@@ -151,7 +151,7 @@ server <- function(input, output, session) {
   ## Profile sections ----
   
   # School profile
-  callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ)
+  callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ, "Primary")
   callModule(school_value_box_server, "school_profile_boxes", school_profile_filtered)
   
   # Pupil Profile
