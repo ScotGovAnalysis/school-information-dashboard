@@ -44,17 +44,13 @@ attainment_ui <- function(id, year_options) {
              width = 4),
       
       # Attainment BGE Bar Chart
-      column(
-        # h3("Average curriculum for excellence level achieved", 
-        #         align = "center"),
-             plotlyOutput(ns("bar_chart")), 
+      column(plotlyOutput(ns("bar_chart")), 
              width = 7),
       
+      column(width = 1),
+      
       # Attainment BGE Doughnut Chart
-      column(
-        # h3("Percentage of students meeting curriculum for excellence level",
-        #         align = "center"),
-             girafeOutput(ns("donut_plot")), 
+      column(girafeOutput(ns("donut_plot")), 
              width = 4)
       
     )
@@ -85,6 +81,14 @@ attainment_server <- function(input, output, session, data) {
         )) + 
         geom_col() +
         labs(x = NULL , y = NULL) +
+        scale_x_discrete(labels = c("0" = unique(data()$school_name), 
+                                    "1" = "Virtual Comparator")) +
+        scale_y_continuous(limits = c(0, 4),
+                           labels = c("Not yet early level",
+                                      "Early level",
+                                      "1st level",
+                                      "2nd level",
+                                      "3rd level or better")) + 
         ggtitle("Average curriculum for excellence level achieved"),
       tooltip = "text"
     )
@@ -96,39 +100,45 @@ attainment_server <- function(input, output, session, data) {
     acel_data <-
       data() %>%
       filter(dataset == "acel" & year == input$year &
-               str_starts(measure, input$bge) & stage == input$stage)
+               str_starts(measure, input$bge) & stage == input$stage) %>%
+      mutate(text = paste0(measure, ": ", value_label))
+    
+    plot <- 
+      ggplot(acel_data, aes(y = rev(value), 
+                            fill = measure, 
+                            tooltip = rev(text))) +
+      geom_bar_interactive(
+        aes(x = 1),
+        width = 0.5,
+        stat = "identity",
+        show.legend = FALSE
+      ) +
+      annotate(
+        geom = "text",
+        x = 0,
+        y = 0,
+        label = paste0(
+          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
+            pull(value_label),
+          "%"),
+        size = 12,
+        color = "#3182bd"
+      ) +
+      scale_fill_manual(values = c("white", "#3182bd")) +
+      coord_polar(theta = "y") +
+      theme_void() +
+      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+      ggtitle(str_wrap(
+        "Percentage of students meeting curriculum for excellence level",
+        width = 30))
+    
     girafe(
-      ggobj =
-        ggplot(acel_data, aes(y = rev(value), fill = measure)) +
-        geom_bar_interactive(
-          aes(x = 1,
-              tooltip = paste0(measure, ": ", value_label)),
-          width = 0.5,
-          stat = "identity",
-          show.legend = FALSE
-        ) +
-        annotate(
-          geom = "text",
-          x = 0,
-          y = 0,
-          label = paste0(
-            filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-              pull(value_label),
-            "%"),
-          size = 12,
-          color = "#3182bd"
-        ) +
-        scale_fill_manual(values = c("white", "#3182bd")) +
-        coord_polar(theta = "y") +
-        theme_void() +
-        theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-        ggtitle(str_wrap(
-          "Percentage of students meeting curriculum for excellence level",
-          width = 30)),
+      ggobj = plot,
       width_svg = 5,
-      height_svg = 5
+      height_svg = 5,
+      options = list(opts_toolbar(saveaspng = FALSE))
     )
-
+    
   })
 
 }
