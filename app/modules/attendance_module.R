@@ -1,21 +1,21 @@
 
-attendance_ui <- function(id) {
+attendance_ui <- function(id, school_type) {
   
   # Initiate namespace for module
   ns <- NS(id)
   
   fluidRow(
     
-    section_header_output(ns("attendance_header")),
+    section_header_output(ns("attend_profile")),
     
     box(
       
       title = NULL,
       width = 12,
-      collapsible = FALSE,
+      collapsible = TRUE,
       
       # Dropdown Filter - Attendance Measure
-      column(
+      column(br(),
         width = 10,
         selectInput(ns("measure_filter"), 
                     label = "Select attadance measure",
@@ -27,12 +27,13 @@ attendance_ui <- function(id) {
       ),
         
       column(width = 2, 
-             br(),
+             br(),br(),
              download_data_ui(ns("download"))
       ),
       
       # Attendance Trend Line Chart
-      column(plotlyOutput(ns("trend")), width = 7),
+      column(plotlyOutput(ns("trend")), 
+             width = ifelse(school_type == "Special", 12, 7)),
       
       # Attendance Stage Bar Chart
       column(plotlyOutput(ns("stage")), width = 5)
@@ -45,7 +46,7 @@ attendance_ui <- function(id) {
 
 attendance_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "attendance_header", "Attendance")
+  callModule(section_header_server, "attend_profile", "Attendance")
   
   callModule(download_data_server, "download", "Attendance", data)
   
@@ -68,7 +69,8 @@ attendance_server <- function(input, output, session, data) {
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         labs(x = "Academic Year", y = paste("%",input$measure_filter)),
       tooltip = "text"
-    ) 
+    ) %>%
+      config(displayModeBar = F)
 
   })
   
@@ -82,9 +84,10 @@ attendance_server <- function(input, output, session, data) {
                    text = paste0("Stage: ", stage, "<br>",
                                 input$measure_filter, ": ", value_label))) + 
         geom_col() +
-        labs(x ="Percentage Attendance" , y = "Pupil Stage"),
+        labs(x = paste("%",input$measure_filter) , y = "Pupil Stage"),
       tooltip = "text"
-    )
+    ) %>%
+      config(displayModeBar = F)
     
   })
   
