@@ -18,26 +18,27 @@ sidebar_ui <- function(id, la_names) {
            ".skin-blue .main-sidebar {background-color: #100f3a;}")
     ),
     
+    # Smarter Scotland Logo
+    HTML(paste0("<center>", 
+                img(src = "smarter-scotland.jpg", width = 220),
+                "</center>")),
+    br(),
+    
     # Text instruction to use dropdown filers
-    h2("Select options from the drop downs below", align = "center"),
+    h3("Select options from the drop downs below", align = "left"),
+    br(),
     
     # Dropdown Filter - Local Authority
     school_filter_input(ns("la_school_filter"), la_names),
     
-    # Dropdown Filter - Measure
-    measure_filter_input(ns("measure_filter")),
-    
+
     # Text instruction to click on boxes for further info
-    h3("Click on any box for more information", align = "center"),
+    h3("Click on any title box for more information", align = "left"),
     
-    br(),
-    br(),
-    br(),
+
     
-    # Smarter Scotland Logo
-    HTML(paste0("<center>", 
-                img(src = "smarter-scotland.jpg", width = 200),
-                "</center>"))
+    
+   
     
   )
     
