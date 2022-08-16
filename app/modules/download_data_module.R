@@ -6,7 +6,7 @@ download_data_ui <- function(id) {
     ns("button"), 
     "Download Data",
     style = "color: white; background-color: purple; border-color:purple",
-    width = "49%"
+    width = "100%"
   )
   
 }
