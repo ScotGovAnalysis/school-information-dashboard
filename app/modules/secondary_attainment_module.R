@@ -180,7 +180,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     ggplotly(
       data() %>%
         filter(dataset == "breadth_depth"
-               & minimum_scqf_level == input$minimum_scqf_level
+               & minimum_scqf_level == str_extract(input$minimum_scqf_level, "\\d")
                & minimum_number_of_awards == "1") %>% 
         mutate(comparator = ifelse(comparator=="0","School/Area","VC"),
                minimum_scqf_level = str_c("SCQF level ",minimum_scqf_level, " or better")) %>%
