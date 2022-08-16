@@ -149,7 +149,7 @@ school_value_box_server <- function(input, output, session, data) {
                                  ifelse(str_starts(data()$school_name, "All "),
                                         " in A or B",
                                         ""))),
-             icon = icon("fa-solid fa-chart-pie"), 
+             icon = icon("fa-solid fa-school"), 
              color = "teal")
   })
   
@@ -171,7 +171,7 @@ school_value_box_server <- function(input, output, session, data) {
              subtitle = h3(ifelse(str_starts(data()$school_name, "All "),
                                   "z",
                                   data()$denomination)),
-             icon = icon("fa-solid fa-chart-pie"), 
+             icon = icon("fa-solid fa-users"), 
              color = "teal")
   })
   
