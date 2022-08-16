@@ -43,7 +43,9 @@ faq_server <- function(input, output, session, data) {
   output$table <- 
     renderDataTable(
       data %>% filter(Section == input$section),
-      rownames = FALSE
+      rownames = FALSE,
+      options = list(columnDefs = list(list(targets = '_all', className = 'dt-center'),
+                        list(targets = 0, visible = FALSE)))
     )
-
-}
+  }
+  
