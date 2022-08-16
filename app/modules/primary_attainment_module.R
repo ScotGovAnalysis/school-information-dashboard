@@ -1,5 +1,5 @@
 
-attainment_ui <- function(id, year_options) {
+primary_attainment_ui <- function(id, year_options) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -64,7 +64,7 @@ attainment_ui <- function(id, year_options) {
     
 }
 
-attainment_server <- function(input, output, session, data) {
+primary_attainment_server <- function(input, output, session, data) {
   
   callModule(section_header_server, "attain_profile", "Primary Attainment")
   
