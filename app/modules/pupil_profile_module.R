@@ -6,7 +6,7 @@ pupil_profile_ui <- function(id) {
   
   fluidRow(
     
-    section_header_output(ns("pupil_header")),
+    section_header_output(ns("pupil")),
     
     box(
       
@@ -15,7 +15,7 @@ pupil_profile_ui <- function(id) {
       collapsible = FALSE,
       
       column(width = 10),
-      column(download_data_ui(ns("download")), width = 2),
+      column(br(),download_data_ui(ns("download")), width = 2),
       
       column(plotlyOutput(ns("chart1")), width = 12),
       column(plotlyOutput(ns("chart2")), width = 12)
@@ -28,7 +28,7 @@ pupil_profile_ui <- function(id) {
 
 pupil_profile_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "pupil_header", "Pupil", box_colour = "navy")
+  callModule(section_header_server,  "pupil", "Pupil", box_colour = "navy")
   
   callModule(download_data_server, "download", "Pupil Profile", data)
   
