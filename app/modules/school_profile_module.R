@@ -5,6 +5,7 @@ school_profile_output <- function(id, school_type) {
   ns <- NS(id)
   
   box(
+    
     width = 12,
     collapsible = FALSE,
   
@@ -15,10 +16,14 @@ school_profile_output <- function(id, school_type) {
       map_output(ns("map")),
       br(),
       
-      # Insert buttons for Covid-19 and FAQs
+      # Insert buttons for Covid-19, FAQs and info
       fluidRow(
         covid19_ui(ns("covid19"), school_type),
         faq_ui(ns("faq"))
+      ),
+      br(),
+      fluidRow(
+        important_info_ui(ns("important_info"))
       )
     ),
     
@@ -29,6 +34,7 @@ school_profile_output <- function(id, school_type) {
     )
     
   )
+  
 
 }
 
