@@ -73,9 +73,9 @@ ui <-
     
     # 2 - UI - Sidebar ----
     
-    dashboardSidebar(
+    dashboardSidebar(absolutePanel(top = 20, left = 10,fixed = TRUE, width = 220,
       sidebar_ui("sidebar", unique(school_profile$la_name))
-    ),
+    )),
     
     
     # 2 - UI - Main body ----
@@ -96,8 +96,8 @@ ui <-
       ),
       
       pupil_profile_ui("pupil_profile"),
-      attendance_ui("attendance"),
-      attainment_ui("attainment", unique(attainment$year)),
+      attendance_ui("attendance", "Primary"),
+      primary_attainment_ui("attainment", unique(attainment$year)),
       population_ui("population")
       
     )
@@ -156,7 +156,7 @@ server <- function(input, output, session) {
   callModule(attendance_server, "attendance", attendance_filtered)
   
   # Attainment
-  callModule(attainment_server, "attainment", attainment_filtered)
+  callModule(primary_attainment_server, "attainment", attainment_filtered)
   
   # Population
   callModule(population_server, "population", population_filtered)
