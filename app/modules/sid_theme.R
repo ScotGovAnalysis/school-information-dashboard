@@ -11,6 +11,9 @@
 
 sid_theme <- function() {
   
+  #colour of menu bar and tabs
+
+
   # Use theme_grey as base theme
   ggplot2::theme_grey() +
     
@@ -19,6 +22,8 @@ sid_theme <- function() {
       # Set panel background to blank
       panel.background = ggplot2::element_blank(),
       
+      
+        
       # Grid/axis lines:
       # Removes minor grid lines and vertical (x-axis) grid lines
       # Sets horizontal (y-axis) grid lines to light grey colour
