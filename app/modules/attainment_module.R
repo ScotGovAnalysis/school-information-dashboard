@@ -8,20 +8,20 @@ attainment_ui <- function(id, year_options) {
   
   fluidRow(
     
-    section_header_output(ns("attainment_header")),
+    section_header_output(ns("attain_profile")),
     
     box(
       
       title = NULL,
       width = 12,
       collapsible = TRUE,
-      
+     
       # Dropdown Filter - Attainment Year
-      column(selectInput(ns("year"), 
+      fluidRow(column(selectInput(ns("year"), 
                          label = "Select year",
                          choices = year_options,
                          selected = year_options[max_year]), 
-             width = 4),
+             width = 3),
       
       # Dropdown Filter - Attainment BGE Measure
       column(selectInput(ns("bge"), 
@@ -41,27 +41,34 @@ attainment_ui <- function(id, year_options) {
                                      "P7",
                                      "P1, P4 & P7 combined"),
                          selected = "P4"), 
-             width = 4),
+             width = 3),
+      
+      column(br(),
+             download_data_ui(ns("download")),width = 2),
+             
       
       # Attainment BGE Bar Chart
-      column(plotlyOutput(ns("bar_chart")), 
+      fluidRow(column(br(),plotlyOutput(ns("bar_chart")), 
              width = 7),
       
       column(width = 1),
       
       # Attainment BGE Doughnut Chart
-      column(girafeOutput(ns("donut_plot")), 
-             width = 4)
+      column(br(),girafeOutput(ns("donut_plot")), 
+             width = 4))
       
     )
     
+  )
   )
     
 }
 
 attainment_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "attainment_header", "Attainment")
+  callModule(section_header_server, "attain_profile", "Primary Attainment")
+  
+  callModule(download_data_server, "download", "Attainment Profile", data)
   
   output$bar_chart <- renderPlotly({
     
@@ -91,7 +98,8 @@ attainment_server <- function(input, output, session, data) {
                                       "3rd level or better")) + 
         ggtitle("Average curriculum for excellence level achieved"),
       tooltip = "text"
-    )
+    )%>%
+      config(displayModeBar = F)
     
   })  
 
