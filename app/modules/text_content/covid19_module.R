@@ -97,8 +97,7 @@ covid19_ui <- function(id, school_type) {
   #       a(href = "https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   #     
   # )
-      
-    
+ 
   )
   
 }

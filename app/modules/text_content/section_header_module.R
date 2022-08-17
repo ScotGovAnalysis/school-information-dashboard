@@ -40,12 +40,12 @@ section_header_server <- function(input, output, session, section_name, box_colo
         p("SIMD: The Scottish Index of Multiple Deprivation (SMD) shows where 
     Scotland's most deprived areas are. Deprived does not mean poor or 
     low income. It can also mean people living in those areas have fewer 
-    resources and opportunities. For example in health and eduction. Please note 
+    resources and opportunities. For example in health and education. Please note 
     that not all income deprived people live in deprived areas, and not everyone 
     living in a deprived area is income deprived.
-    This chart shows the areas where children and young people in the scool/area live 
-    (SIMD 1 = most deprived areas, SIMD 2 = least deprived areas). This informaiton 
-    is based on their postcodes.For more information, please see the section 9, 
+    This chart shows the areas where children and young people in the school/area live 
+    (SIMD 1 = most deprived areas, SIMD 2 = least deprived areas). This information 
+    is based on their postcodes. For more information, please see the section 9, 
     question 9.1 in the frequently asked questions"),
         
         p("ASN: This chart shows the percentage of pupils in your chosen school/area 
@@ -53,7 +53,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
     Care must be taken then looking at the number of pupils identified with ASN as 
     the recording of pupils with ASN varies according to local practice and 
     definition. Therefore, comparisons should not be made over time, or between 
-    schools.For more information please see section 9 question 9.2 of the 
+    schools. For more information please see section 9 question 9.2 of the 
     frequently asked questions."),
         
         p("FSM: This chart shows the percentage of pupils in your chosen school/area 
@@ -112,7 +112,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
       by stage (i.e. which year the pupil is in) for your chosen school/area.
       Attendance and absence data is collected from publicly funded schools every 2
       years. The information shown here is for the 2018/19 school year. For more
-      infromation follow this link to the publication: ",
+      information follow this link to the publication: ",
         a("Schools Summary Statistics Link",
           href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland")
       ),
@@ -166,7 +166,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
      data was first published on ParentZone or on this dashboard. There may have been changes to the
      data for previous years which will be reflected in Insight itself but not in any of the published information."),
         p("Only the latest and best awards in each subject are counted. For example if someone has a
-    ational 5 and a Higher in Mathematics, it is only the Higher that will contribute to this measure. Schools
+    national 5 and a Higher in Mathematics, it is only the Higher that will contribute to this measure. Schools
     that offer young people a curriculum based on a range of leaver destinations may have young people
     who sit fewer qualifications but who are better prepared, with more appropriate skills and experiences
     for the world of work."),
@@ -207,6 +207,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
       )
     
   )
+  
   
   # When user clicks value box, display pop up with information text
   onclick(

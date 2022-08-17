@@ -4,7 +4,7 @@ important_info_ui <- function(id) {
   
   tagList(
     
-    # Covid-19 Button
+    # Important information Button
     actionButton(
       ns("button"), 
       "Important Information", 
@@ -26,7 +26,7 @@ important_info_ui <- function(id) {
         p(h3("Where data is not shown the following codes are used to symbolise
                the reason:")),
         p("c = The data is confidential and has been suppressed to ensure 
-               the identity of indivudals is not disclosed"),
+               the identity of individuals is not disclosed"),
         p("z = This value does not apply to this school/area"),
         p("x = This data was not available at the time of publishing"),
         p("w = No data was recorded"),
@@ -86,7 +86,7 @@ important_info_ui <- function(id) {
           'the exemptions' or 'the non-compliances and exemptions']"),
         
         p("We know some parts of this website are not fully accessible. The content listed below is non-accessible for the following reasons."),
-        p("interactive charts are not accessibile to those using a screen reader. We have however made the data dowloadable
+        p("interactive charts are not accessible to those using a screen reader. We have however made the data downloadable
             in an excel format for this purpose"),
         p("you cannot modify the line height or spacing of text"),
         br(),
@@ -103,7 +103,7 @@ important_info_ui <- function(id) {
         p("call [phone number]"),
         p("[add any other contact details]"),
         p("We aim to get back to you in 7 days.")
-
+        
       ))
       
     )
