@@ -310,7 +310,14 @@ school_profile <-
   left_join(attendance, by = c("seed_code", "school_type")) %>%
   
   # Join healthy living survey data
-  left_join(healthy_living, by = c("seed_code", "school_type"))
+  left_join(healthy_living, by = c("seed_code", "school_type")) %>%
+  
+  # Sort data to order want LA/schools to appear in app filters
+  # First by LA code (Scotland is 0 so will appear first)
+  # Second by length of seed code (All publicly funded schools to appear 
+  #    before individual schools)
+  # Third by school name in alphabetical order
+  arrange(as.numeric(la_code), nchar(seed_code), school_name)
 
 
 ### 7 - Save data files ----
