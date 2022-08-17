@@ -1,42 +1,30 @@
 
 ### 0 - Set up ----
 
-source(here::here("app", "00_shiny_setup.R"))
+source("00_shiny_setup.R")
 
 
 ### 1 - Load data files ----
 
 school_profile <- read_rds(
-  here("output", shiny_run_label, "primary_school_profile.rds")
+  paste0("primary_data/", shiny_run_label, "/primary_school_profile.rds")
 ) %>%
-  arrange(as.numeric(la_code), nchar(seed_code), school_name) %>%
-  mutate(across(c(roll, fte_teacher_numbers), ~ prettyNum(., big.mark = ","))) %>%
+  # TEMP - This can be removed when lat and long added to school profile data
   left_join(
     read_rds(here("map", "lat_long_data_schools.rds")) %>%
       select(seed_code, lng, lat)
   )
 
 attendance <- read_rds(
-  here("output", shiny_run_label, "primary_attendance.rds")
-) %>%
-  mutate(value_label = prettyNum(value_label, big.mark = ","))
+  paste0("primary_data/", shiny_run_label, "/primary_attendance.rds")
+)
 
 population <- read_rds(
-  here("output", shiny_run_label, "primary_population.rds")
-) %>%
-  mutate(measure = factor(
-    measure,
-    c("Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio",
-      "Average Class", "Female", "Male", paste0("P", 1:7), 
-      paste0("SIMD Q", 1:5), "SIMD Unknown", 
-      "ASN", "No ASN", "FSM", "No FSM", "EAL", "No EAL", 
-      "White UK", "White Other", "Ethnic Minority", "Ethnicity Not Known",
-      "Taught in Gaelic", "Not Taught in Gaelic",
-      "Urban", "Small Town", "Rural", "Urban Rural Not Known")
-  ))
+  paste0("primary_data/", shiny_run_label, "/primary_population.rds")
+) 
       
 attainment <- read_rds(
-  here("output", shiny_run_label, "primary_attainment.rds")
+  paste0("primary_data/", shiny_run_label, "/primary_attainment.rds")
 )
 
 FAQ <- 
