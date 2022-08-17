@@ -21,7 +21,9 @@ source(here::here("code", "00_setup.R"))
 ## Read in school lookup containing definitive list of schools to be 
 ## included and their correct names.
 
-school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
+school_lookup <- read_rds(
+  here("data", "school_lookup", paste0(run_label, "_school_lookup.rds"))
+)
 
 
 ### 1 - Insight data ----
@@ -107,7 +109,19 @@ bge <-
                values_to = "value") %>%
   mutate(
     comparator = ifelse(comparator == "actual", "0", "1")
-  )
+  ) %>%
+  
+  # Subtract 1 from BGE values
+  mutate(
+    value_numeric = ifelse(!value %in% c("z", "x", "c"),
+                           value,
+                           NA_character_),
+    value_numeric = as.numeric(value_numeric) - 1,
+    value = ifelse(!value %in% c("z", "x", "c"),
+                   value_numeric,
+                   value)
+  ) %>%
+  select(-value_numeric)
 
 
 ### 4 - Join data, filter schools and update school names ----
