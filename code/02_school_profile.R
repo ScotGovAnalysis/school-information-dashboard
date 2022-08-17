@@ -21,7 +21,9 @@ source(here::here("code", "00_setup.R"))
 ## Read in school lookup containing definitive list of schools to be 
 ## included and their correct names.
 
-school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
+school_lookup <- read_rds(
+  here("data", "school_lookup", paste0(run_label, "_school_lookup.rds"))
+)
 
 
 ### 1 - School Contact Data ----
@@ -267,9 +269,9 @@ summary <-
   # Round figures to whole number
   mutate(
     across(c(roll, fte_teacher_numbers),
-           ~ . %>% as.numeric() %>% round_half_up(0) %>% as.character()),
+           ~ recode_missing_values(., label = TRUE, label_digits = 0)),
     across(c(ptr, average_class),
-           ~ . %>% as.numeric() %>% round_half_up(1) %>% as.character())
+           ~ recode_missing_values(., label = TRUE, label_digits = 1)),
   )
 
 
@@ -285,16 +287,9 @@ attendance <-
                             seed_code)) %>%
   select(seed_code, school_type, attendance) %>%
   
-  # Check coding of missing/suppressed values is correct and round values
-  # to one decimal place
-  mutate(
-    attendance_label = recode_missing_values(attendance, label = TRUE),
-    attendance_value = recode_missing_values(attendance),
-    attendance = ifelse(is.na(attendance_value), 
-                        attendance_label, 
-                        paste0(round_half_up(attendance_value, 1), "%"))
-  ) %>%
-  select(-matches("^attendance_(label|value)$"))
+  # Recode missing/suppressed values and format (1dp, %)
+  mutate(attendance = 
+           recode_missing_values(attendance, label = TRUE, label_perc = TRUE))
 
 
 ### 6 - Join data together into full school_profile dataset ----
@@ -326,14 +321,14 @@ primary_school_profile <- school_profile %>% filter(school_type == "Primary")
 
 write_rds(
   primary_school_profile,
-  here("output", run_label, "primary_school_profile.rds"),
+  here("app", "primary_data", run_label, "primary_school_profile.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   primary_school_profile,
-  here("output", run_label, "primary_school_profile.xlsx")
+  here("app", "primary_data", run_label, "primary_school_profile.xlsx")
 )
 
 
@@ -347,14 +342,14 @@ secondary_school_profile <-
 
 write_rds(
   secondary_school_profile,
-  here("output", run_label, "secondary_school_profile.rds"),
+  here("app", "secondary_data", run_label, "secondary_school_profile.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   secondary_school_profile,
-  here("output", run_label, "secondary_school_profile.xlsx")
+  here("app", "secondary_data", run_label, "secondary_school_profile.xlsx")
 )
 
 
@@ -368,14 +363,14 @@ special_school_profile <-
 
 write_rds(
   special_school_profile,
-  here("output", run_label, "special_school_profile.rds"),
+  here("app", "special_data", run_label, "special_school_profile.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   special_school_profile,
-  here("output", run_label, "special_school_profile.xlsx")
+  here("app", "special_data", run_label, "special_school_profile.xlsx")
 )
             
 

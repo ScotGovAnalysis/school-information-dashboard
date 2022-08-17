@@ -122,7 +122,7 @@ school_lookup %<>%
 # Save file
 write_rds(
   school_lookup,
-  here("output", run_label, "school_lookup.rds"),
+  here("data", "school_lookup", paste0(run_label, "_school_lookup.rds")),
   compress = "gz"
 )
 
