@@ -3,9 +3,9 @@
 .RData
 .Ruserdata
 
-# 'data' and 'output' folders #
+# data folders #
 data/
-output/
+app/*_data/
 
 # Common text files that may contain data #
 *.[cC][sS][vV]

@@ -34,9 +34,18 @@ school_lookup <- read_rds(
 insight_datasets <- c("attainment_by_deprivation", "attainment_for_all", 
                       "breadth_depth", "destinations", "literacy_numeracy")
 
-insight <- pmap_dfr(expand.grid(insight_datasets, year_insight), 
-                    ~ import_insight_data(.x, .y))
-
+insight <- 
+  
+  pmap_dfr(expand.grid(insight_datasets, year_insight), 
+                    ~ import_insight_data(.x, .y)) %>%
+  
+  # Recode missing values and add value label
+  mutate(
+    number_of_leavers = recode_missing_values(number_of_leavers),
+    value_label = recode_missing_values(value, label = TRUE),
+    value = recode_missing_values(value)
+  )
+  
 
 ### 2 - ACEL data ----
 
@@ -68,7 +77,27 @@ acel <-
     dataset = "acel",
     year = format_year(year, academic = TRUE)
   ) %>%
-  select(-variable)
+  select(-variable) %>%
+  
+  # Recode missing values and add value label
+  mutate(
+    value_label = recode_missing_values(value, label = TRUE, label_perc = TRUE),
+    value = recode_missing_values(value)
+  ) %>%
+  
+  # Apply percentage bandings school level data
+  mutate(
+    value_label = case_when(
+      nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") ~
+        percentage_band(value),
+      TRUE ~ value_label
+    ),
+    value = case_when(
+      nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") ~
+        percentage_band(value, numeric = TRUE),
+      TRUE ~ value
+    )
+  )
 
 
 ### 3 - BGE data ----
@@ -108,20 +137,20 @@ bge <-
                names_to = "comparator",
                values_to = "value") %>%
   mutate(
-    comparator = ifelse(comparator == "actual", "0", "1")
+    comparator = ifelse(comparator == "actual", "0", "1"),
+    value_label = recode_missing_values(value, label = TRUE),
+    value = recode_missing_values(value)
   ) %>%
   
-  # Subtract 1 from BGE values
+  # Subtract 1 from values
   mutate(
-    value_numeric = ifelse(!value %in% c("z", "x", "c"),
-                           value,
-                           NA_character_),
-    value_numeric = as.numeric(value_numeric) - 1,
-    value = ifelse(!value %in% c("z", "x", "c"),
-                   value_numeric,
-                   value)
-  ) %>%
-  select(-value_numeric)
+    value = ifelse(!value_label %in% c("z", "x", "c"),
+                   value - 1,
+                   value),
+    value_label = ifelse(!value_label %in% c("z", "x", "c"),
+                         recode_missing_values(value, label = TRUE),
+                         value_label)
+  )
 
 
 ### 4 - Join data, filter schools and update school names ----
@@ -131,12 +160,12 @@ attainment <-
   # Combine Insight, ACEL and BGE data into one dataset
   bind_rows(insight, acel, bge) %>%
   
-  # Recode missing / suppressed values; this will create both a numeric value 
-  # column with all missing/suppressed values coded as NA and a character value 
-  # column with all missing/suppressed values coded as z/x/c
-  mutate(number_of_leavers = recode_missing_values(number_of_leavers),
-         value_label = recode_missing_values(value, label = TRUE),
-         value = recode_missing_values(value)) %>%
+  # # Recode missing / suppressed values; this will create both a numeric value 
+  # # column with all missing/suppressed values coded as NA and a character value 
+  # # column with all missing/suppressed values coded as z/x/c
+  # mutate(number_of_leavers = recode_missing_values(number_of_leavers),
+  #        value_label = recode_missing_values(value, label = TRUE),
+  #        value = recode_missing_values(value)) %>%
   
   # Filter school list and recode names using school_lookup
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
@@ -159,14 +188,14 @@ primary_attainment <-
 
 write_rds(
   primary_attainment,
-  here("output", run_label, "primary_attainment.rds"),
+  here("app", "primary_data", run_label, "primary_attainment.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   primary_attainment,
-  here("output", run_label, "primary_attainment.xlsx")
+  here("app", "primary_data", run_label, "primary_attainment.xlsx")
 )
 
 
@@ -176,14 +205,14 @@ secondary_attainment <- attainment %>% filter(school_type == "Secondary")
 
 write_rds(
   secondary_attainment,
-  here("output", run_label, "secondary_attainment.rds"),
+  here("app", "secondary_data", run_label, "secondary_attainment.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   secondary_attainment,
-  here("output", run_label, "secondary_attainment.xlsx")
+  here("app", "secondary_data", run_label, "secondary_attainment.xlsx")
 )
 
 
