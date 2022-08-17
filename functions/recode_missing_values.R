@@ -25,7 +25,7 @@
 #' recode_missing_values(c("29", NA, "z", "*", 2003))
 #' recode_missing_values(c("29", NA, "z", "*", 2003), label = TRUE)
 
-recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
+recode_missing_values <- function(x, label = FALSE, label_digits = 1, label_perc = FALSE) {
   
   # Define how values are categorised
   not_applicable <- c("NA", "#", "Z", "z")
@@ -60,7 +60,9 @@ recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
         ),
         
         # Merge missing/suppressed codes with values
-        value_label = ifelse(is.na(recode), as.character(round_value), recode)
+        value_label = ifelse(is.na(recode), 
+                             paste0(round_value, ifelse(label_perc, "%", "")), 
+                             recode)
       ) %>%
       
       # Extract value_label column as vector
