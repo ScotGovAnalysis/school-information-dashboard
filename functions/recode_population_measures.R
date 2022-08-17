@@ -3,6 +3,8 @@
 #' @param measure Character vector of measure names
 #' @param category Logical; if `TRUE`, function will recode measures into
 #' categories.
+#' @param measure_factor Logical; only used when `category = FALSE`. If `TRUE`, 
+#' return value will be a factor, if `FALSE`, a character vector.
 #'
 #' @return Default behaviour is to return a character vector of measures recoded
 #' into 'clean' readable format; e.g. 'ptr' is recoded to 'Pupil Teacher Ratio'.
@@ -17,7 +19,7 @@
 #' recode_population_measures("gaelic")
 
 
-recode_population_measures <- function(measure, category = FALSE) {
+recode_population_measures <- function(measure, category = FALSE, measure_factor = TRUE) {
 
   recode_category <- case_when(
     measure %in% c("roll", "fte_teacher_numbers", "ptr", "average_class") ~ 
@@ -67,7 +69,7 @@ recode_population_measures <- function(measure, category = FALSE) {
              .default = "unmatched"
       )
   )
-    
+  
   # Check that all measures have been categorised and recoded
   # If not, then the function will stop and an error message will be printed
   # If this happens, it's likely that some column names in one of the
@@ -77,6 +79,21 @@ recode_population_measures <- function(measure, category = FALSE) {
       c("At least one measure has not been categorised and/or recoded.",
         i = paste("This has likely been caused by unexpected column names in",
                   "the school_summary_statistics data."))
+    )
+  }
+  
+  # Convert measure to factor to control sort order
+  if(measure_factor) {
+    recode_measure <- factor(
+      recode_measure,
+      c("Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio",
+        "Average Class", "Female", "Male", 
+        paste0("P", 1:7), paste0("S", 1:6), "0-8", "9-12", "13-15", "16+",
+        paste0("SIMD Q", 1:5), "SIMD Unknown", 
+        "ASN", "No ASN", "FSM", "No FSM", "EAL", "No EAL", 
+        "White UK", "White Other", "Ethnic Minority", "Ethnicity Not Known",
+        "Taught in Gaelic", "Not Taught in Gaelic",
+        "Urban", "Small Town", "Rural", "Urban Rural Not Known")
     )
   }
   
