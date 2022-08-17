@@ -75,7 +75,7 @@ recode_missing_values <- function(x, label = FALSE, label_digits = 1, label_perc
     as.numeric(
       replace(x, 
               x %in% c(not_applicable, not_available, suppressed) | is.na(x), 
-              NA)
+              0)
     )
     
   }
