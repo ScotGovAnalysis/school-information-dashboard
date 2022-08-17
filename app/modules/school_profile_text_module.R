@@ -4,7 +4,7 @@ school_profile_text_output <- function(id) {
   # Initiate namespace for module
   ns <- NS(id)
   
-  uiOutput(ns("school_profile"))
+  withSpinner(uiOutput(ns("school_profile")))
 
 }
 

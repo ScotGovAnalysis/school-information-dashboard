@@ -1,5 +1,5 @@
 
-pupil_profile_ui <- function(id) {
+pupil_profile_ui <- function(id, school_type) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -17,11 +17,16 @@ pupil_profile_ui <- function(id) {
       column(width = 10),
       column(br(),download_data_ui(ns("download")), width = 2),
       
-      column(plotlyOutput(ns("chart1")), width = 12),
-      column(plotlyOutput(ns("chart2")), width = 12)
+      column(withSpinner(plotlyOutput(ns("chart1"))), width = 12),
+      column(if(school_type != "Special")
+        {withSpinner(plotlyOutput(ns("chart2")))}
+        else{withSpinner(plotlyOutput(ns("chart2_special")))}
+        , width = 12)
       
     )
     
+    
+  
   )
   
 }
@@ -54,7 +59,10 @@ pupil_profile_server <- function(input, output, session, data) {
               axis.line.y = element_blank()),
       tooltip = "text"
     ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
@@ -81,7 +89,40 @@ pupil_profile_server <- function(input, output, session, data) {
               axis.line.y = element_blank()),
       tooltip = "text"
     ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
+    
+  })
+  
+  
+  output$chart2_special <- renderPlotly({
+    
+    ggplotly(
+      data() %>%
+        filter(measure_category %in% 
+                 c("english_additional_language", "ethnicity", 
+                   "urban_rural")) %>%
+        ggplot() + 
+        geom_col(aes(measure, 
+                     value, 
+                     text = paste0("Measure: ", measure, "<br>",
+                                   "% of Pupils: ", value_label))) +
+        geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
+                  hjust = 0.5, nudge_y = 5) +
+        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+        labs(x = NULL , y = NULL) +
+        theme(axis.text.y = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.line.y = element_blank()),
+      tooltip = "text"
+    ) %>%
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   

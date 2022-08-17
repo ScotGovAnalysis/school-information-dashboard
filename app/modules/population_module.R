@@ -32,7 +32,7 @@ population_ui <- function(id) {
              download_data_ui(ns("download")), width = 2),
       
       # Population Trend Line Chart
-      fluidRow(column(br(),plotlyOutput(ns("trend")),width = 12)
+      fluidRow(column(br(),withSpinner(plotlyOutput(ns("trend"))),width = 12)
                               ))
     
   )
@@ -59,7 +59,10 @@ population_server <- function(input, output, session, data) {
         labs(x = "Year", y = input$measure_filter),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   

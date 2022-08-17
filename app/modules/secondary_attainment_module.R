@@ -58,12 +58,12 @@ secondary_attainment_ui <- function(id, year_options) {
             fluidRow(column(h3("Percentage of students meeting
               curriculum for excellence
               level"), width = 12)),
-            fluidRow(column(br(),
-                            girafeOutput(ns("donut_reading")),width = 6),
-                    column(br(),girafeOutput(ns("donut_writing")),width = 6)),
+            fluidRow(column(br(),withSpinner(
+                            girafeOutput(ns("donut_reading"))),width = 6),
+                    column(br(),withSpinner(girafeOutput(ns("donut_writing"))),width = 6)),
             
-            fluidRow(column(girafeOutput(ns("donut_listening")),width = 6),
-                    column(girafeOutput(ns("donut_numeracy")),width = 6))), 
+            fluidRow(column(withSpinner(girafeOutput(ns("donut_listening"))),width = 6),
+                    column(withSpinner(girafeOutput(ns("donut_numeracy"))),width = 6))), 
                  
         
                  
@@ -87,7 +87,7 @@ secondary_attainment_ui <- function(id, year_options) {
               br(),
               
               # Attainment BGE Bar Chart
-              column(plotlyOutput(ns("breadth_depth")), 
+              column(withSpinner(plotlyOutput(ns("breadth_depth"))), 
                               width = 12)       
               
               ),
@@ -99,11 +99,11 @@ secondary_attainment_ui <- function(id, year_options) {
               #Title
               column(h3("Percentage of school leavers gaining SCQF credited awards"), width = 12),
               # Attainment breadth and depth tables         
-              dataTableOutput(ns("breadth_depth_table")),width = 6,
+              withSpinner(dataTableOutput(ns("breadth_depth_table"))),width = 6,
               br(),
               h3("Percentage of school leavers gaining SCQF credited awards (virtual comparator)"),
-              dataTableOutput(ns("breadth_depth_vc_table")),width = 6
-                       
+              withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),width = 6,
+              
               ),
               
               
@@ -115,11 +115,11 @@ secondary_attainment_ui <- function(id, year_options) {
               column("",width = 9),
               
               # Attainment leavers destination chart
-              column(br(),plotlyOutput(ns("leavers_dest_chart")), 
+              column(br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
                               width = 12),
                        
                        # Attainment leavers total tariff chart
-                       column(br(),plotlyOutput(ns("leavers_tariff_chart")), 
+                       column(br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
                                width = 12)),
               
               
@@ -133,10 +133,10 @@ secondary_attainment_ui <- function(id, year_options) {
               column("",width = 9),    
              
               # Attainment leavers deprivation chart
-             column(br(),plotlyOutput(ns("leavers_deprivation_chart")),width = 6,),
+             column(br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
                        
                        # Attainment leavers SIMD chart
-             column(br(),plotlyOutput(ns("leavers_simd_chart")), width = 6)
+             column(br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
              ),
              
                                        
@@ -148,14 +148,14 @@ secondary_attainment_ui <- function(id, year_options) {
      
       
                       # Attainment literacy and numeracy chart
-                      column(plotlyOutput(ns("lit_num")), 
+                      column(withSpinner(plotlyOutput(ns("lit_num"))), 
                                       width = 12),
                                
                       # Attainment literacy chart
-                      column(plotlyOutput(ns("literacy")),
+                      column(withSpinner(plotlyOutput(ns("literacy"))),
                                       width = 6),
                       # Attainment numeracy chart          
-                      column(plotlyOutput(ns("numeracy")),
+                      column(withSpinner(plotlyOutput(ns("numeracy"))),
                                       width = 6)
       
       )
@@ -201,7 +201,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         labs(x = "Academic Year", y = "% of Leavers", fill = NULL),
       tooltip = "text"
     ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
@@ -220,7 +223,7 @@ secondary_attainment_server <- function(input, output, session, data) {
                minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
         pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
         rownames = FALSE,
-        options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center'),
+        options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
                                          list(targets = c(0,1,2,3), visible = FALSE)))
         
     
@@ -239,14 +242,13 @@ secondary_attainment_server <- function(input, output, session, data) {
              minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
       pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
     rownames = FALSE,
-    options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center'),
+    options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
                                      list(targets = c(0,1,2,3), visible = FALSE)))
     
      
   )
   
   
-    
   
   #Doughnut charts
   
@@ -476,7 +478,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         ggtitle("Percentage of leavers in a positive destination"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
 
   })
 
@@ -510,7 +515,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         ggtitle("School leavers' average total tariff score"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
@@ -548,7 +556,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         ggtitle("School leavers' attainment by SIMD"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar =F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
@@ -587,7 +598,10 @@ secondary_attainment_server <- function(input, output, session, data) {
                  ggtitle("School leavers' by SIMD"),
                tooltip = "text"
         )%>%
-        config(displayModeBar = F)
+        config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
       
   })
   
@@ -621,7 +635,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         ggtitle("Percentage of School Leavers' Achiveving Literacy and Numeracy"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
@@ -655,7 +672,10 @@ secondary_attainment_server <- function(input, output, session, data) {
          ggtitle("Percentage of School Leavers' Achiveving Literacy"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   }) 
   
@@ -689,7 +709,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         ggtitle("Percentage of School Leavers' Achiveving Numeracy"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   
