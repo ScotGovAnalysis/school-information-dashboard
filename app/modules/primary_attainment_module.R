@@ -128,10 +128,9 @@ primary_attainment_server <- function(input, output, session, data) {
         geom = "text",
         x = 0,
         y = 0,
-        label = paste0(
+        label = 
           filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
             pull(value_label),
-          "%"),
         size = 12,
         color = "#3182bd"
       ) +
