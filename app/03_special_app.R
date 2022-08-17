@@ -1,6 +1,6 @@
 
 ### 0 - Set up ----
-
+# Call in the set up module
 source(here::here("app", "00_shiny_setup.R"))
 
 
@@ -40,8 +40,10 @@ FAQ <-
   read_excel(here("lookups", "FAQ.xlsx")) %>%
   select(Section, Question, Notes)
 
-# Set app language 
-# tags$script(HTML("<script html lang= en ></script>"))
+#set language
+
+# tags$lang="en"
+
 
 
 ### 2 - UI ----
@@ -53,9 +55,11 @@ ui <-
 
   dashboardPage(
     
+    
     # 2 - UI - Dashboard Title and Header ----
     
     title = "Special School Information Dashboard",
+    
     
     skin = "blue",
                     
@@ -92,7 +96,7 @@ ui <-
         
       ),
       
-      pupil_profile_ui("pupil_profile"),
+      pupil_profile_ui("pupil_profile", "Special"),
       attendance_ui("attendance", "Special"),
       population_ui("population")
       
@@ -104,6 +108,7 @@ ui <-
 ### 3 - Server ----
 
 server <- function(input, output, session) {
+  
     
   # Introduction Popup ----
   callModule(introduction_server, "introduction")

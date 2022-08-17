@@ -52,23 +52,35 @@ FAQ <-
 ## The UI is the main body of app - it controls mostly what the app looks and 
 ## functions like when interacting with it.
 
+
+## Window title
+
+
+
 ui <- 
+
+
+  
 
   dashboardPage(
     
+   
     # 2 - UI - Dashboard Title and Header ----
     
     title = "Secondary School Information Dashboard",
     
+   
     skin = "blue",
                     
     dashboardHeader(
-      
+     
       title = h1("Secondary School Information Dashboard"), 
       titleWidth = NULL, 
       disable = TRUE
       
     ),
+    
+    
           
     
     # 2 - UI - Sidebar ----
@@ -95,7 +107,7 @@ ui <-
         
       ),
       
-      pupil_profile_ui("pupil_profile"),
+      pupil_profile_ui("pupil_profile", "Secondary"),
       attendance_ui("attendance", "Secondary"),
       population_ui("population"),
       secondary_attainment_ui("attainment", unique(attainment$year))

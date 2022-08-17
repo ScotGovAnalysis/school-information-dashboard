@@ -1,4 +1,5 @@
 
+
 # Load packages
 
 library(shiny)
@@ -18,6 +19,7 @@ library(ggiraph)
 library(ggrepel)
 library(purrr)
 library(stringr)
+library(shinycssloaders)
 
 
 # Turn off scientific notation format
@@ -42,6 +44,8 @@ walk(list.files(here("app", "modules", "text_content"), full.names = TRUE), sour
 theme_set(sid_theme())
 update_geom_defaults("line", list(colour = "#3182bd", size = 1))
 update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
+
+
 
 
 ### END OF SCRIPT ###

@@ -20,12 +20,12 @@ sidebar_ui <- function(id, la_names) {
     
     # Smarter Scotland Logo
     HTML(paste0("<center>", 
-                img(src = "smarter-scotland.jpg", width = 220),
+                img(src = "smarter-scotland.jpg", width = 220, alt = "Smarter Scotland logo"),
                 "</center>")),
     br(),
     
     # Text instruction to use dropdown filers
-    h3("Select options from the drop downs below", align = "left"),
+    h2("Select options from the drop downs below", align = "left"),
     br(),
     
     # Dropdown Filter - Local Authority

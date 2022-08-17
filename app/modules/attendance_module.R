@@ -18,7 +18,7 @@ attendance_ui <- function(id, school_type) {
       column(br(),
         width = 10,
         selectInput(ns("measure_filter"), 
-                    label = "Select attadance measure",
+                    label = "Select attendance measure",
                     choices = c("Attendance", 
                                 "Authorised Absence",
                                 "Unauthorised Absence",
@@ -32,11 +32,13 @@ attendance_ui <- function(id, school_type) {
       ),
       
       # Attendance Trend Line Chart
-      column(plotlyOutput(ns("trend")), 
+      column(withSpinner(plotlyOutput(ns("trend"))), 
              width = ifelse(school_type == "Special", 12, 7)),
       
       # Attendance Stage Bar Chart
-      column(plotlyOutput(ns("stage")), width = 5)
+      column(if(school_type != "Special") {
+          withSpinner(plotlyOutput(ns("stage")))},
+          width = 5)
       
     )
     
@@ -70,7 +72,10 @@ attendance_server <- function(input, output, session, data) {
         labs(x = "Academic Year", y = paste("%",input$measure_filter)),
       tooltip = "text"
     ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
 
   })
   
@@ -87,7 +92,10 @@ attendance_server <- function(input, output, session, data) {
         labs(x = paste("%",input$measure_filter) , y = "Pupil Stage"),
       tooltip = "text"
     ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })
   

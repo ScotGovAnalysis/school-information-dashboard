@@ -71,11 +71,11 @@ important_info_ui <- function(id) {
         br(),
         p("This website is run by the Scottish Government. We want as many people as
                 possible to be able to use this website. For example, that means you should be able to:"),
-        p("navigate most of the website using just a keyboard"),
-        p("navigate most of the website using speech recognition software"),
-        p("listen to most of the website using a screen reader "),
-        p("interactive charts have been combined with a data download button to enable interaction with the data"),
-        p("we've also made the website text as simple as possible to understand."),
+        p("- navigate most of the website using just a keyboard"),
+        p("- navigate most of the website using speech recognition software"),
+        p("- listen to most of the website using a screen reader "),
+        p("- interactive charts have been combined with a data download button to enable interaction with the data"),
+        p("- we've also made the website text as simple as possible to understand."),
         br(),
         
         
@@ -92,16 +92,14 @@ important_info_ui <- function(id) {
         br(),
         p("This statement was prepared on [date when it was first published]. It was
           last reviewed on [date when it was last reviewed]."),
-        p("This website was last tested on [date]. The test was carried out by
-            [add name of organisation that carried out test, or indicate that you did your own testing]."),
-        p("We used this approach to deciding on a sample of pages to test [add
-            link to explanation of how you decided which pages to test]."),
+        p("This website was last tested on [date]. The test was carried out by the digital accessibility team at the Scottish Governemnt"),
+        
         br(),
         p("Feedback and contact information"),
         p("Please contact us at:"),
-        p("email [email address]"),
-        p("call [phone number]"),
-        p("[add any other contact details]"),
+        p("email:", 
+          a("ceu@gov.scot", 
+            href="mailto:ceu@gov.scot")),
         p("We aim to get back to you in 7 days.")
         
       ))

@@ -48,13 +48,13 @@ primary_attainment_ui <- function(id, year_options) {
              
       
       # Attainment BGE Bar Chart
-      fluidRow(column(br(),plotlyOutput(ns("bar_chart")), 
+      fluidRow(column(br(),withSpinner(plotlyOutput(ns("bar_chart"))), 
              width = 7),
       
       column(width = 1),
       
       # Attainment BGE Doughnut Chart
-      column(br(),girafeOutput(ns("donut_plot")), 
+      column(br(),withSpinner(girafeOutput(ns("donut_plot"))), 
              width = 4))
       
     )
@@ -99,7 +99,10 @@ primary_attainment_server <- function(input, output, session, data) {
         ggtitle("Average curriculum for excellence level achieved"),
       tooltip = "text"
     )%>%
-      config(displayModeBar = F)
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
     
   })  
 

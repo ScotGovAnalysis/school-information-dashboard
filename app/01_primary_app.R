@@ -95,7 +95,7 @@ ui <-
         
       ),
       
-      pupil_profile_ui("pupil_profile"),
+      pupil_profile_ui("pupil_profile", "Primary"),
       attendance_ui("attendance", "Primary"),
       primary_attainment_ui("attainment", unique(attainment$year)),
       population_ui("population")

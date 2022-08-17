@@ -24,7 +24,7 @@ covid19_ui <- function(id, school_type) {
           p("S3 Attainment in literacy and numeracy statistics - Impact on data collection for 2019/20 and 2020/21:"),
           p("The Scottish Government did not collect Achievement of CfE Levels data for S3 pupils.
                 More detail is available by following this link to ACEL publication:",
-            a(href="https://www.gov.scot/publications/scottish-exchange-of-data-achievement-of-curriculum-for-excellence-levels")),
+            a("ACEL publication", href="https://www.gov.scot/publications/scottish-exchange-of-data-achievement-of-curriculum-for-excellence-levels")),
           p("School leavers attainment statistics:"),
           p("The cancellation of exams and external assessment of coursework in 2020, and the use of the
               Alternative Certification Model in 2021, will have affected the attainment of many 2020/21 school leavers.
@@ -33,7 +33,7 @@ covid19_ui <- function(id, school_type) {
               the 2019/20 cohort and those of previous years should not be seen as an indication that performance has
               improved or worsened, without further evidence. More detail is available in the publication which can be
               found using this link:",
-            a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/")),
+            a("School summary statistics publication", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/")),
           p("School leavers destinations statistics:"),
           p("Destinations figures reflect both choices made by pupils, and the opportunities available to them upon
                 leaving school. For 2019/20 school leavers the start dates for some opportunities were delayed, leading
@@ -43,7 +43,7 @@ covid19_ui <- function(id, school_type) {
                 leavers in 2020/21. The impact of the pandemic on school leaver destinations should be kept in mind when
                 making comparisons between 2020/21 and 2019/20, and when comparing with earlier years. More detail is
                 available in the publication which can be accessed using this link:",
-            a(href = "https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+            a("School leavers destinations", href = "https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
           
         ))
         
