@@ -99,9 +99,9 @@ walk(
   ~ if(!file.exists(.x)) dir.create(.x)
 )
 
-# Create data subfolder for school_lookup
-if(!file.exists(here("data", "school_lookup"))) {
-  dir.create(here("data", "school_lookup"))
+# Create lookups folder for school_lookup
+if(!file.exists(here("lookups", "school_lookup"))) {
+  dir.create(here("lookups", "school_lookup"))
 }
 
 

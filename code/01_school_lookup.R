@@ -109,7 +109,11 @@ school_lookup %<>%
       group_by(school_type, la_code, la_name) %>%
       summarise(seed_code = first(la_code),
                 school_name = "All publicly funded schools",
-                .groups = "drop"),
+                n = n(),
+                .groups = "drop") %>%
+      # Remove Grant Aided and LAs with only one school
+      filter(la_code != "900" & n > 1) %>%
+      select(-n),
     school_lookup %>%
       group_by(school_type) %>%
       summarise(seed_code = "0",
@@ -119,10 +123,12 @@ school_lookup %<>%
                 .groups = "drop")
   )
 
-# Save file
+
+### 4 - Save school lookup file ----
+
 write_rds(
   school_lookup,
-  here("data", "school_lookup", paste0(run_label, "_school_lookup.rds")),
+  here("lookups", "school_lookup", paste0(run_label, "_school_lookup.rds")),
   compress = "gz"
 )
 

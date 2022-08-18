@@ -22,7 +22,7 @@ source(here::here("code", "00_setup.R"))
 ## included and their correct names.
 
 school_lookup <- read_rds(
-  here("data", "school_lookup", paste0(run_label, "_school_lookup.rds"))
+  here("lookups", "school_lookup", paste0(run_label, "_school_lookup.rds"))
 )
 
 
