@@ -21,8 +21,7 @@ attendance_ui <- function(id, school_type) {
                     label = "Select attendance measure",
                     choices = c("Attendance", 
                                 "Authorised Absence",
-                                "Unauthorised Absence",
-                                "Temporary Exclusions"),
+                                "Unauthorised Absence"),
                     selected = "Attendance")
       ),
         
@@ -63,7 +62,11 @@ attendance_server <- function(input, output, session, data) {
                    text = paste0("Year: ", year, "<br>",
                                 input$measure_filter, ": ", value_label))) + 
         geom_line() +
-        scale_y_continuous(limits = c(0, NA)) +
+        geom_text_repel(aes(label = paste(value_label,"%")),
+                        na.rm = TRUE,
+                        nudge_x = 0,
+                        check_overlap = TRUE) +
+        scale_y_continuous(limits = c(0,NA)) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         labs(x = "Academic Year", y = paste("%",input$measure_filter)),
       tooltip = "text"
@@ -85,7 +88,6 @@ attendance_server <- function(input, output, session, data) {
                    text = paste0("Stage: ", stage, "<br>",
                                 input$measure_filter, ": ", value_label))) + 
         geom_col() +
-        scale_x_continuous(limits = c(0, NA)) +
         labs(x = paste("%",input$measure_filter) , y = "Pupil Stage"),
       tooltip = "text"
     ) %>%

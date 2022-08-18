@@ -1,5 +1,5 @@
 
-population_ui <- function(id) {
+population_ui <- function(id,  school_type) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -20,13 +20,23 @@ population_ui <- function(id) {
       column(br(),width = 10,
       
       # Dropdown to select population measure
-      selectInput(ns("measure_filter"), 
+      if(school_type != "Primary")
+        
+        {selectInput(ns("measure_filter"), 
                   label = "Select population measure",
                   choices = c("Pupil Numbers", 
                               "Teacher Numbers (FTE)",
-                              "Pupil Teacher Ratio", 
-                              "Average Class"),
-                  selected = "Pupil Numbers")),
+                              "Pupil Teacher Ratio"),
+                  selected = "Pupil Numbers")}
+      else{selectInput(ns("measure_filter"), 
+                       label = "Select population measure",
+                       choices = c("Pupil Numbers", 
+                                   "Teacher Numbers (FTE)",
+                                   "Pupil Teacher Ratio", 
+                                   "Average Class"),
+                       selected = "Pupil Numbers")}
+      ),
+      
       #add download button
       column(br(),br(),
              download_data_ui(ns("download")), width = 2),

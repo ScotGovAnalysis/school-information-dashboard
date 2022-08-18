@@ -50,7 +50,8 @@ primary_attainment_ui <- function(id, year_options) {
       # Attainment BGE Bar Chart
       fluidRow(column(br(),withSpinner(plotlyOutput(ns("bar_chart"))), 
              width = 7),
-      
+             
+    
       column(width = 1),
       
       # Attainment BGE Doughnut Chart
@@ -71,7 +72,9 @@ primary_attainment_server <- function(input, output, session, data) {
   callModule(download_data_server, "download", "Attainment Profile", data)
   
   output$bar_chart <- renderPlotly({
-    
+    validate(
+      need(input$stage != "P1, P4 & P7 combined",
+           "            Average curriculum for excellence level achieved by P1, P4 & P7 combined is not recorded" ))
     ggplotly(
       data() %>%
         filter(dataset == "bge" & year == input$year &
@@ -82,9 +85,7 @@ primary_attainment_server <- function(input, output, session, data) {
           text = paste0("School: ", 
                         ifelse(comparator == 0, 
                                school_name, 
-                               "Virtual Comparator"),
-                        "<br>",
-                        "Value: ", value_label)
+                               "Virtual Comparator"))
         )) + 
         geom_col() +
         labs(x = NULL , y = NULL) +
@@ -103,6 +104,7 @@ primary_attainment_server <- function(input, output, session, data) {
       
       layout(xaxis=list(fixedrange=TRUE)) %>% 
       layout(yaxis=list(fixedrange=TRUE))
+      
     
   })  
 

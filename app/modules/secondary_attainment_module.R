@@ -253,7 +253,11 @@ secondary_attainment_server <- function(input, output, session, data) {
   #Doughnut charts
   
   output$donut_reading <- renderGirafe({
-    
+    validate(
+      need(input$year != "2019/20",
+           "            Meeting curriculum for excellence level in reading was not collected in this year due to the impact of the COVID-19 pandemic"),
+           need(input$year != "2020/21",
+           "            Meeting curriculum for excellence level in reading was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -302,7 +306,11 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   
   output$donut_writing <- renderGirafe({
-    
+    validate(
+      need(input$year != "2019/20",
+           "            Meeting curriculum for excellence level in writing was not collected in this year due to the impact of the COVID-19 pandemic"),
+      need(input$year != "2020/21",
+           "            Meeting curriculum for excellence level in writing was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -352,7 +360,11 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   
   output$donut_listening <- renderGirafe({
-    
+    validate(
+      need(input$year != "2019/20",
+           "            Meeting curriculum for excellence level in listening was not collected in this year due to the impact of the COVID-19 pandemic"),
+      need(input$year != "2020/21",
+           "            Meeting curriculum for excellence level in listening was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -400,7 +412,11 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   
   output$donut_numeracy <- renderGirafe({
-    
+    validate(
+      need(input$year != "2019/20",
+           "            Meeting curriculum for excellence level in numeracy was not collected in this year due to the impact of the COVID-19 pandemic"),
+      need(input$year != "2020/21",
+           "            Meeting curriculum for excellence level in numeracy was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -467,7 +483,6 @@ secondary_attainment_server <- function(input, output, session, data) {
                         "Value: ", value_label)
         )) +
         geom_col(colour = NA) +
-	scale_y_continuous(limits = c(0, NA)) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% of Leavers", fill = NULL) +
         scale_x_discrete(labels = c("0" = "School/Area",
@@ -505,7 +520,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "Total Tariff Score", fill = NULL) +
-	scale_y_continuous(limits = c(0, NA)) +
         scale_x_discrete(labels = c("average_total_tariff_lowest_20_percent" = "Lowest 20%",
                                     "average_total_tariff_middle_60_percent" = "Middle 60%",
                                     "average_total_tariff_highest_20_percent" = "Highest 20%")) +
@@ -544,7 +558,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         )) +
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
-	scale_y_continuous(limits = c(0, NA)) +
         labs(x = "SIMD Grouping" , y = "Total Tariff Score" , fill = NULL) +
         scale_x_discrete(labels = c("quintile_1_average_total_tariff" = "Q1",
                                     "quintile_2_average_total_tariff" = "Q2",
@@ -587,7 +600,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         )) +
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
-	scale_y_continuous(limits = c(0, NA)) +
         labs(x = "SIMD Grouping", y = "Number of Leavers", fill = NULL) +
         scale_x_discrete(labels = c("quintile_1_percent_of_leavers" = "Q1",
                                     "quintile_2_percent_of_leavers" = "Q2",
@@ -628,7 +640,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
-	scale_y_continuous(limits = c(0, NA)) +
         scale_x_discrete(labels = c("percentage_achieving_literacy_and_numeracy_at_level_4_or_better" = 
                                       "Level 4 or Better",
                                     "percentage_achieving_literacy_and_numeracy_at_level_5_or_better" = 
@@ -665,7 +676,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         )) +
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
-	scale_y_continuous(limits = c(0, NA)) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
         scale_x_discrete(labels = c("percentage_achieving_literacy_at_level_4_or_better" = 
                                       "Level 4 or Better",
@@ -703,7 +713,6 @@ secondary_attainment_server <- function(input, output, session, data) {
         )) +
         geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
-	scale_y_continuous(limits = c(0, NA)) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
         scale_x_discrete(labels = c("percentage_achieving_numeracy_at_level_4_or_better" = 
                                       "Level 4 or Better",
