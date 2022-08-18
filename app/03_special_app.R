@@ -24,7 +24,7 @@ population <- read_rds(
 )
 
 FAQ <- 
-  read_excel(here("lookups", "FAQ.xlsx")) %>%
+  read_excel("modules/text_content/FAQ.xlsx") %>%
   select(Section, Question, Notes)
 
 #set language

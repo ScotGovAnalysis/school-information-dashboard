@@ -20,4 +20,4 @@ app/*_data/
 
 # Exceptions #
 !lookups/la_websites.xlsx
-!lookups/FAQ.xlsx
+!app/modules/text_content/FAQ.xlsx

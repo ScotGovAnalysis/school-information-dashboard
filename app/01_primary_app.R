@@ -27,9 +27,7 @@ attainment <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_attainment.rds")
 )
 
-FAQ <- 
-  read_excel(here("lookups", "FAQ.xlsx")) %>%
-  select(Section, Question, Notes)
+FAQ <- read_excel("modules/text_content/FAQ.xlsx")
 
 # Set app language 
 # tags$script(HTML("<script html lang= en ></script>"))
