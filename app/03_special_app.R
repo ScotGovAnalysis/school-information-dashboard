@@ -1,49 +1,34 @@
 
 ### 0 - Set up ----
 # Call in the set up module
-source(here::here("app", "00_shiny_setup.R"))
+source("00_shiny_setup.R")
 
 
 ### 1 - Load data files ----
 
 school_profile <- read_rds(
-  here("output", shiny_run_label, "special_school_profile.rds")
+  paste0("special_data/", shiny_run_label, "/special_school_profile.rds")
 ) %>%
-  arrange(as.numeric(la_code), nchar(seed_code), school_name) %>%
-  mutate(across(c(roll, fte_teacher_numbers), ~ prettyNum(., big.mark = ","))) %>%
+  # TEMP - This can be removed when lat and long added to school profile data
   left_join(
     read_rds(here("map", "lat_long_data_schools.rds")) %>%
       select(seed_code, lng, lat)
   )
 
 attendance <- read_rds(
-  here("output", shiny_run_label, "special_attendance.rds")
-) %>%
-  mutate(value_label = prettyNum(value_label, big.mark = ","))
+  paste0("special_data/", shiny_run_label, "/special_attendance.rds")
+)
 
 population <- read_rds(
-  here("output", shiny_run_label, "special_population.rds")
-) %>%
-  mutate(measure = factor(
-    measure,
-    c("Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio",
-      "Average Class", "Female", "Male", "0-8", "9-12", "13-15", "16+", 
-      paste0("SIMD Q", 1:5), "SIMD Unknown", 
-      "ASN", "No ASN", "FSM", "No FSM", "EAL", "No EAL", 
-      "White UK", "White Other", "Ethnic Minority", "Ethnicity Not Known",
-      "Taught in Gaelic", "Not Taught in Gaelic",
-      "Urban", "Small Town", "Rural", "Urban Rural Not Known")
-  ))
-      
+  paste0("special_data/", shiny_run_label, "/special_population.rds")
+)
 
 FAQ <- 
   read_excel(here("lookups", "FAQ.xlsx")) %>%
   select(Section, Question, Notes)
 
 #set language
-
 # tags$lang="en"
-
 
 
 ### 2 - UI ----
