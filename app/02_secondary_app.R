@@ -17,7 +17,8 @@ school_profile <- read_rds(
 
 attendance <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attendance.rds")
-)
+) %>%
+  mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
 
 population <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_population.rds")
@@ -25,7 +26,9 @@ population <- read_rds(
       
 attainment <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attainment.rds")
-)
+) %>%
+  mutate(value = ifelse(value_label %in% c("z", "c", "x") & dataset == "breadth_depth", NA, value))
+
 
 FAQ <- 
   read_excel("modules/text_content/FAQ.xlsx") %>%
@@ -88,7 +91,7 @@ ui <-
       
       pupil_profile_ui("pupil_profile", "Secondary"),
       attendance_ui("attendance", "Secondary"),
-      population_ui("population"),
+      population_ui("population", "Secondary"),
       secondary_attainment_ui("attainment", unique(attainment$year))
       
       

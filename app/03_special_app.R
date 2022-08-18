@@ -17,7 +17,9 @@ school_profile <- read_rds(
 
 attendance <- read_rds(
   paste0("special_data/", shiny_run_label, "/special_attendance.rds")
-)
+) %>%
+  mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
+
 
 population <- read_rds(
   paste0("special_data/", shiny_run_label, "/special_population.rds")
@@ -83,7 +85,7 @@ ui <-
       
       pupil_profile_ui("pupil_profile", "Special"),
       attendance_ui("attendance", "Special"),
-      population_ui("population")
+      population_ui("population", "Special")
       
     )
     
