@@ -18,20 +18,20 @@ secondary_attainment_ui <- function(id, year_options) {
       
       
       column(h3("Use the menu below to select the attainment measure you wish to see"), width = 10),
-    
+      
       column(br(),
              download_data_ui(ns("download")),width = 2),
       
       #select charts to show
       
       fluidRow(column(h3(
-               menuItem("Attainment measure selection", tabName = "dashboard",startExpanded = TRUE, collapsible = FALSE,
-               menuSubItem("Ciriculum for Excellence", tabName = "CfE"),
-               menuSubItem("Leavers' Breadth and Depth Profile", tabName = "level_awards"),
-               menuSubItem("Percentage of School Leavers Gaining SCQF Credited Awards", tabName = "SCQF_awards"),
-               menuSubItem("School Leavers Summary", tabName = "leavers_summary"),
-               menuSubItem("School Leavers by SIMD", tabName = "leavers_SIMD"),
-               menuSubItem("School Leavers Litteracy and Numeracy", tabName = "litteracy_and_numeracy"),colour = "navy")),width = 7)),
+        menuItem("Attainment measure selection", tabName = "dashboard",startExpanded = TRUE, collapsible = FALSE,
+                 menuSubItem("Ciriculum for Excellence", tabName = "CfE"),
+                 menuSubItem("Leavers' Breadth and Depth Profile", tabName = "level_awards"),
+                 menuSubItem("Percentage of School Leavers Gaining SCQF Credited Awards", tabName = "SCQF_awards"),
+                 menuSubItem("School Leavers Summary", tabName = "leavers_summary"),
+                 menuSubItem("School Leavers by SIMD", tabName = "leavers_SIMD"),
+                 menuSubItem("School Leavers Litteracy and Numeracy", tabName = "litteracy_and_numeracy"),colour = "navy")),width = 7)),
       
       
       #Dropdown Filte - for years
@@ -41,130 +41,130 @@ secondary_attainment_ui <- function(id, year_options) {
                          choices = year_options,
                          selected = year_options[max_year]), 
              width = 6, br(), br(),
-             ),
+      ),
       
-
-       #Dropdown Filter - Attainment type
+      
+      #Dropdown Filter - Attainment type
       tabItems(
         
         #BGE data by stage
         tabItem("CfE",title= "Ciriculum for Excellence",
                 
                 
-               
                 
-               
-            # Attainment BGE Doughnut Chart
-            fluidRow(column(h3("Percentage of students meeting
+                
+                
+                # Attainment BGE Doughnut Chart
+                fluidRow(column(h3("Percentage of students meeting
               curriculum for excellence
               level"), width = 12)),
-            fluidRow(column(br(),withSpinner(
-                            girafeOutput(ns("donut_reading"))),width = 6),
-                    column(br(),withSpinner(girafeOutput(ns("donut_writing"))),width = 6)),
-            
-            fluidRow(column(withSpinner(girafeOutput(ns("donut_listening"))),width = 6),
-                    column(withSpinner(girafeOutput(ns("donut_numeracy"))),width = 6))), 
-                 
+                fluidRow(column(br(),withSpinner(
+                  girafeOutput(ns("donut_reading"))),width = 6),
+                  column(br(),withSpinner(girafeOutput(ns("donut_writing"))),width = 6)),
+                
+                fluidRow(column(withSpinner(girafeOutput(ns("donut_listening"))),width = 6),
+                         column(withSpinner(girafeOutput(ns("donut_numeracy"))),width = 6))), 
         
-                 
-            
-      
-   
-      #SCQF across levels and years
-      tabItem("level_awards",title= "Percentage of Leavers Attainming 1 or more awards",
-              
-              #Dropdown Filte - Number of awards
-              column(selectInput(ns("minimum_scqf_level"), 
-                                          label = "Select the SCQF level you are interested in",
-                                          choices = paste("SCQF Level", 
-                                                          c("1", "2", "3", "4", "5",
-                                                            "6", "7", "8", "9", "10"),
-                                                          "or better"),
-                                          selected = "1"), 
-                              width = 12),
-              
-              
-              br(),
-              
-              # Attainment BGE Bar Chart
-              column(withSpinner(plotlyOutput(ns("breadth_depth"))), 
-                              width = 12)       
-              
-              ),
-      
-      
-      
-      tabItem("SCQF_awards", title= "Percentage of School Leavers Gaining SCQF Credited Awards",
-             
-              #Title
-              column(h3("Percentage of school leavers gaining SCQF credited awards"), width = 12),
-              # Attainment breadth and depth tables         
-              withSpinner(dataTableOutput(ns("breadth_depth_table"))),width = 6,
-              br(),
-              h3("Percentage of school leavers gaining SCQF credited awards (virtual comparator)"),
-              withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),width = 6,
-              
-              ),
-              
-              
-              
-              
-      tabItem("leavers_summary", title= "School Leavers Summary",
-                               
-              
-              column("",width = 9),
-              
-              # Attainment leavers destination chart
-              column(br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
-                              width = 12),
-                       
-                       # Attainment leavers total tariff chart
-                       column(br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
-                               width = 12)),
-              
-              
-                                        
-            
-              
-              
-                      
-      tabItem("leavers_SIMD", title= "School Leavers by SIMD",
-                                 
-              column("",width = 9),    
-             
-              # Attainment leavers deprivation chart
-             column(br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
-                       
-                       # Attainment leavers SIMD chart
-             column(br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
-             ),
-             
-                                       
-      
-      tabItem("litteracy_and_numeracy", title= "School Leavers Litteracy and Numeracy",
         
-        br(),
-    
-     
-      
-                      # Attainment literacy and numeracy chart
-                      column(withSpinner(plotlyOutput(ns("lit_num"))), 
-                                      width = 12),
-                               
-                      # Attainment literacy chart
-                      column(withSpinner(plotlyOutput(ns("literacy"))),
-                                      width = 6),
-                      # Attainment numeracy chart          
-                      column(withSpinner(plotlyOutput(ns("numeracy"))),
-                                      width = 6)
-      
-      )
-    
-   
-  ))
+        
+        
+        
+        
+        #SCQF across levels and years
+        tabItem("level_awards",title= "Percentage of Leavers Attainming 1 or more awards",
+                
+                #Dropdown Filte - Number of awards
+                column(selectInput(ns("minimum_scqf_level"), 
+                                   label = "Select the SCQF level you are interested in",
+                                   choices = paste("SCQF Level", 
+                                                   c("1", "2", "3", "4", "5",
+                                                     "6", "7", "8", "9", "10"),
+                                                   "or better"),
+                                   selected = "1"), 
+                       width = 12),
+                
+                
+                br(),
+                
+                # Attainment BGE Bar Chart
+                column(withSpinner(plotlyOutput(ns("breadth_depth"))), 
+                       width = 12)       
+                
+        ),
+        
+        
+        
+        tabItem("SCQF_awards", title= "Percentage of School Leavers Gaining SCQF Credited Awards",
+                
+                #Title
+                column(h3("Percentage of school leavers gaining SCQF credited awards"), width = 12),
+                # Attainment breadth and depth tables         
+                withSpinner(dataTableOutput(ns("breadth_depth_table"))),width = 6,
+                br(),
+                h3("Percentage of school leavers gaining SCQF credited awards (virtual comparator)"),
+                withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),width = 6,
+                
+        ),
+        
+        
+        
+        
+        tabItem("leavers_summary", title= "School Leavers Summary",
+                
+                
+                column("",width = 9),
+                
+                # Attainment leavers destination chart
+                column(br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
+                       width = 12),
+                
+                # Attainment leavers total tariff chart
+                column(br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
+                       width = 12)),
+        
+        
+        
+        
+        
+        
+        
+        tabItem("leavers_SIMD", title= "School Leavers by SIMD",
+                
+                column("",width = 9),    
+                
+                # Attainment leavers deprivation chart
+                column(br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
+                
+                # Attainment leavers SIMD chart
+                column(br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
+        ),
+        
+        
+        
+        tabItem("litteracy_and_numeracy", title= "School Leavers Litteracy and Numeracy",
+                
+                br(),
+                
+                
+                
+                # Attainment literacy and numeracy chart
+                column(withSpinner(plotlyOutput(ns("lit_num"))), 
+                       width = 12),
+                
+                # Attainment literacy chart
+                column(withSpinner(plotlyOutput(ns("literacy"))),
+                       width = 6),
+                # Attainment numeracy chart          
+                column(withSpinner(plotlyOutput(ns("numeracy"))),
+                       width = 6)
+                
+        )
+        
+        
+      ))
   )
   
-     
+  
 }
 
 secondary_attainment_server <- function(input, output, session, data) {
@@ -173,7 +173,7 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   callModule(download_data_server, "download", "Attainment Profile", data)
   
-
+  
   #Breadth and depth output
   output$breadth_depth <- renderPlotly({
     
@@ -216,21 +216,21 @@ secondary_attainment_server <- function(input, output, session, data) {
   output$breadth_depth_table <- renderDataTable({
     
     table_data_1 <-
-    data() %>%
+      data() %>%
       filter(dataset == "breadth_depth" & comparator == "0" & year == input$year) %>% 
-        select(year, seed_code, la_code, school_name, minimum_scqf_level, `Minimum number of awards` = minimum_number_of_awards, value_label)%>% 
-        mutate(`Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
-               minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
-        pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
-        rownames = FALSE,
-        options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
-                                         list(targets = c(0,1,2,3), visible = FALSE)))
-        
+      select(year, seed_code, la_code, school_name, minimum_scqf_level, `Minimum number of awards` = minimum_number_of_awards, value_label)%>% 
+      mutate(`Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
+             minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
+      pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
+    rownames = FALSE,
+    options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
+                                                list(targets = c(0,1,2,3), visible = FALSE)))
+    
     
   )
-
   
- 
+  
+  
   #comparator
   output$breadth_depth_vc_table <- renderDataTable({
     
@@ -243,9 +243,9 @@ secondary_attainment_server <- function(input, output, session, data) {
       pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
     rownames = FALSE,
     options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
-                                     list(targets = c(0,1,2,3), visible = FALSE)))
+                                                list(targets = c(0,1,2,3), visible = FALSE)))
     
-     
+    
   )
   
   
@@ -276,10 +276,9 @@ secondary_attainment_server <- function(input, output, session, data) {
         geom = "text",
         x = 0,
         y = 0,
-        label = paste0(
+        label = 
           filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-            pull(value_label),
-          "%"),
+          pull(value_label),
         size = 12,
         color = "#3182bd"
       ) +
@@ -301,163 +300,160 @@ secondary_attainment_server <- function(input, output, session, data) {
   })
   
   
-
-         output$donut_writing <- renderGirafe({
-                 
-            acel_data <-
-              data() %>%
-              filter(dataset == "acel" 
-                     & year == input$year 
-                     & str_starts (measure,"Writing") 
-                     & stage == "S3") %>%
-               mutate(text = paste0(measure, ": ", value_label))
-                 
-        plot <- 
-            ggplot(acel_data, aes(y = rev(value), 
-                              fill = measure, 
-                              tooltip = rev(text))) +
-              geom_bar_interactive(
-              aes(x = 1),
-              width = 0.5,
-              stat = "identity",
-              show.legend = FALSE
-              ) +
-              annotate(
-              geom = "text",
-              x = 0,
-              y = 0,
-              label = paste0(
-              filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-              pull(value_label),
-              "%"),
-              size = 12,
-              color = "#3182bd"
-                   ) +
-              scale_fill_manual(values = c("white","#3182bd")) +
-              coord_polar(theta = "y") +
-              theme_void() +
-              theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-              ggtitle(str_wrap(
-              "Writing",
-              width = 30))
-                 
-              girafe(
-              ggobj = plot,
-              width_svg = 5,
-              height_svg = 5,
-             options = list(opts_toolbar(saveaspng = FALSE))
-          )
-                 
-})   
-         
   
+  output$donut_writing <- renderGirafe({
     
-                      
-                      output$donut_listening <- renderGirafe({
-                        
-                        acel_data <-
-                          data() %>%
-                          filter(dataset == "acel" 
-                                 & year == input$year 
-                                 & str_starts (measure,"Listening") 
-                                 & stage == "S3") %>%
-                          mutate(text = paste0(measure, ": ", value_label))
-                        
-                        plot <- 
-                          ggplot(acel_data, aes(y = rev(value), 
-                                                fill = measure, 
-                                                tooltip = rev(text))) +
-                          geom_bar_interactive(
-                            aes(x = 1),
-                            width = 0.5,
-                            stat = "identity",
-                            show.legend = FALSE
-                          ) +
-                          annotate(
-                            geom = "text",
-                            x = 0,
-                            y = 0,
-                            label = paste0(
-                              filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-                                pull(value_label),
-                              "%"),
-                            size = 12,
-                            color = "#3182bd"
-                          ) +
-                          scale_fill_manual(values = c("white", "#3182bd")) +
-                          coord_polar(theta = "y") +
-                          theme_void() +
-                          theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-                          ggtitle(str_wrap(
-                            "Listening & Talking",
-                            width = 30))
-                        
-                        girafe(
-                          ggobj = plot,
-                          width_svg = 5,
-                          height_svg = 5,
-                          options = list(opts_toolbar(saveaspng = FALSE))
-                        )
-                        
-                      })               
+    acel_data <-
+      data() %>%
+      filter(dataset == "acel" 
+             & year == input$year 
+             & str_starts (measure,"Writing") 
+             & stage == "S3") %>%
+      mutate(text = paste0(measure, ": ", value_label))
+    
+    plot <- 
+      ggplot(acel_data, aes(y = rev(value), 
+                            fill = measure, 
+                            tooltip = rev(text))) +
+      geom_bar_interactive(
+        aes(x = 1),
+        width = 0.5,
+        stat = "identity",
+        show.legend = FALSE
+      ) +
+      annotate(
+        geom = "text",
+        x = 0,
+        y = 0,
+        label = 
+          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
+          pull(value_label),
+        size = 12,
+        color = "#3182bd"
+      ) +
+      scale_fill_manual(values = c("white","#3182bd")) +
+      coord_polar(theta = "y") +
+      theme_void() +
+      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+      ggtitle(str_wrap(
+        "Writing",
+        width = 30))
+    
+    girafe(
+      ggobj = plot,
+      width_svg = 5,
+      height_svg = 5,
+      options = list(opts_toolbar(saveaspng = FALSE))
+    )
+    
+  })   
   
-                      
-                                   output$donut_numeracy <- renderGirafe({
-                                     
-                                     acel_data <-
-                                       data() %>%
-                                       filter(dataset == "acel" 
-                                              & year == input$year 
-                                              & str_starts (measure,"Numeracy") 
-                                              & stage == "S3") %>%
-                                       mutate(text = paste0(measure, ": ", value_label))
-                                     
-                                     plot <- 
-                                       ggplot(acel_data, aes(y = rev(value), 
-                                                             fill = measure, 
-                                                             tooltip = rev(text))) +
-                                       geom_bar_interactive(
-                                         aes(x = 1),
-                                         width = 0.5,
-                                         stat = "identity",
-                                         show.legend = FALSE
-                                       ) +
-                                       annotate(
-                                         geom = "text",
-                                         x = 0,
-                                         y = 0,
-                                         label = paste0(
-                                           filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-                                             pull(value_label),
-                                           "%"),
-                                         size = 12,
-                                         color = "#3182bd"
-                                       ) +
-                                       scale_fill_manual(values = c("white", "#3182bd")) +
-                                       coord_polar(theta = "y") +
-                                       theme_void() +
-                                       theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-                                       ggtitle(str_wrap(
-                                         "Numeracy",
-                                         width = 30))
-                                     
-                                     girafe(
-                                       ggobj = plot,
-                                       width_svg = 5,
-                                       height_svg = 5,
-                                       options = list(opts_toolbar(saveaspng = FALSE))
-                                     )
-                                     
-                                   })               
-                                   
-                                   
+  
+  
+  
+  output$donut_listening <- renderGirafe({
+    
+    acel_data <-
+      data() %>%
+      filter(dataset == "acel" 
+             & year == input$year 
+             & str_starts (measure,"Listening") 
+             & stage == "S3") %>%
+      mutate(text = paste0(measure, ": ", value_label))
+    
+    plot <- 
+      ggplot(acel_data, aes(y = rev(value), 
+                            fill = measure, 
+                            tooltip = rev(text))) +
+      geom_bar_interactive(
+        aes(x = 1),
+        width = 0.5,
+        stat = "identity",
+        show.legend = FALSE
+      ) +
+      annotate(
+        geom = "text",
+        x = 0,
+        y = 0,
+        label = 
+          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
+          pull(value_label),
+        size = 12,
+        color = "#3182bd"
+      ) +
+      scale_fill_manual(values = c("white", "#3182bd")) +
+      coord_polar(theta = "y") +
+      theme_void() +
+      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+      ggtitle(str_wrap(
+        "Listening & Talking",
+        width = 30))
+    
+    girafe(
+      ggobj = plot,
+      width_svg = 5,
+      height_svg = 5,
+      options = list(opts_toolbar(saveaspng = FALSE))
+    )
+    
+  })               
+  
+  
+  output$donut_numeracy <- renderGirafe({
+    
+    acel_data <-
+      data() %>%
+      filter(dataset == "acel" 
+             & year == input$year 
+             & str_starts (measure,"Numeracy") 
+             & stage == "S3") %>%
+      mutate(text = paste0(measure, ": ", value_label))
+    
+    plot <- 
+      ggplot(acel_data, aes(y = rev(value), 
+                            fill = measure, 
+                            tooltip = rev(text))) +
+      geom_bar_interactive(
+        aes(x = 1),
+        width = 0.5,
+        stat = "identity",
+        show.legend = FALSE
+      ) +
+      annotate(
+        geom = "text",
+        x = 0,
+        y = 0,
+        label = 
+          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
+          pull(value_label),
+        size = 12,
+        color = "#3182bd"
+      ) +
+      scale_fill_manual(values = c("white", "#3182bd")) +
+      coord_polar(theta = "y") +
+      theme_void() +
+      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+      ggtitle(str_wrap(
+        "Numeracy",
+        width = 30))
+    
+    girafe(
+      ggobj = plot,
+      width_svg = 5,
+      height_svg = 5,
+      options = list(opts_toolbar(saveaspng = FALSE))
+    )
+    
+  })               
+  
+  
   #Leavers destinations bar chart
   output$leavers_dest_chart <- renderPlotly({
-
+    
     ggplotly(
       data() %>%
         filter(dataset == "destinations" & year == input$year
-                 ) %>%
+        ) %>%
         mutate(comparator = ifelse(comparator=="0","School/Area","VC")) %>%
         ggplot(aes(
           comparator,
@@ -482,9 +478,9 @@ secondary_attainment_server <- function(input, output, session, data) {
       
       layout(xaxis=list(fixedrange=TRUE)) %>% 
       layout(yaxis=list(fixedrange=TRUE))
-
+    
   })
-
+  
   
   # Leavers tariff chart <- renderPlotly({
   output$leavers_tariff_chart <- renderPlotly({
@@ -492,7 +488,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     ggplotly(
       data() %>%
         filter(dataset == "attainment_for_all" & year == input$year) 
-         %>%
+      %>%
         mutate(comparator = ifelse(comparator=="0","School/Area","VC")) %>%
         ggplot(aes(
           measure,
@@ -552,7 +548,7 @@ secondary_attainment_server <- function(input, output, session, data) {
                                     "quintile_3_average_total_tariff" = "Q3",
                                     "quintile_4_average_total_tariff" = "Q4",
                                     "quintile_5_average_total_tariff" = "Q5")) +
-
+        
         ggtitle("School leavers' attainment by SIMD"),
       tooltip = "text"
     )%>%
@@ -575,34 +571,34 @@ secondary_attainment_server <- function(input, output, session, data) {
       %>%
         
         mutate(comparator = ifelse(comparator=="0","School/Area","VC")) %>%
-                 ggplot(aes(
-                   measure,
-                   value,
-                   fill = comparator,
-                   text = paste0("School: ",
-                                 ifelse(comparator == "School/Area",
-                                        school_name,
-                                        "Virtual Comparator"),
-                                 "<br>",
-                                 "Value: ", value_label)
-                 )) +
-                 geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
-                 scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
-                 labs(x = "SIMD Grouping", y = "Number of Leavers", fill = NULL) +
-                 scale_x_discrete(labels = c("quintile_1_percent_of_leavers" = "Q1",
-                                             "quintile_2_percent_of_leavers" = "Q2",
-                                             "quintile_3_percent_of_leavers" = "Q3",
-                                             "quintile_4_percent_of_leavers" = "Q4",
-                                             "quintile_5_percent_of_leavers" = "Q5"
-                 )) +
-                 ggtitle("School leavers' by SIMD"),
-               tooltip = "text"
-        )%>%
-        config(displayModeBar = F, responsive = FALSE) %>% 
+        ggplot(aes(
+          measure,
+          value,
+          fill = comparator,
+          text = paste0("School: ",
+                        ifelse(comparator == "School/Area",
+                               school_name,
+                               "Virtual Comparator"),
+                        "<br>",
+                        "Value: ", value_label)
+        )) +
+        geom_col(width = 0.8, position = "dodge", stat="identity", colour = NA) +
+        scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
+        labs(x = "SIMD Grouping", y = "Number of Leavers", fill = NULL) +
+        scale_x_discrete(labels = c("quintile_1_percent_of_leavers" = "Q1",
+                                    "quintile_2_percent_of_leavers" = "Q2",
+                                    "quintile_3_percent_of_leavers" = "Q3",
+                                    "quintile_4_percent_of_leavers" = "Q4",
+                                    "quintile_5_percent_of_leavers" = "Q5"
+        )) +
+        ggtitle("School leavers' by SIMD"),
+      tooltip = "text"
+    )%>%
+      config(displayModeBar = F, responsive = FALSE) %>% 
       
       layout(xaxis=list(fixedrange=TRUE)) %>% 
       layout(yaxis=list(fixedrange=TRUE))
-      
+    
   })
   
   # Leavers literacy and numeracy chart<- renderPlotly({
@@ -629,9 +625,9 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
         scale_x_discrete(labels = c("percentage_achieving_literacy_and_numeracy_at_level_4_or_better" = 
-                           "Level 4 or Better",
-                           "percentage_achieving_literacy_and_numeracy_at_level_5_or_better" = 
-                             "Level 5 or Better")) +
+                                      "Level 4 or Better",
+                                    "percentage_achieving_literacy_and_numeracy_at_level_5_or_better" = 
+                                      "Level 5 or Better")) +
         ggtitle("Percentage of School Leavers' Achiveving Literacy and Numeracy"),
       tooltip = "text"
     )%>%
@@ -666,10 +662,10 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
         scale_x_discrete(labels = c("percentage_achieving_literacy_at_level_4_or_better" = 
-                           "Level 4 or Better",
-                           "percentage_achieving_literacy_at_level_5_or_better" = 
-                             "Level 5 or Better")) +
-         ggtitle("Percentage of School Leavers' Achiveving Literacy"),
+                                      "Level 4 or Better",
+                                    "percentage_achieving_literacy_at_level_5_or_better" = 
+                                      "Level 5 or Better")) +
+        ggtitle("Percentage of School Leavers' Achiveving Literacy"),
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -703,9 +699,9 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% Achieving", fill = NULL) +
         scale_x_discrete(labels = c("percentage_achieving_numeracy_at_level_4_or_better" = 
-                           "Level 4 or Better",
-                           "percentage_achieving_numeracy_at_level_5_or_better" = 
-                             "level 5 or Better")) +
+                                      "Level 4 or Better",
+                                    "percentage_achieving_numeracy_at_level_5_or_better" = 
+                                      "level 5 or Better")) +
         ggtitle("Percentage of School Leavers' Achiveving Numeracy"),
       tooltip = "text"
     )%>%
@@ -716,7 +712,5 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   })
   
-  
- 
   
 }

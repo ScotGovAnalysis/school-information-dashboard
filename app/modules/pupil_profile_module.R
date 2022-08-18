@@ -49,7 +49,7 @@ pupil_profile_server <- function(input, output, session, data) {
                      value, 
                      text = paste0("Measure: ", measure, "<br>",
                                    "% of Pupils: ", value_label))) +
-        geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
+        geom_text(aes(x = measure, y = value, label = trimws(value_label)),
                   hjust = 0.5, nudge_y = 5) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
