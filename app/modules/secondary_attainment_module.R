@@ -8,7 +8,7 @@ secondary_attainment_ui <- function(id, year_options) {
   
   fluidRow(
     
-    section_header_output("sec_attain_profile"),
+    section_header_output(ns("sec_attain_profile")),
     
            
     box(
