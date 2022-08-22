@@ -30,15 +30,27 @@ attendance_ui <- function(id, school_type) {
              download_data_ui(ns("download"))
       ),
       
+      
       # Attendance Trend Line Chart
-      column(withSpinner(plotlyOutput(ns("trend"))), 
+      column(
+        withSpinner(uiOutput(ns("pupil_year"))),
+        withSpinner(plotlyOutput(ns("trend"))), 
              width = ifelse(school_type == "Special", 12, 7)),
       
       # Attendance Stage Bar Chart
-      column(if(school_type != "Special") {
-          withSpinner(plotlyOutput(ns("stage")))},
-          width = 5)
+      column(
+       
+            if(school_type != "Special") {
+              withSpinner(uiOutput(ns("pupil_stage")))}
+          ,
+          
+          if(school_type != "Special") {
+            withSpinner(plotlyOutput(ns("stage")))}
+          ,
+          width = 5),
       
+      column(br(), width = 12),
+      br()
     )
     
   )
@@ -97,5 +109,22 @@ attendance_server <- function(input, output, session, data) {
       layout(yaxis=list(fixedrange=TRUE))
     
   })
+  
+  
+  output$pupil_year <- renderUI({
+    
+    list(
+      h3(input$measure_filter, " by Year", align = "center"))
+    
+  })
+  
+  output$pupil_stage <- renderUI({
+    
+    list(
+      h3(input$measure_filter, " by Stage", align = "center"))
+    
+  })
+  
+  
   
 }
