@@ -65,7 +65,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("Note that overall local authority level data may not be the same as the sum of all school data within that local authority, 
     as local authorities may have teachers recorded at virtual schools. 
        For more information please see Section 7 in the Frequently Asked Questions or you can find the data publication here:",
-      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+      a("Schools Summary Statistics Link",href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -82,7 +82,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("Primary schools have a target to provide 120 minutes of Physical Education (PE) a week for pupils."),
     p("This shows whether the school (or the percentage of schools in your chosen area) is meeting this target or not."),
     p("Information is collected in February every year in the Healthy Living Survey. A link to the Healthy Living Survey can be found here:",
-      a(href="https://www.gov.scot/publications/attainment-leaver-destinations-healthy-living-summary-statistics/pages/2/)"))
+      a("Healthy Living Survey Link", href="https://www.gov.scot/publications/attainment-leaver-destinations-healthy-living-summary-statistics/pages/2/)"))
     
     
   ))
@@ -102,7 +102,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authority level data may not be the same as the sum of all school data within that local authority, as local authorities may have teachers recorded at virtual schools. 
        For more information please see Section 7 in the Frequently Asked Questions or you can find the data publication here:",
-      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+      a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -120,7 +120,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authority level data may not be the same as the sum of all school data within that local authority, as local authorities may have teachers recorded at virtual schools. 
        For more information please see Section 7 in the Frequently Asked Questions or you can find the data publication here:",
-      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+      a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -138,7 +138,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("The information shown here is from the Pupil and Teacher Census a link to which is here:"),
     p("Note that overall local authority level data may not be the same as the sum of all school data within that local authority, as local authorities may have teachers recorded at virtual schools. 
        For more information please see Section 7 in the Frequently Asked Questions or you can find the data publication here:",
-      a(href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+      a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
   ))
   )
   
@@ -161,7 +161,7 @@ school_value_box_server <- function(input, output, session, data) {
     p("C - Poor"),
     p("D - Bad"),
     p("Information is collected in April every year as part of the schools estate collection which can be found using this link:",
-      a(href="https://www.gov.scot/collections/school-education-statistics/#schoolestatesstatistics"))
+      a("School Estate Statistics Link",href="https://www.gov.scot/collections/school-education-statistics/#schoolestatesstatistics"))
   ))
   )
   
@@ -179,7 +179,7 @@ school_value_box_server <- function(input, output, session, data) {
     title = "Denomination",
     p("This reports the denomination of the school"),
     p("The publication can be found using this link:",
-      a(href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland"))
+      a("Schools Summary Statistics Link", href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland"))
   ))
   )
   
