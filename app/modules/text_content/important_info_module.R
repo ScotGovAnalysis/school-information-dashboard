@@ -100,7 +100,13 @@ important_info_ui <- function(id) {
         p("email:", 
           a("ceu@gov.scot", 
             href="mailto:ceu@gov.scot")),
-        p("We aim to get back to you in 7 days.")
+        p("We aim to get back to you in 7 days."),
+        
+        
+        br(),
+        br(),
+        p("If you wish to learn more about how this app was made follow this link:"),
+        a("Link to app code", href="https://github.com/DataScienceScotland/school-information-dashboard")
         
       ))
       
