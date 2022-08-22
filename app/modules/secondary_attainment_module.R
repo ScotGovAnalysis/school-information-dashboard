@@ -8,13 +8,15 @@ secondary_attainment_ui <- function(id, year_options) {
   
   fluidRow(
     
-    section_header_output(ns("sec_attain_profile")),
+    section_header_output("sec_attain_profile"),
     
+           
     box(
       
-      title = NULL,
+            title = NULL,
       width = 12,
       collapsible = TRUE,
+      
       
       
       column(h3("Use the menu below to select the attainment measure you wish to see"), width = 10),
@@ -22,18 +24,20 @@ secondary_attainment_ui <- function(id, year_options) {
       column(br(),
              download_data_ui(ns("download")),width = 2),
       
-      #select charts to show
       
-      fluidRow(column(h3(
-        menuItem("Attainment measure selection", tabName = "dashboard",startExpanded = TRUE, collapsible = FALSE,
-                 menuSubItem("Ciriculum for Excellence", tabName = "CfE"),
-                 menuSubItem("Leavers' Breadth and Depth Profile", tabName = "level_awards"),
-                 menuSubItem("Percentage of School Leavers Gaining SCQF Credited Awards", tabName = "SCQF_awards"),
-                 menuSubItem("School Leavers Summary", tabName = "leavers_summary"),
-                 menuSubItem("School Leavers by SIMD", tabName = "leavers_SIMD"),
-                 menuSubItem("School Leavers Litteracy and Numeracy", tabName = "litteracy_and_numeracy"),colour = "navy")),width = 7)),
+     
       
-      
+    fluidRow(
+    column(h3(
+      menuItem("Attainment measure selection", tabName = "dashboard",startExpanded = TRUE, collapsible = FALSE,
+               menuSubItem("Ciriculum for Excellence", tabName = "CfE"),
+               menuSubItem("Leavers' Breadth and Depth Profile", tabName = "level_awards"),
+               menuSubItem("Percentage of School Leavers Gaining SCQF Credited Awards", tabName = "SCQF_awards"),
+               menuSubItem("School Leavers Summary", tabName = "leavers_summary"),
+               menuSubItem("School Leavers by SIMD", tabName = "leavers_SIMD"),
+               menuSubItem("School Leavers Litteracy and Numeracy", tabName = "litteracy_and_numeracy"),colour = "navy")),width = 7)),
+
+
       #Dropdown Filte - for years
       
       column(selectInput(ns("year"), 
@@ -87,7 +91,8 @@ secondary_attainment_ui <- function(id, year_options) {
                 br(),
                 
                 # Attainment BGE Bar Chart
-                column(withSpinner(plotlyOutput(ns("breadth_depth"))), 
+                column(withSpinner(uiOutput(ns("scqf_level"))),
+                       withSpinner(plotlyOutput(ns("breadth_depth"))), 
                        width = 12)       
                 
         ),
@@ -99,10 +104,10 @@ secondary_attainment_ui <- function(id, year_options) {
                 #Title
                 column(h3("Percentage of school leavers gaining SCQF credited awards"), width = 12),
                 # Attainment breadth and depth tables         
-                withSpinner(dataTableOutput(ns("breadth_depth_table"))),width = 6,
+                withSpinner(dataTableOutput(ns("breadth_depth_table"))),
                 br(),
                 h3("Percentage of school leavers gaining SCQF credited awards (virtual comparator)"),
-                withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),width = 6,
+                withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),
                 
         ),
         
@@ -112,31 +117,36 @@ secondary_attainment_ui <- function(id, year_options) {
         tabItem("leavers_summary", title= "School Leavers Summary",
                 
                 
-                column("",width = 9),
+                column(h3("Percentage of leavers in a positive destination",
+                          align = "center"),
                 
                 # Attainment leavers destination chart
-                column(br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
+                br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
                        width = 12),
                 
                 # Attainment leavers total tariff chart
-                column(br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
+                column(h3("Percentage of leavers in a positive destination",
+                          align = "center"),
+                br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
                        width = 12)),
         
         
-        
-        
+       
         
         
         
         tabItem("leavers_SIMD", title= "School Leavers by SIMD",
+                column(width = 12),
                 
-                column("",width = 9),    
+                column(h3("School leavers attainment by SIMD", align = "center"),    
                 
                 # Attainment leavers deprivation chart
-                column(br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
+                br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
                 
                 # Attainment leavers SIMD chart
-                column(br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
+                
+                column(h3("School leavers by SIMD", align = "center"), 
+                br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
         ),
         
         
@@ -148,14 +158,20 @@ secondary_attainment_ui <- function(id, year_options) {
                 
                 
                 # Attainment literacy and numeracy chart
-                column(withSpinner(plotlyOutput(ns("lit_num"))), 
+                column(h3("Percentage of school leavers' achieving Litteracy and Numeracy",
+                          align = "center"),
+                       withSpinner(plotlyOutput(ns("lit_num"))), 
                        width = 12),
                 
                 # Attainment literacy chart
-                column(withSpinner(plotlyOutput(ns("literacy"))),
+                column(h3("Percentage of school leavers' achieving Litteracy",
+                          align = "center"), 
+                       withSpinner(plotlyOutput(ns("literacy"))),
                        width = 6),
                 # Attainment numeracy chart          
-                column(withSpinner(plotlyOutput(ns("numeracy"))),
+                column(h3("Percentage of school leavers' achieving Numeracy",
+                          align = "center"), 
+                       withSpinner(plotlyOutput(ns("numeracy"))),
                        width = 6)
                 
         )
@@ -165,6 +181,11 @@ secondary_attainment_ui <- function(id, year_options) {
   )
   
   
+
+  
+  
+  
+  
 }
 
 secondary_attainment_server <- function(input, output, session, data) {
@@ -172,6 +193,7 @@ secondary_attainment_server <- function(input, output, session, data) {
   callModule(section_header_server, "sec_attain_profile", "Secondary Attainment")
   
   callModule(download_data_server, "download", "Attainment Profile", data)
+  
   
   
   #Breadth and depth output
@@ -205,6 +227,14 @@ secondary_attainment_server <- function(input, output, session, data) {
       
       layout(xaxis=list(fixedrange=TRUE)) %>% 
       layout(yaxis=list(fixedrange=TRUE))
+    
+  })
+  
+  
+  output$scqf_level <- renderUI({
+    
+    list(
+      h3("Pupils achivening ", input$minimum_scqf_level, " by Year", align = "center"))
     
   })
   
@@ -486,8 +516,7 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_fill_manual(values=c("#3182bd", "#9ecae1")) +
         labs(x = NULL , y = "% of Leavers", fill = NULL) +
         scale_x_discrete(labels = c("0" = "School/Area",
-                                    "1" = "Virtual Comparator")) +
-        ggtitle("Percentage of leavers in a positive destination"),
+                                    "1" = "Virtual Comparator")), 
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -523,8 +552,7 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_x_discrete(labels = c("average_total_tariff_lowest_20_percent" = "Lowest 20%",
                                     "average_total_tariff_middle_60_percent" = "Middle 60%",
                                     "average_total_tariff_highest_20_percent" = "Highest 20%")) +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        ggtitle("School leavers' average total tariff score"),
+        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) ,
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -563,9 +591,7 @@ secondary_attainment_server <- function(input, output, session, data) {
                                     "quintile_2_average_total_tariff" = "Q2",
                                     "quintile_3_average_total_tariff" = "Q3",
                                     "quintile_4_average_total_tariff" = "Q4",
-                                    "quintile_5_average_total_tariff" = "Q5")) +
-        
-        ggtitle("School leavers' attainment by SIMD"),
+                                    "quintile_5_average_total_tariff" = "Q5")),
       tooltip = "text"
     )%>%
       config(displayModeBar =F, responsive = FALSE) %>% 
@@ -606,8 +632,7 @@ secondary_attainment_server <- function(input, output, session, data) {
                                     "quintile_3_percent_of_leavers" = "Q3",
                                     "quintile_4_percent_of_leavers" = "Q4",
                                     "quintile_5_percent_of_leavers" = "Q5"
-        )) +
-        ggtitle("School leavers' by SIMD"),
+        )) ,
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -643,8 +668,7 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_x_discrete(labels = c("percentage_achieving_literacy_and_numeracy_at_level_4_or_better" = 
                                       "Level 4 or Better",
                                     "percentage_achieving_literacy_and_numeracy_at_level_5_or_better" = 
-                                      "Level 5 or Better")) +
-        ggtitle("Percentage of School Leavers' Achiveving Literacy and Numeracy"),
+                                      "Level 5 or Better")) ,
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -680,8 +704,7 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_x_discrete(labels = c("percentage_achieving_literacy_at_level_4_or_better" = 
                                       "Level 4 or Better",
                                     "percentage_achieving_literacy_at_level_5_or_better" = 
-                                      "Level 5 or Better")) +
-        ggtitle("Percentage of School Leavers' Achiveving Literacy"),
+                                      "Level 5 or Better")) ,
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -717,8 +740,7 @@ secondary_attainment_server <- function(input, output, session, data) {
         scale_x_discrete(labels = c("percentage_achieving_numeracy_at_level_4_or_better" = 
                                       "Level 4 or Better",
                                     "percentage_achieving_numeracy_at_level_5_or_better" = 
-                                      "level 5 or Better")) +
-        ggtitle("Percentage of School Leavers' Achiveving Numeracy"),
+                                      "level 5 or Better")) ,
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -727,6 +749,8 @@ secondary_attainment_server <- function(input, output, session, data) {
       layout(yaxis=list(fixedrange=TRUE))
     
   })
+  
+  
   
   
 }
