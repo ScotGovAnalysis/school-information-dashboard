@@ -65,4 +65,9 @@ update_geom_defaults("line", list(colour = "#3182bd", size = 1))
 update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
 
 
+### 6 - Read in FAQ data ----
+
+FAQ <- read_excel("modules/text_content/FAQ.xlsx")
+
+
 ### END OF SCRIPT ###

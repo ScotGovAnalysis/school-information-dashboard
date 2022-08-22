@@ -1,5 +1,21 @@
+#########################################################################
+# Name of file - 01_primary_app.R
+# Data release - School Information Dashboard
+#
+# Type - Reproducible Analytical Pipeline (RAP)
+# Written/run on - RStudio Desktop
+# Version of R - 3.6.3
+#
+# NOTE - The filepaths in this script are relative to the app/ folder. 
+# This means they will work when this script is run as a shiny app, 
+# but not if run line by line from this script.
+#########################################################################
 
-### 0 - Set up ----
+
+### 0 - Setup ----
+
+## Run setup script where run label is specified, packages and modules 
+## are loaded, and ggplot default styles are set.
 
 source("00_shiny_setup.R")
 
@@ -10,16 +26,12 @@ school_profile <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_school_profile.rds")
 ) %>%
   # TEMP - This can be removed when lat and long added to school profile data
-  left_join(
-    read_rds(here("map", "lat_long_data_schools.rds")) %>%
-      select(seed_code, lng, lat)
-  )
+  mutate(lat = 1, long = 1)
 
 attendance <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_attendance.rds")
 ) %>%
   mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
-
 
 population <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_population.rds")
@@ -28,11 +40,6 @@ population <- read_rds(
 attainment <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_attainment.rds")
 )
-
-FAQ <- read_excel("modules/text_content/FAQ.xlsx")
-
-# Set app language 
-# tags$script(HTML("<script html lang= en ></script>"))
 
 
 ### 2 - UI ----
@@ -61,14 +68,26 @@ ui <-
     
     # 2 - UI - Sidebar ----
     
-    dashboardSidebar(absolutePanel(top = 20, left = 10,fixed = TRUE, width = 220,
-      sidebar_ui("sidebar", unique(school_profile$la_name))
-    )),
+    dashboardSidebar(
+      
+      absolutePanel(
+        top = 20, left = 10, fixed = TRUE, width = 220,
+        sidebar_ui("sidebar", unique(school_profile$la_name))
+      )
+      
+    ),
     
     
     # 2 - UI - Main body ----
 
     dashboardBody(
+      
+      # Recode error messages
+      tags$style(
+        type = "text/css",
+        ".shiny-output-error { visibility: hidden; }",
+        ".shiny-output-error:before { visibility: visible; content: 'There is no data for this chart'; }"
+      ),
       
       fluidRow(
         
@@ -106,6 +125,7 @@ server <- function(input, output, session) {
   
   
   # Filter datasets by LA and School ----
+  
   school_profile_filtered <- reactive({
     school_profile %>% 
       filter(la_name == filters()$la & school_name == filters()$school)
@@ -152,7 +172,7 @@ server <- function(input, output, session) {
 }
 
 
-### Run the app ----
+### 4 - Run app ----
 
 shinyApp(ui = ui, server = server)
 
