@@ -42,9 +42,17 @@ population_ui <- function(id,  school_type) {
              download_data_ui(ns("download")), width = 2),
       
       # Population Trend Line Chart
-      fluidRow(column(br(),withSpinner(plotlyOutput(ns("trend"))),width = 12)
-                              ))
+      fluidRow(column(br(),
+                      withSpinner(uiOutput(ns("population_title"))),
+                      
+                      withSpinner(
+                      plotlyOutput(ns("trend"))),width = 12)
+                              ),
     
+    column(br(), width = 12),
+    br()
+    
+    )
   )
   
 }
@@ -73,6 +81,14 @@ population_server <- function(input, output, session, data) {
       
       layout(xaxis=list(fixedrange=TRUE)) %>% 
       layout(yaxis=list(fixedrange=TRUE))
+    
+  })
+  
+  
+  output$population_title <- renderUI({
+    
+   list(
+      h3(input$measure_filter, " by Year", align = "center"))
     
   })
   
