@@ -18,7 +18,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
   # Render Value Box
   output$header <- renderValueBox({
     valueBox(value = section_header,
-             subtitle = "",
+             subtitle = "Click for more information",
              color = box_colour)
   })
   
@@ -30,14 +30,14 @@ section_header_server <- function(input, output, session, section_name, box_colo
     
     section_name == "Pupil" ~ 
       paste0(
-        "Male/Female: This chart shows the percentage of pupils recorded as male 
+        strong("Male/Female:"), "This chart shows the percentage of pupils recorded as male 
     or female in the pupil census. The information collected is gathered by 
     schools.",
-        p("Pupils by stage: This chart gives a breakdown in percentage of all the 
+        p(strong("Pupils by stage:"), " This chart gives a breakdown in percentage of all the 
     pupils in your chosen area or school by stage. This information is collected 
     from the Pupil Census."),
         
-        p("SIMD: The Scottish Index of Multiple Deprivation (SMD) shows where 
+        p(strong("SIMD:"), " The Scottish Index of Multiple Deprivation (SMD) shows where 
     Scotland's most deprived areas are. Deprived does not mean poor or 
     low income. It can also mean people living in those areas have fewer 
     resources and opportunities. For example in health and education. Please note 
@@ -48,7 +48,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
     is based on their postcodes. For more information, please see the section 9, 
     question 9.1 in the frequently asked questions"),
         
-        p("ASN: This chart shows the percentage of pupils in your chosen school/area 
+        p(strong("ASN:"), " This chart shows the percentage of pupils in your chosen school/area 
     who were recorded as having Additional Support Needs (ASN).
     Care must be taken then looking at the number of pupils identified with ASN as 
     the recording of pupils with ASN varies according to local practice and 
@@ -56,7 +56,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
     schools. For more information please see section 9 question 9.2 of the 
     frequently asked questions."),
         
-        p("FSM: This chart shows the percentage of pupils in your chosen school/area 
+        p(strong("FSM:"), " This chart shows the percentage of pupils in your chosen school/area 
     who were registered for free school meals.  Please note that there may be 
     some pupils who are entitled to free school meals but have not registered.  
     These pupils will be included in the 'No FSM' category. 
@@ -74,12 +74,12 @@ section_header_server <- function(input, output, session, section_name, box_colo
     For more information, please see the Section 9, Question 9.3 in the 
       Frequently Asked Questions"),
         
-        p("EAL: This chart shows the percentage of pupils in your chosen school/area 
+        p(strong("EAL:"), " This chart shows the percentage of pupils in your chosen school/area 
     who were recorded as having English as an Additional Language. 
     For more information, please see the Section 9, Question 9.4 in the 
     Frequently Asked Questions."),
         
-        p("Ethnicity: This chart shows the percentage of pupils in your chosen 
+        p(strong("Ethnicity:"), " This chart shows the percentage of pupils in your chosen 
       school/area by their ethnicity. Categories are grouped together as follows:"),
         p("White UK : White Scottish, White Other British"),
         p("White Other: White Gypsy/Traveller, White Polish, White Irish, White Other"),
@@ -88,11 +88,11 @@ section_header_server <- function(input, output, session, section_name, box_colo
         p("Not known: Unknown, Not disclosed "),
         p("For more information, please see the Section 9, Question 9.5 in the Frequently Asked Questions."),
         
-        p("Gaelic: This chart shows the percentage of pupils in your chosen 
+        p(strong("Gaelic:"), " This chart shows the percentage of pupils in your chosen 
     school/area who were taught in Gaelic or are learning Gaelic as an 
     additional language. for more information, please see the Section 9, 
       Question 9.6 in the Frequently Asked Questions."),
-        p("Area: This chart shows the percentage of pupils in your chosen school/area 
+        p(strong("Area:"), " This chart shows the percentage of pupils in your chosen school/area 
     by whether they lived in an urban or rural area.  This information is based 
     on their postcode. For more information, please see the Section 9, Question 
       9.7 in the Frequently Asked Questions."),
@@ -111,7 +111,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
       authorised absence and unauthorised absence.  This information is shown
       by stage (i.e. which year the pupil is in) for your chosen school/area.
       Attendance and absence data is collected from publicly funded schools every 2
-      years. The information shown here is for the 2018/19 school year. For more
+      years. The information shown here by stage is for the 2018/19 school year. For more
       information follow this link to the publication: ",
         a("Schools Summary Statistics Link",
           href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland")
@@ -152,7 +152,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
     
     section_name == "Secondary Attainment" ~
       paste0(
-        p("Curriculum for Excellence"),
+        p(strong("Curriculum for Excellence")),
         p("Most pupils are expected to achieve specific Curriculum for Excellence (CfE) levels,
     by the end of a particular stage.  These are:  CfE Early Level (at end of Primary 1);
     CfE 1st Level (at end of Primary 4); CfE 2nd Level (at end of Primary 7); and CfE 3rd/4th Level
@@ -160,7 +160,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
         p("For more information, please see the Section 4 in the Frequently Asked Questions tab"),
         
         br(),
-        p("Leavers' Breadth and Depth Profile"),
+        p(strong("Leavers' Breadth and Depth Profile")),
         p("The chart shows the full range of SCQF accredited awards gained at SCQF levels 1 to 7.
      The data is taken from Insight. Note that the data is accurate to the point in time that Insight
      data was first published on ParentZone or on this dashboard. There may have been changes to the
@@ -174,7 +174,7 @@ section_header_server <- function(input, output, session, section_name, box_colo
         p("For more information on the virtual comparator and Insight see Section 7 in the Frequently Asked Questions tab."),
         
         br(),
-        p("Percentage of school leavers gaining SCQF credited awards"),
+        p(strong("Percentage of school leavers gaining SCQF credited awards")),
         p("The first table shows the full range of SCQF accredited awards gained at SCQF levels 1 to 7.
     The second table shows the corresponding data for its virtual comparator. When a pupil has been awarded a
     course at a SCQF level, they will be counted in the corresponding box(es) in the table. Only the latest and best awards
@@ -185,12 +185,12 @@ section_header_server <- function(input, output, session, section_name, box_colo
     the world of work. For more information on SCQF levels, please see the Section 6 in the Frequently Asked Questions tab."),
         
         br(),
-        p("Leavers' Leavers by SIMD"),
+        p(strong("Leavers' Leavers by SIMD")),
         p("Shows attainment across school leavers by level of deprivation. (Q1 = most deprived areas, Q5 = least deprived areas).
     The school's average total tariff score is shown below alongside its virtual comparator. For more information on
       deprivation, please see the Section 9, Question 9.1 in the Frequently Asked Questions tab."),
         br(),
-        p("Leavers' Literacy and Numeracy"),
+        p(strong("Leavers' Literacy and Numeracy")),
         p("Shows the percentage of school leavers who attained literacy and numeracy at  SCQF level 4 or better,
     and SCQF level 5 or better.  They show the attainment of school leavers from this school alongside its virtual comparator.
     For more information on the virtual comparator, please see the Section 7, Question 7.2 in the Frequently Asked Questions tab.")
