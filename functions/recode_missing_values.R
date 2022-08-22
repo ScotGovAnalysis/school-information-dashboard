@@ -25,7 +25,7 @@
 #' recode_missing_values(c("29", NA, "z", "*", 2003))
 #' recode_missing_values(c("29", NA, "z", "*", 2003), label = TRUE)
 
-recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
+recode_missing_values <- function(x, label = FALSE, label_digits = 1, label_perc = FALSE) {
   
   # Define how values are categorised
   not_applicable <- c("NA", "#", "Z", "z")
@@ -53,12 +53,16 @@ recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
         # Round value column
         round_value = ifelse(
           is.na(recode),
-          janitor::round_half_up(as.numeric(value), label_digits),
+          janitor::round_half_up(as.numeric(value), label_digits) %>%
+            prettyNum(big.mark = ",") %>%
+            trimws(),
           NA_character_
         ),
         
         # Merge missing/suppressed codes with values
-        value_label = ifelse(is.na(recode), as.character(round_value), recode)
+        value_label = ifelse(is.na(recode), 
+                             paste0(round_value, ifelse(label_perc, "%", "")), 
+                             recode)
       ) %>%
       
       # Extract value_label column as vector
@@ -71,7 +75,7 @@ recode_missing_values <- function(x, label = FALSE, label_digits = 1) {
     as.numeric(
       replace(x, 
               x %in% c(not_applicable, not_available, suppressed) | is.na(x), 
-              NA)
+              0)
     )
     
   }

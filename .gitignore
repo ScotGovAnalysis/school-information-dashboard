@@ -3,9 +3,12 @@
 .RData
 .Ruserdata
 
-# 'data' and 'output' folders #
+# data folders #
 data/
-output/
+app/*_data/
+
+# App deployment #
+app/rsconnect/
 
 # Common text files that may contain data #
 *.[cC][sS][vV]
@@ -20,3 +23,4 @@ output/
 
 # Exceptions #
 !lookups/la_websites.xlsx
+!app/modules/text_content/FAQ.xlsx

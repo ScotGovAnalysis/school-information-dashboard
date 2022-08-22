@@ -50,7 +50,7 @@ year_summary  <- c(2021)
 
 year_insight  <- 2017:2021
 
-  
+
 ## 2b - Datasets typically updated in December ----
 
 # Datasets that require a single file, update with a single year
@@ -79,18 +79,30 @@ walk(list.files(here("functions"), full.names = TRUE), source)
 
 ### 2 - Create folders ----
 
-# If output folder for run_label specified above 
-# doesn't already exist, create it
+# If output folders for run_label specified above 
+# don't already exist, create folders
 
-if(!file.exists(here("output", run_label))) {
-  if(!file.exists(here("output"))) {
-    dir.create(here("output"))
-  }
-  dir.create(here("output", run_label))
+folders <- paste0(
+  here("app"), "/", 
+  c("primary", "secondary", "special"), "_data"
+)
+
+# Create data folders
+walk(
+  folders,
+  ~ if(!file.exists(.x)) dir.create(.x)
+)
+
+# Create subfolders for run_label
+walk(
+  paste0(folders, "/", run_label),
+  ~ if(!file.exists(.x)) dir.create(.x)
+)
+
+# Create lookups folder for school_lookup
+if(!file.exists(here("lookups", "school_lookup"))) {
+  dir.create(here("lookups", "school_lookup"))
 }
-
-# Note: Would prefer to use usethis::use_directory here but getting
-# error message. See https://github.com/r-lib/fs/issues/147
 
 
 ### END OF SCRIPT ###

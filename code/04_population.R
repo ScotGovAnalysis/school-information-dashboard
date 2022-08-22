@@ -21,7 +21,9 @@ source(here::here("code", "00_setup.R"))
 ## Read in school lookup containing definitive list of schools to be 
 ## included and their correct names.
 
-school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
+school_lookup <- read_rds(
+  here("lookups", "school_lookup", paste0(run_label, "_school_lookup.rds"))
+)
 
 
 ### 1 - School Summary data ----
@@ -75,9 +77,13 @@ population <-
     !(str_detect(measure_category, "stage") &
         tolower(school_type) != word(measure_category, 1, sep = "_"))
   ) %>%
+  mutate(measure_category = ifelse(str_detect(measure_category, "stage"),
+                                   "stage",
+                                   measure_category)) %>%
   
   # Recode missing / suppressed values
   mutate(
+    # All NAs in data represent zeros (except FSM)
     value = ifelse(measure_category != "free_school_meals",
                    replace_na(value, "0"),
                    value),
@@ -107,13 +113,12 @@ population %<>%
       str_detect(measure_category, "stage") & value < 5 ~ "c",
       !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ "c",
       measure_category != "trend" ~ 
-        paste0(round_half_up(value / roll * 100, 1), "%"),
+        recode_missing_values(value / roll * 100, label = TRUE, label_perc = TRUE),
       TRUE ~ value_label
-    
     ),
     value = case_when(
-      str_detect(measure_category, "stage") & value < 5 ~ NA_real_,
-      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ NA_real_,
+      str_detect(measure_category, "stage") & value < 5 ~ 0,
+      !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ 0,
       measure_category != "trend" ~ value / roll * 100,
       TRUE ~ value
     )
@@ -123,7 +128,7 @@ population %<>%
   mutate(
     value_label = case_when(
       !str_detect(measure_category, "(stage|trend)") & 
-        nchar(seed_code) > 3 & !is.na(value) ~
+        nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") ~
         percentage_band(value),
       TRUE ~ value_label
     ),
@@ -152,53 +157,58 @@ population %<>%
 
 primary_population <- 
   population %>% 
-  filter(school_type == "Primary") 
+  filter(school_type == "Primary") %>%
+  mutate(measure = droplevels(measure))
 
 write_rds(
   primary_population,
-  here("output", run_label, "primary_population.rds"),
+  here("app", "primary_data", run_label, "primary_population.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   primary_population,
-  here("output", run_label, "primary_population.xlsx")
+  here("app", "primary_data", run_label, "primary_population.xlsx")
 )
 
 
 # Save secondary school file
 
 secondary_population <- 
-  population %>% filter(school_type == "Secondary")
+  population %>% 
+  filter(school_type == "Secondary") %>%
+  mutate(measure = droplevels(measure))
 
 write_rds(
   secondary_population,
-  here("output", run_label, "secondary_population.rds"),
+  here("app", "secondary_data", run_label, "secondary_population.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   secondary_population,
-  here("output", run_label, "secondary_population.xlsx")
+  here("app", "secondary_data", run_label, "secondary_population.xlsx")
 )
 
 # Save special school file
 
 special_population <- 
-  population %>% filter(school_type == "Special")
+  population %>% 
+  filter(school_type == "Special") %>%
+  mutate(measure = droplevels(measure))
 
 write_rds(
   special_population,
-  here("output", run_label, "special_population.rds"),
+  here("app", "special_data", run_label, "special_population.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   special_population,
-  here("output", run_label, "special_population.xlsx")
+  here("app", "special_data", run_label, "special_population.xlsx")
 )
 
 

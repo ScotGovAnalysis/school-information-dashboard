@@ -21,7 +21,9 @@ source(here::here("code", "00_setup.R"))
 ## Read in school lookup containing definitive list of schools to be 
 ## included and their correct names.
 
-school_lookup <- read_rds(here("output", run_label, "school_lookup.rds"))
+school_lookup <- read_rds(
+  here("lookups", "school_lookup", paste0(run_label, "_school_lookup.rds"))
+)
 
 
 ### 1 - Attendance data ----
@@ -73,7 +75,7 @@ attendance <-
   )) %>%
   
   # Recode missing/suppressed values
-  mutate(value_label = recode_missing_values(value, label = TRUE),
+  mutate(value_label = recode_missing_values(value, label = TRUE, label_perc = TRUE),
          value = recode_missing_values(value)) %>%
   
   # Filter school list and recode names
@@ -94,14 +96,14 @@ primary_attendance <-
 
 write_rds(
   primary_attendance,
-  here("output", run_label, "primary_attendance.rds"),
+  here("app", "primary_data", run_label, "primary_attendance.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   primary_attendance,
-  here("output", run_label, "primary_attendance.xlsx")
+  here("app", "primary_data", run_label, "primary_attendance.xlsx")
 )
 
 
@@ -111,14 +113,14 @@ secondary_attendance <- attendance %>% filter(school_type == "Secondary")
 
 write_rds(
   secondary_attendance,
-  here("output", run_label, "secondary_attendance.rds"),
+  here("app", "secondary_data", run_label, "secondary_attendance.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   secondary_attendance,
-  here("output", run_label, "secondary_attendance.xlsx")
+  here("app", "secondary_data", run_label, "secondary_attendance.xlsx")
 )
 
 # Save special school file
@@ -127,14 +129,14 @@ special_attendance <- attendance %>% filter(school_type == "Special")
 
 write_rds(
   special_attendance,
-  here("output", run_label, "special_attendance.rds"),
+  here("app", "special_data", run_label, "special_attendance.rds"),
   compress = "gz"
 )
 
 # Temp - save as xlsx for checking
 writexl::write_xlsx(
   special_attendance,
-  here("output", run_label, "special_attendance.xlsx")
+  here("app", "special_data", run_label, "special_attendance.xlsx")
 )
 
 
