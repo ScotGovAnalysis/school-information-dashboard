@@ -14,18 +14,18 @@ school_profile_text_server <- function(input, output, session, data, school_type
     
     list(
       
-      h3("School Name: ", data()$school_name),
+      h3(strong("School Name:  "), data()$school_name),
       
-      h3("Seed Code: ", data()$seed_code),
+      h3(strong("Seed Code:  "), data()$seed_code),
       
-      h3("Local Authority/Area: ", data()$la_name),
+      h3(strong("Local Authority/Area:  "), data()$la_name),
       
       if(!is.na(data()$denomination) & school_type != "Special") {
-        h3("Denomination: ", data()$denomination)
+        h3(strong("Denomination:  "), data()$denomination)
       },
       
       if(!is.na(data()$condition) & school_type == "Primary") {
-        h3("School condition: ",
+        h3(strong("School condition:  "),
            data()$condition,
            ifelse(str_starts(data()$school_name, "All "),
                   " in A or B",
@@ -33,24 +33,24 @@ school_profile_text_server <- function(input, output, session, data, school_type
       },
       
       if(!is.na(data()$address)) {
-        h3("Address:", data()$address)
+        h3(strong("Address:  "), data()$address)
       },
       
       if(!is.na(data()$phone_number)) {
-        h3("Telephone:", data()$phone_number)
+        h3(strong("Telephone:  "), data()$phone_number)
       },
       
       if(!is.na(data()$email)) {
-        h3("Email:", a(href = paste0("mailto:", data()$email),
+        h3(strong("Email:  "), a(href = paste0("mailto:", data()$email),
                        data()$email))
       },
       
       if(!is.na(data()$website)) {
-        h3("Website:", a(href = data()$website, data()$website))
+        h3(strong("Website:  "), a(href = data()$website, data()$website))
       },
       
       if(!is.na(data()$la_website)) {
-        h3("Local Authority Website:",
+        h3(strong("Local Authority Website:  "),
            a(href = data()$la_website,
              data()$la_website))
       }
