@@ -44,24 +44,27 @@ primary_attainment_ui <- function(id, year_options) {
              width = 3),
       
       column(br(),
-             download_data_ui(ns("download")),width = 2),
+             download_data_ui(ns("download")),width = 2)),
+      br(),
+      
              
       
       # Attainment BGE Bar Chart
-      fluidRow(column(br(),withSpinner(plotlyOutput(ns("bar_chart"))), 
-             width = 7),
-             
-    
-      column(width = 1),
       
-      # Attainment BGE Doughnut Chart
-      column(br(),withSpinner(girafeOutput(ns("donut_plot"))), 
-             width = 4))
-      
-    )
+      fluidRow(column(br(),
+                      (h3("Average Curriculum for Excellence Level Achieved",
+                                      align = "center")),
+                      withSpinner(plotlyOutput(ns("bar_chart"))), 
+                      width = 7),
+               
+               
+               # Attainment BGE Doughnut Chart
+               column(br(),withSpinner(girafeOutput(ns("donut_plot"))), 
+                      width = 4))
+    ))
     
-  )
-  )
+  
+  
     
 }
 
@@ -97,7 +100,7 @@ primary_attainment_server <- function(input, output, session, data) {
                                       "1st level",
                                       "2nd level",
                                       "3rd level or better")) + 
-        ggtitle("Average curriculum for excellence level achieved"),
+        ggtitle(""),
       tooltip = "text"
     )%>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -141,7 +144,7 @@ primary_attainment_server <- function(input, output, session, data) {
       theme_void() +
       theme(plot.title = element_text(size = 16, hjust = 0.5)) +
       ggtitle(str_wrap(
-        "Percentage of students meeting curriculum for excellence level",
+        "Percentage of Students Meeting Curriculum for Excellence Level",
         width = 30))
     
     girafe(
