@@ -19,9 +19,13 @@ sidebar_ui <- function(id, la_names) {
     ),
     
     # Smarter Scotland Logo
-    HTML(paste0("<center>", 
-                img(src = "smarter-scotland.jpg", width = 220, alt = "Smarter Scotland logo"),
-                "</center>")),
+    tags$a(
+      href="https://statistics.gov.scot/home", 
+      tags$img(src = "smarter-scotland.jpg", 
+                    width = 220, 
+                    alt = "Smarter Scotland logo with a link to scotland statistics page", 
+                    ))
+          ,
     br(),
     
     # Text instruction to use dropdown filers
