@@ -7,6 +7,9 @@
 data/
 app/*_data/
 
+# App deployment #
+app/rsconnect/
+
 # Common text files that may contain data #
 *.[cC][sS][vV]
 *.[tT][xX][tT]
