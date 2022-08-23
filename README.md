@@ -30,3 +30,8 @@ _Links to the dashboards will be added when published._
 * Secondary School Information Dashboard
 
 * Special School Information Dashboard
+
+
+## Licence
+
+This repository is available under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
