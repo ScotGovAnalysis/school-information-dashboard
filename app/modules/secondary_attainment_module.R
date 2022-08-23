@@ -9,182 +9,229 @@ secondary_attainment_ui <- function(id, year_options) {
   fluidRow(
     
     section_header_output(ns("sec_attain_profile")),
-    
            
     box(
       
-            title = NULL,
+      title = NULL,
       width = 12,
       collapsible = TRUE,
       
-      
-      
-      column(h3("Use the menu below to select the attainment measure you wish to see"), width = 10),
-      
-      column(br(),
-             download_data_ui(ns("download")),width = 2),
-      
-      
-     
-      
-    fluidRow(
-    column(h3(
-      menuItem("Attainment measure selection", tabName = "dashboard",startExpanded = TRUE, collapsible = FALSE,
-               menuSubItem("Ciriculum for Excellence", tabName = "CfE"),
-               menuSubItem("Leavers' Breadth and Depth Profile", tabName = "level_awards"),
-               menuSubItem("Percentage of School Leavers Gaining SCQF Credited Awards", tabName = "SCQF_awards"),
-               menuSubItem("School Leavers Summary", tabName = "leavers_summary"),
-               menuSubItem("School Leavers by SIMD", tabName = "leavers_SIMD"),
-               menuSubItem("School Leavers Litteracy and Numeracy", tabName = "litteracy_and_numeracy"),colour = "navy")),width = 7)),
-
-
-      #Dropdown Filte - for years
-      
-      column(selectInput(ns("year"), 
-                         label = "Select year",
-                         choices = year_options,
-                         selected = year_options[max_year]), 
-             width = 6, br(), br(),
+      column(
+        selectInput(
+          inputId = ns("measure"),
+          label = "Select attainment measure",
+          choices = c(
+            "Curriculum for Excellence",
+            "Leavers Breadth and Depth Profile",
+            "Percentage of School Leavers Gaining SCQF Credited Awards",
+            "School Leavers Summary",
+            "School Leavers by SIMD",
+            "School Leavers Literacy and Numeracy"
+          )
+        ),
+        width = 5
       ),
       
-      
-      #Dropdown Filter - Attainment type
-      tabItems(
+      column(
         
-        #BGE data by stage
-        tabItem("CfE",title= "Ciriculum for Excellence",
-                
-                
-                
-                
-                
-                # Attainment BGE Doughnut Chart
-                fluidRow(column(h3("Percentage of students meeting
-              curriculum for excellence
-              level"), width = 12)),
-                fluidRow(column(br(),withSpinner(
-                  girafeOutput(ns("donut_reading"))),width = 6),
-                  column(br(),withSpinner(girafeOutput(ns("donut_writing"))),width = 6)),
-                
-                fluidRow(column(withSpinner(girafeOutput(ns("donut_listening"))),width = 6),
-                         column(withSpinner(girafeOutput(ns("donut_numeracy"))),width = 6))), 
-        
-        
-        
-        
-        
-        
-        #SCQF across levels and years
-        tabItem("level_awards",title= "Percentage of Leavers Attainming 1 or more awards",
-                
-                #Dropdown Filte - Number of awards
-                column(selectInput(ns("minimum_scqf_level"), 
-                                   label = "Select the SCQF level you are interested in",
-                                   choices = paste("SCQF Level", 
-                                                   c("1", "2", "3", "4", "5",
-                                                     "6", "7", "8", "9", "10"),
-                                                   "or better"),
-                                   selected = "1"), 
-                       width = 12),
-                
-                
-                br(),
-                
-                # Attainment BGE Bar Chart
-                column(withSpinner(uiOutput(ns("scqf_level"))),
-                       withSpinner(plotlyOutput(ns("breadth_depth"))), 
-                       width = 12)       
-                
+        conditionalPanel(
+          condition = "input.measure != 'Leavers Breadth and Depth Profile'",
+          selectInput(ns("year"), 
+                      label = "Select year",
+                      choices = year_options,
+                      selected = year_options[max_year]),
+          ns = ns
         ),
         
-        
-        
-        tabItem("SCQF_awards", title= "Percentage of School Leavers Gaining SCQF Credited Awards",
-                
-                #Title
-                column(h3("Percentage of school leavers gaining SCQF credited awards"), width = 12),
-                # Attainment breadth and depth tables         
-                withSpinner(dataTableOutput(ns("breadth_depth_table"))),
-                br(),
-                h3("Percentage of school leavers gaining SCQF credited awards (virtual comparator)"),
-                withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),
-                
+        conditionalPanel(
+          condition = "input.measure == 'Leavers Breadth and Depth Profile'",
+          selectInput(
+            ns("minimum_scqf_level"),
+            label = "Select minimum SCQF level",
+            choices = paste("SCQF Level", 1:10, "or better")
+          ),
+          ns = ns
         ),
         
-        
-        
-        
-        tabItem("leavers_summary", title= "School Leavers Summary",
-                
-                
-                column(h3("Percentage of leavers in a positive destination",
-                          align = "center"),
-                
-                # Attainment leavers destination chart
-                br(),withSpinner(plotlyOutput(ns("leavers_dest_chart"))), 
-                       width = 12),
-                
-                # Attainment leavers total tariff chart
-                column(h3("Percentage of leavers in a positive destination",
-                          align = "center"),
-                br(),withSpinner(plotlyOutput(ns("leavers_tariff_chart"))), 
-                       width = 12)),
-        
-        
-       
-        
-        
-        
-        tabItem("leavers_SIMD", title= "School Leavers by SIMD",
-                column(width = 12),
-                
-                column(h3("School leavers attainment by SIMD", align = "center"),    
-                
-                # Attainment leavers deprivation chart
-                br(),withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),width = 6,),
-                
-                # Attainment leavers SIMD chart
-                
-                column(h3("School leavers by SIMD", align = "center"), 
-                br(),withSpinner(plotlyOutput(ns("leavers_simd_chart"))), width = 6)
-        ),
-        
-        
-        
-        tabItem("litteracy_and_numeracy", title= "School Leavers Litteracy and Numeracy",
-                
-                br(),
-                
-                
-                
-                # Attainment literacy and numeracy chart
-                column(h3("Percentage of school leavers' achieving Litteracy and Numeracy",
-                          align = "center"),
-                       withSpinner(plotlyOutput(ns("lit_num"))), 
-                       width = 12),
-                
-                # Attainment literacy chart
-                column(h3("Percentage of school leavers' achieving Litteracy",
-                          align = "center"), 
-                       withSpinner(plotlyOutput(ns("literacy"))),
-                       width = 6),
-                # Attainment numeracy chart          
-                column(h3("Percentage of school leavers' achieving Numeracy",
-                          align = "center"), 
-                       withSpinner(plotlyOutput(ns("numeracy"))),
-                       width = 6)
-                
-        )
-        
-        
-      ))
-  )
-  
-  
+        width = 5
+      ),
 
-  
-  
-  
+      column(
+        br(),
+        download_data_ui(ns("download")),
+        width = 2
+      ),
+      
+      # Curriculum for Excellence
+      
+      conditionalPanel(
+        condition = "input.measure == 'Curriculum for Excellence'",
+        
+        conditionalPanel(
+          condition = "['2019/20', '2020/21'].includes(input.year)",
+          column(
+            h4("Curriculum for Excellence performance data was not collected ",
+               "in 2019/20 or 2020/21 due to the impact of the ",
+               "COVID-19 pandemic."),
+            br(),
+            br(),
+            br(),
+            width = 12
+          ),
+          ns = ns
+        ),
+        
+        conditionalPanel(
+          condition = "!['2019/20', '2020/21'].includes(input.year)",
+          
+          column(
+            h3(paste("Percentage of students meeting",
+                     "curriculum for excellence level"),
+               align = "center"), 
+            width = 12
+          ),
+          
+          column(
+            br(),
+            withSpinner(girafeOutput(ns("donut_reading"))),
+            withSpinner(girafeOutput(ns("donut_listening"))),
+            width = 6
+          ),
+          
+          column(
+            br(),
+            withSpinner(girafeOutput(ns("donut_writing"))),
+            withSpinner(girafeOutput(ns("donut_numeracy"))),
+            width = 6
+          ),
+          
+          ns = ns
+        ),
+        
+        ns = ns
+      
+      ),
+      
+      # Leavers' Breadth and Depth Profile
+      
+      conditionalPanel(
+        condition = "input.measure == 'Leavers Breadth and Depth Profile'",
+        
+        # Attainment BGE Bar Chart
+        column(
+          withSpinner(uiOutput(ns("scqf_level"))),
+          withSpinner(plotlyOutput(ns("breadth_depth"))),
+          width = 12
+        ),
+        
+        ns = ns
+      ),
+      
+      # Percentage of School Leavers Gaining SCQF Credited Awards
+      
+      conditionalPanel(
+        condition = "input.measure == 'Percentage of School Leavers Gaining SCQF Credited Awards'",
+        
+        column(
+          
+          h3("Percentage of school leavers gaining SCQF credited awards"), 
+          withSpinner(dataTableOutput(ns("breadth_depth_table"))),
+          
+          br(),
+          
+          h3("Percentage of school leavers gaining SCQF ",
+             "credited awards (virtual comparator)"),
+          withSpinner(dataTableOutput(ns("breadth_depth_vc_table"))),
+          
+          width = 12
+        ),
+        
+        ns = ns
+      ),
+      
+      # School Leavers Summary
+      
+      conditionalPanel(
+        condition = "input.measure == 'School Leavers Summary'",
+        
+        column(
+          
+          # Attainment leavers destination chart
+          h3("Percentage of leavers in a positive destination",
+             align = "center"),
+          br(),
+          withSpinner(plotlyOutput(ns("leavers_dest_chart"))),
+          
+          # Attainment leavers total tariff chart
+          h3("Percentage of leavers in a positive destination",
+             align = "center"),
+          br(),
+          withSpinner(plotlyOutput(ns("leavers_tariff_chart"))),
+          
+          width = 12),
+
+        ns = ns
+      ),
+      
+      # School Leavers by SIMD
+      
+      conditionalPanel(
+        condition = "input.measure == 'School Leavers by SIMD'",
+        
+        # Attainment leavers deprivation chart
+        column(
+          h3("School leavers attainment by SIMD", align = "center"),
+          br(),
+          withSpinner(plotlyOutput(ns("leavers_deprivation_chart"))),
+          width = 6
+        ),
+        
+        # Attainment leavers SIMD chart
+        column(
+          h3("School leavers by SIMD", align = "center"),
+          br(),
+          withSpinner(plotlyOutput(ns("leavers_simd_chart"))), 
+          width = 6
+        ),
+        
+        ns = ns
+      ),
+      
+      # School Leavers Literacy and Numeracy
+      
+      conditionalPanel(
+        condition = "input.measure == 'School Leavers Literacy and Numeracy'",
+        
+        # Attainment literacy and numeracy chart
+        column(
+          h3("Percentage of school leavers' achieving Literacy and Numeracy",
+             align = "center"),
+          withSpinner(plotlyOutput(ns("lit_num"))),
+          width = 12
+        ),
+        
+        # Attainment literacy chart
+        column(
+          h3("Percentage of school leavers' achieving Literacy",
+             align = "center"),
+          withSpinner(plotlyOutput(ns("literacy"))),
+          width = 6
+        ),
+        
+        # Attainment numeracy chart
+        column(
+          h3("Percentage of school leavers' achieving Numeracy",
+             align = "center"),
+          withSpinner(plotlyOutput(ns("numeracy"))),
+          width = 6
+        ),
+        
+        ns = ns
+      )
+      
+    )
+    
+  )
   
 }
 
@@ -194,100 +241,9 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   callModule(download_data_server, "download", "Attainment Profile", data)
   
-  
-  
-  #Breadth and depth output
-  output$breadth_depth <- renderPlotly({
-    
-    ggplotly(
-      data() %>%
-        filter(dataset == "breadth_depth"
-               & minimum_scqf_level == str_extract(input$minimum_scqf_level, "\\d")
-               & minimum_number_of_awards == "1") %>% 
-        mutate(comparator = ifelse(comparator=="0","School/Area","VC"),
-               minimum_scqf_level = str_c("SCQF level ",minimum_scqf_level, " or better")) %>%
-        ggplot(aes(year, 
-                   value, 
-                   group = 1,
-                   colour = comparator,
-                   text = paste0("Year: ", year, "<br>",
-                                 value_label, "%"))) + 
-        geom_line() +
-        geom_text_repel(aes(label = paste(value_label,"%")),
-                        na.rm = TRUE,
-                        nudge_x = 0,
-                        check_overlap = TRUE) +
-        scale_color_manual(values=c("#3182bd", "#9ecae1")) +
-        scale_y_continuous(limits = c(0,NA)) + 
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        labs(x = "Academic Year", y = "% of Leavers", fill = NULL),
-      tooltip = "text"
-    ) %>%
-      config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
-    
-  })
-  
-  
-  output$scqf_level <- renderUI({
-    
-    list(
-      h3("Pupils achivening ", input$minimum_scqf_level, " by Year", align = "center"))
-    
-  })
-  
-  
-  
-  #breadth and depth tables 
-  
-  #school
-  output$breadth_depth_table <- renderDataTable({
-    
-    table_data_1 <-
-      data() %>%
-      filter(dataset == "breadth_depth" & comparator == "0" & year == input$year) %>% 
-      select(year, seed_code, la_code, school_name, minimum_scqf_level, `Minimum number of awards` = minimum_number_of_awards, value_label)%>% 
-      mutate(`Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
-             minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
-      pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
-    rownames = FALSE,
-    options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
-                                                list(targets = c(0,1,2,3), visible = FALSE)))
-    
-    
-  )
-  
-  
-  
-  #comparator
-  output$breadth_depth_vc_table <- renderDataTable({
-    
-    table_data_2 <-
-      data() %>%
-      filter(dataset == "breadth_depth" & comparator == "1" & year == input$year) %>% 
-      select(year, seed_code, la_code, school_name, minimum_scqf_level, `Minimum number of awards` = minimum_number_of_awards, value_label) %>% 
-      mutate(`Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
-             minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
-      pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
-    rownames = FALSE,
-    options = list(dom = 't', columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
-                                                list(targets = c(0,1,2,3), visible = FALSE)))
-    
-    
-  )
-  
-  
-  
-  #Doughnut charts
+  # Curriculum for Excellence ----
   
   output$donut_reading <- renderGirafe({
-    validate(
-      need(input$year != "2019/20",
-           "            Meeting curriculum for excellence level in reading was not collected in this year due to the impact of the COVID-19 pandemic"),
-           need(input$year != "2020/21",
-           "            Meeting curriculum for excellence level in reading was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -334,13 +290,7 @@ secondary_attainment_server <- function(input, output, session, data) {
   })
   
   
-  
   output$donut_writing <- renderGirafe({
-    validate(
-      need(input$year != "2019/20",
-           "            Meeting curriculum for excellence level in writing was not collected in this year due to the impact of the COVID-19 pandemic"),
-      need(input$year != "2020/21",
-           "            Meeting curriculum for excellence level in writing was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -386,15 +336,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   })   
   
-  
-  
-  
   output$donut_listening <- renderGirafe({
-    validate(
-      need(input$year != "2019/20",
-           "            Meeting curriculum for excellence level in listening was not collected in this year due to the impact of the COVID-19 pandemic"),
-      need(input$year != "2020/21",
-           "            Meeting curriculum for excellence level in listening was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -442,11 +384,6 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   
   output$donut_numeracy <- renderGirafe({
-    validate(
-      need(input$year != "2019/20",
-           "            Meeting curriculum for excellence level in numeracy was not collected in this year due to the impact of the COVID-19 pandemic"),
-      need(input$year != "2020/21",
-           "            Meeting curriculum for excellence level in numeracy was not collected in this year due to the impact of the COVID-19 pandemic" ))
     acel_data <-
       data() %>%
       filter(dataset == "acel" 
@@ -493,7 +430,93 @@ secondary_attainment_server <- function(input, output, session, data) {
   })               
   
   
-  #Leavers destinations bar chart
+  # Leavers Breadth and Depth Profile ----
+  
+  output$scqf_level <- renderUI({
+      h3("Pupils achieving ", input$minimum_scqf_level, " by Year", 
+         align = "center")
+  })
+  
+  output$breadth_depth <- renderPlotly({
+    
+    ggplotly(
+      data() %>%
+        filter(dataset == "breadth_depth"
+               & minimum_scqf_level == str_extract(input$minimum_scqf_level, "\\d")
+               & minimum_number_of_awards == "1") %>% 
+        mutate(comparator = ifelse(comparator=="0","School/Area","VC"),
+               minimum_scqf_level = str_c("SCQF level ",minimum_scqf_level, " or better")) %>%
+        ggplot(aes(year, 
+                   value, 
+                   group = 1,
+                   colour = comparator,
+                   text = paste0("Year: ", year, "<br>",
+                                 value_label, "%"))) + 
+        geom_line() +
+        geom_text_repel(aes(label = paste(value_label,"%")),
+                        na.rm = TRUE,
+                        nudge_x = 0,
+                        check_overlap = TRUE) +
+        scale_color_manual(values=c("#3182bd", "#9ecae1")) +
+        scale_y_continuous(limits = c(0,NA)) + 
+        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+        labs(x = "Academic Year", y = "% of Leavers", fill = NULL),
+      tooltip = "text"
+    ) %>%
+      config(displayModeBar = F, responsive = FALSE) %>% 
+      
+      layout(xaxis=list(fixedrange=TRUE)) %>% 
+      layout(yaxis=list(fixedrange=TRUE))
+    
+  })
+  
+  
+  # Percentage of School Leavers Gaining SCQF Credited Awards ----
+  
+  #school
+  output$breadth_depth_table <- renderDataTable({
+    
+    table_data_1 <-
+      data() %>%
+      filter(dataset == "breadth_depth" & comparator == "0" & year == input$year) %>% 
+      select(year, seed_code, la_code, school_name, minimum_scqf_level, 
+             `Minimum number of awards` = minimum_number_of_awards, 
+             value_label) %>% 
+      mutate(
+        `Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
+        minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")
+      ) %>%
+      pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
+    
+    rownames = FALSE,
+    options = list(dom = 't', 
+                   columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
+                                     list(targets = c(0,1,2,3), visible = FALSE)))
+    
+  )
+  
+  #comparator
+  output$breadth_depth_vc_table <- renderDataTable({
+    
+    table_data_2 <-
+      data() %>%
+      filter(dataset == "breadth_depth" & comparator == "1" & year == input$year) %>% 
+      select(year, seed_code, la_code, school_name, minimum_scqf_level, `Minimum number of awards` = minimum_number_of_awards, value_label) %>% 
+      mutate(`Minimum number of awards` = str_c(`Minimum number of awards`, " or more awards"), 
+             minimum_scqf_level = str_c("SCQF level ", minimum_scqf_level, " or better")) %>%
+      pivot_wider(names_from = "minimum_scqf_level", values_from = "value_label")}, 
+    
+    rownames = FALSE,
+    options = list(dom = 't', 
+                   columnDefs = list(list(targets = '_all', className = 'dt-center', orderable = FALSE),
+                                     list(targets = c(0,1,2,3), visible = FALSE)))
+    
+  )
+  
+  
+  # School Leavers Summary ----
+  
+  # Leavers destinations bar chart
   output$leavers_dest_chart <- renderPlotly({
     
     ggplotly(
@@ -527,7 +550,7 @@ secondary_attainment_server <- function(input, output, session, data) {
   })
   
   
-  # Leavers tariff chart <- renderPlotly({
+  # Leavers tariff chart
   output$leavers_tariff_chart <- renderPlotly({
     
     ggplotly(
@@ -563,8 +586,9 @@ secondary_attainment_server <- function(input, output, session, data) {
   })
   
   
+  # School Leavers by SIMD ----
   
-  # Leavers deprivation chart <- renderPlotly({
+  # Leavers deprivation chart
   output$leavers_deprivation_chart <- renderPlotly({
     
     ggplotly(
@@ -601,9 +625,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   })
   
-  
-  
-  # Leavers by SIMD chart <- renderPlotly({
+  # Leavers by SIMD chart
   output$leavers_simd_chart <- renderPlotly({
     
     ggplotly(
@@ -642,7 +664,10 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   })
   
-  # Leavers literacy and numeracy chart<- renderPlotly({
+  
+  # School Leavers Literacy and Numeracy ----
+  
+  # Leavers literacy and numeracy chart
   output$lit_num <- renderPlotly({
     
     ggplotly(
@@ -678,7 +703,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   })
   
-  # Leavers literacy chart<- renderPlotly({
+  # Leavers literacy chart
   output$literacy <- renderPlotly({
     
     ggplotly(
@@ -714,7 +739,7 @@ secondary_attainment_server <- function(input, output, session, data) {
     
   }) 
   
-  # Leavers numeracy chart <- renderPlotly({
+  # Leavers numeracy chart
   output$numeracy <- renderPlotly({
     
     ggplotly(
@@ -749,8 +774,6 @@ secondary_attainment_server <- function(input, output, session, data) {
       layout(yaxis=list(fixedrange=TRUE))
     
   })
-  
-  
-  
+
   
 }
