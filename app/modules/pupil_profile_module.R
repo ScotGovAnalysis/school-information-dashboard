@@ -1,12 +1,12 @@
 
-pupil_profile_ui <- function(id, school_type) {
+pupil_profile_ui <- function(id) {
   
   # Initiate namespace for module
   ns <- NS(id)
   
-  fluidRow(
+  tagList(
     
-    section_header_output(ns("pupil")),
+    section_header_output(ns("header")),
     
     box(
       
@@ -15,117 +15,90 @@ pupil_profile_ui <- function(id, school_type) {
       collapsible = FALSE,
       
       column(width = 10),
-      column(br(),download_data_ui(ns("download")), width = 2),
       
-      column(withSpinner(plotlyOutput(ns("chart1"))), width = 12),
-      column(if(school_type != "Special")
-        {withSpinner(plotlyOutput(ns("chart2")))}
-        else{withSpinner(plotlyOutput(ns("chart2_special")))}
-        , width = 12)
+      column(
+        br(),
+        download_data_ui(ns("download")), 
+        width = 2
+      ),
+      
+      column(
+        withSpinner(plotlyOutput(ns("chart1"))),
+        withSpinner(plotlyOutput(ns("chart2"))),
+        width = 12
+      )
       
     )
     
-    
-  
   )
   
 }
 
-pupil_profile_server <- function(input, output, session, data) {
+pupil_profile_server <- function(input, output, session, data, school_type) {
   
-  callModule(section_header_server,  "pupil", "Pupil", box_colour = "navy")
+  callModule(section_header_server, "header", "Pupil", box_colour = "navy")
   
   callModule(download_data_server, "download", "Pupil Profile", data)
   
   output$chart1 <- renderPlotly({
     
-    ggplotly(
+    chart1 <- 
       data() %>%
         filter(measure_category %in% 
                  c("sex", "stage", "deprivation")) %>%
         mutate(value = replace_na(value, 0)) %>%
         ggplot() + 
-        geom_col(aes(measure, 
-                     value, 
+        geom_col(aes(x = measure, y = value, 
                      text = paste0("Measure: ", measure, "<br>",
                                    "% of Pupils: ", value_label))) +
         geom_text(aes(x = measure, y = value, label = trimws(value_label)),
                   hjust = 0.5, nudge_y = 5) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-	scale_y_continuous(limits = c(0, NA)) +
+        scale_y_continuous(limits = c(0, NA)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         labs(x = NULL , y = NULL) +
         theme(axis.text.y = element_blank(),
               axis.ticks.y = element_blank(),
-              axis.line.y = element_blank()),
-      tooltip = "text"
-    ) %>%
+              axis.line.y = element_blank())
+    
+    ggplotly(chart1, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      layout(xaxis = list(fixedrange = TRUE),
+             yaxis = list(fixedrange = TRUE))
     
   })
+  
+  c2_measures <- c("english_additional_language", "ethnicity", "urban_rural")
+  
+  if(school_type != "Special") {
+    c2_measures <- c(c2_measures, 
+                     "free_school_meals", "additional_support_needs")
+  }
   
   output$chart2 <- renderPlotly({
     
-    ggplotly(
+    chart2 <-
       data() %>%
-        filter(measure_category %in% 
-                 c("free_school_meals", "additional_support_needs",
-                   "english_additional_language", "ethnicity", 
-                   "urban_rural")) %>%
-        ggplot() + 
-        geom_col(aes(measure, 
-                     value, 
-                     text = paste0("Measure: ", measure, "<br>",
-                                   "% of Pupils: ", value_label))) +
-        geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
-                  hjust = 0.5, nudge_y = 5) +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-	scale_y_continuous(limits = c(0, NA)) +
-        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL) +
-        theme(axis.text.y = element_blank(),
-              axis.ticks.y = element_blank(),
-              axis.line.y = element_blank()),
-      tooltip = "text"
-    ) %>%
-      config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      filter(measure_category %in% c2_measures) %>%
+      ggplot() + 
+      geom_col(aes(measure, 
+                   value, 
+                   text = paste0("Measure: ", measure, "<br>",
+                                 "% of Pupils: ", value_label))) +
+      geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
+                hjust = 0.5, nudge_y = 5) +
+      theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+      scale_y_continuous(limits = c(0, NA)) +
+      scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+      labs(x = NULL , y = NULL) +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            axis.line.y = element_blank())
     
-  })
-  
-  
-  output$chart2_special <- renderPlotly({
-    
-    ggplotly(
-      data() %>%
-        filter(measure_category %in% 
-                 c("english_additional_language", "ethnicity", 
-                   "urban_rural")) %>%
-        ggplot() + 
-        geom_col(aes(measure, 
-                     value, 
-                     text = paste0("Measure: ", measure, "<br>",
-                                   "% of Pupils: ", value_label))) +
-        geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
-                  hjust = 0.5, nudge_y = 5) +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-	scale_y_continuous(limits = c(0, NA)) +
-        labs(x = NULL , y = NULL) +
-        theme(axis.text.y = element_blank(),
-              axis.ticks.y = element_blank(),
-              axis.line.y = element_blank()),
-      tooltip = "text"
-    ) %>%
+    ggplotly(chart2, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      layout(xaxis = list(fixedrange = TRUE), 
+             yaxis = list(fixedrange = TRUE))
     
   })
   
