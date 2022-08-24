@@ -4,9 +4,18 @@ population_ui <- function(id,  school_type) {
   # Initiate namespace for module
   ns <- NS(id)
   
+  # Measure options dependent on school_type
+  pop_measures <- c(
+    "Pupil Numbers", "Teacher Numbers (FTE)", "Pupil Teacher Ratio"
+  )
+  
+  if(school_type == "Primary") {
+    pop_measures <- c(pop_measures, "Average Class")
+  }
+  
   fluidRow(
     
-    section_header_output(ns("population_profile")),
+    section_header_output(ns("header")),
     
     box(
       
@@ -14,81 +23,65 @@ population_ui <- function(id,  school_type) {
       width = 12,
       collapsible = TRUE,
       
-      
-      
-      
-      column(br(),width = 10,
-      
       # Dropdown to select population measure
-      if(school_type != "Primary")
-        
-        {selectInput(ns("measure_filter"), 
-                  label = "Select population measure",
-                  choices = c("Pupil Numbers", 
-                              "Teacher Numbers (FTE)",
-                              "Pupil Teacher Ratio"),
-                  selected = "Pupil Numbers")}
-      else{selectInput(ns("measure_filter"), 
-                       label = "Select population measure",
-                       choices = c("Pupil Numbers", 
-                                   "Teacher Numbers (FTE)",
-                                   "Pupil Teacher Ratio", 
-                                   "Average Class"),
-                       selected = "Pupil Numbers")}
+      column(
+        selectInput(ns("measure_filter"), 
+                     label = "Select population measure",
+                     choices = pop_measures,
+                     selected = "Pupil Numbers"),
+        width = 10
       ),
       
-      #add download button
-      column(br(),br(),
-             download_data_ui(ns("download")), width = 2),
+      # Download button
+      column(
+        br(),
+        download_data_ui(ns("download")), 
+        width = 2
+      ),
       
       # Population Trend Line Chart
-      fluidRow(column(br(),
-                      withSpinner(uiOutput(ns("population_title"))),
-                      
-                      withSpinner(
-                      plotlyOutput(ns("trend"))),width = 12)
-                              ),
-    
-    column(br(), width = 12),
-    br()
-    
+      column(
+        withSpinner(uiOutput(ns("chart_title"))),
+        withSpinner(plotlyOutput(ns("chart"))),
+        br(),
+        width = 12
+      )
+      
     )
+    
   )
   
 }
 
 population_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "population_profile", "Population")
+  callModule(section_header_server, "header", "Population")
   callModule(download_data_server, "download", "Population Profile", data)
   
-  output$trend <- renderPlotly({
-    
-    ggplotly(
-      data() %>%
-        filter(measure == input$measure_filter) %>%
-        ggplot(aes(year, 
-                   value, 
-                   group = 1,
-                   text = paste0("Year: ", year, "<br>",
-                                 input$measure_filter, ": ", value_label))) + 
-        geom_line() +
-        scale_y_continuous(limits = c(0,NA)) +
-        labs(x = "Year", y = input$measure_filter),
-      tooltip = "text"
-    )%>%
-      config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
-    
+  output$chart_title <- renderUI({
+      h3(input$measure_filter, " by Year", align = "center")
   })
   
-  
-  output$population_title <- renderUI({
+  output$chart <- renderPlotly({
     
-   list(
-      h3(input$measure_filter, " by Year", align = "center"))
+    plot <- 
+      data() %>%
+      filter(measure == input$measure_filter) %>%
+      ggplot(aes(
+        x = year, y = value, 
+        group = 1,
+        text = paste0("Year: ", year, "<br>",
+                      input$measure_filter, ": ", value_label)
+      )) + 
+      geom_line() +
+      scale_y_continuous(limits = c(0, NA)) +
+      labs(x = "Year", y = input$measure_filter)
+    
+    ggplotly(plot, tooltip = "text") %>%
+      config(displayModeBar = F, 
+             responsive = FALSE) %>% 
+      layout(xaxis = list(fixedrange = TRUE),
+             yaxis = list(fixedrange = TRUE))
     
   })
   
