@@ -72,7 +72,7 @@ contacts <-
   ) %>%
   
   # Add LA Website
-  left_join(here("lookups", "la_websites.xlsx") %>% 
+  left_join(here("lookups", "local_authorities.xlsx") %>% 
               read_xlsx(col_type = "text") %>% 
               select(la_code, la_website, la_postcode = postcode),
             by = "la_code") %>%
@@ -292,13 +292,36 @@ attendance <-
            recode_missing_values(attendance, label = TRUE, label_perc = TRUE))
 
 
-### 6 - Join data together into full school_profile dataset ----
+### 6 - Latitude and longitude ----
+
+adm_connect <- 
+  dbConnect(
+    drv = odbc(), 
+    uid = askForPassword("Enter your username:"),
+    .connection_string = 
+      paste0("Driver={SQL Server};",
+             "SERVER=", readLines(here("lookups", "adm_server.txt")), ";",
+             "DATABASE=StructuredData;",
+             "Trusted_Connection=Yes;", 
+             "Description=StructuredData")
+  )
+
+map <- lat_long(adm_connect, contacts$postcode)
+
+dbDisconnect(adm_connect)
+
+
+### 7 - Join data together into full school_profile dataset ----
 
 school_profile <-
   
   # Start with school contact data - this is already filtered and standardised
   # against the school_lookup file
   contacts %>%
+  
+  # Join latitude / longitude data
+  left_join(map, by = "postcode") %>%
+  select(-postcode) %>%
   
   # Join estate data
   left_join(estate, by = c("seed_code", "school_type")) %>%
@@ -320,7 +343,7 @@ school_profile <-
   arrange(as.numeric(la_code), nchar(seed_code), school_name)
 
 
-### 7 - Save data files ----
+### 8 - Save data files ----
 
 # Primary
 

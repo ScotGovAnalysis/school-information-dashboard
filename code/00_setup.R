@@ -71,6 +71,8 @@ library(stringr)
 library(tidyr)
 library(purrr)
 library(rlang)
+library(rstudioapi)
+library(odbc)
 
 # Load functions from functions folder of Rproject
 

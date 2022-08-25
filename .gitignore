@@ -6,9 +6,13 @@
 # data folders #
 data/
 app/*_data/
+lookups/school_lookup/
 
 # App deployment #
 app/rsconnect/
+
+# Server info #
+adm_server.txt
 
 # Common text files that may contain data #
 *.[cC][sS][vV]
@@ -22,5 +26,5 @@ app/rsconnect/
 *.[rR][dD][sS]
 
 # Exceptions #
-!lookups/la_websites.xlsx
+!lookups/local_authorities.xlsx
 !app/modules/text_content/FAQ.xlsx
