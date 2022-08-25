@@ -24,9 +24,7 @@ source("00_shiny_setup.R")
 
 school_profile <- read_rds(
   paste0("special_data/", shiny_run_label, "/special_school_profile.rds")
-) %>%
-  # TEMP - This can be removed when lat and long added to school profile data
-  mutate(lat = 1, long = 1)
+)
 
 attendance <- read_rds(
   paste0("special_data/", shiny_run_label, "/special_attendance.rds")
@@ -94,11 +92,12 @@ ui <-
         school_profile_output("school_profile", "Special"),
           
         # School Profile Value Boxes 
-        school_value_box_output("school_profile_boxes", "Special")
+        school_value_box_output("school_profile_boxes", "Special"),
+        
+        pupil_profile_ui("pupil_profile")
         
       ),
       
-      pupil_profile_ui("pupil_profile", "Special"),
       attendance_ui("attendance", "Special"),
       population_ui("population", "Special")
       
@@ -148,7 +147,7 @@ server <- function(input, output, session) {
   callModule(school_value_box_server, "school_profile_boxes", school_profile_filtered)
   
   # Pupil Profile
-  callModule(pupil_profile_server, "pupil_profile", population_filtered)
+  callModule(pupil_profile_server, "pupil_profile", population_filtered, "Special")
   
   # Attendance
   callModule(attendance_server, "attendance", attendance_filtered)
