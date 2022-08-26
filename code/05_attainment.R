@@ -42,7 +42,11 @@ insight <-
   # Recode missing values and add value label
   mutate(
     number_of_leavers = recode_missing_values(number_of_leavers),
-    value_label = recode_missing_values(value, label = TRUE),
+    value_label = recode_missing_values(
+      value, 
+      label = TRUE,
+      label_perc = ifelse(str_detect(measure, "[Pp]ercentage"), TRUE, FALSE)
+    ),
     value = recode_missing_values(value)
   )
   
