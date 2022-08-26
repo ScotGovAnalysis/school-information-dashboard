@@ -717,7 +717,7 @@ secondary_attainment_server <- function(input, output, session, data) {
           value,
           fill = comparator,
           text = paste0("School: ",
-                        ifelse(comparator == 0,
+                        ifelse(comparator == "School/Area",
                                school_name,
                                "Virtual Comparator"),
                         "<br>",
