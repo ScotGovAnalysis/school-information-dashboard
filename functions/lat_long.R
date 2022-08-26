@@ -76,7 +76,9 @@ lat_long <- function(adm_connection, postcodes) {
              ")")
     ) %>%
     tibble::as_tibble() %>%
-    magrittr::set_names(c("postcode", "easting", "northing")) 
+    magrittr::set_names(c("postcode", "easting", "northing")) %>%
+    dplyr::mutate(postcode = trimws(postcode)) %>%
+    dplyr::mutate(dplyr::across(c(easting, northing), as.numeric))
   
   # If no postcodes are returned from data extract, produce an error
   if(nrow(extract) == 0) {
@@ -94,8 +96,6 @@ lat_long <- function(adm_connection, postcodes) {
   
   # Convert easting/northing to latitude/longitude
   extract %>%
-    dplyr::mutate(postcode = trimws(postcode)) %>%
-    dplyr::mutate(dplyr::across(c(easting, northing), as.numeric)) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(latitude = convert_coordinates(easting, northing, "lat"),
            longitude = convert_coordinates(easting, northing, "long")) %>%

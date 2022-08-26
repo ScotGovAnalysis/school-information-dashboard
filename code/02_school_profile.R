@@ -294,6 +294,9 @@ attendance <-
 
 ### 6 - Latitude and longitude ----
 
+## Extract latitude and longitude for postcodes from ADM Server
+## This data is used to plot LA/Schools on map in apps
+
 adm_connect <- 
   dbConnect(
     drv = odbc(), 
