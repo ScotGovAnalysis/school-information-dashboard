@@ -25,6 +25,17 @@ school_lookup <- read_rds(
   here("lookups", "school_lookup", paste0(run_label, "_school_lookup.rds"))
 )
 
+## Local Authorities with less than 5 schools
+## Extra disclosure control will be applied to LA level data
+
+small_la <- 
+  school_lookup %>%
+  filter(seed_code != la_code) %>%
+  group_by(school_type, la_code) %>%
+  summarise(n_schools = n(), small_la = 1, .groups = "drop") %>%
+  filter(n_schools < 5) %>%
+  select(-n_schools)
+
 
 ### 1 - School Summary data ----
 
@@ -104,7 +115,8 @@ population <-
 ##    Suppress if less than 5, otherwise percentage of roll
 ## Measures other than Stage and Trend -
 ##    Suppress if roll <= 20, otherwise percentage of roll
-##    If school level data, convert to percentage banding
+##    If school level data or LA with less than 5 schools, 
+##    convert to percentage banding
 
 population %<>% 
   
@@ -124,24 +136,26 @@ population %<>%
     )
   ) %>%
   
+  # Add flag for LA with less than five schools
+  left_join(small_la, by = c("school_type", "seed_code" = "la_code")) %>%
+  
   # Apply percentage bandings to non stage and trend measures at school level
   mutate(
     value_label = case_when(
       !str_detect(measure_category, "(stage|trend)") & 
-        nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") ~
+        (nchar(seed_code) > 3 | small_la == 1) & 
+        !value_label %in% c("z", "x", "c") ~
         percentage_band(value),
       TRUE ~ value_label
     ),
     value = case_when(
       !str_detect(measure_category, "(stage|trend)") & 
-        nchar(seed_code) > 3 & !is.na(value) ~
+        (nchar(seed_code) > 3 | small_la == 1) & 
+        !value_label %in% c("z", "x", "c") ~
         percentage_band(value, numeric = TRUE),
       TRUE ~ value
     )
   ) %>%
-  
-  # Remove roll column as only needed for percentage calculations
-  select(-roll) %>%
   
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
