@@ -99,13 +99,19 @@ ui <-
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes", "Secondary"),
         
-        pupil_profile_ui("pupil_profile")
+        # Pupil Profile
+        pupil_profile_ui("pupil_profile"),
         
-      ),
-      
-      attendance_ui("attendance", "Secondary"),
-      population_ui("population", "Secondary"),
-      secondary_attainment_ui("attainment", unique(attainment$year))
+        # Attendance
+        attendance_ui("attendance", "Secondary"),
+        
+        # Population
+        population_ui("population", "Secondary"),
+        
+        # Attainment
+        secondary_attainment_ui("attainment", unique(attainment$year))
+        
+      )
       
     )
     

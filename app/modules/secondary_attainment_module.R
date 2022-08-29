@@ -6,7 +6,7 @@ secondary_attainment_ui <- function(id, year_options) {
   
   max_year <- which.max(as.numeric(substr(year_options, 1, 4)))
   
-  fluidRow(
+  tagList(
     
     section_header_output(ns("sec_attain_profile")),
            
