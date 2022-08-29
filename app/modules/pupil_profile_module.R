@@ -23,8 +23,8 @@ pupil_profile_ui <- function(id) {
       ),
       
       column(
-        withSpinner(plotlyOutput(ns("chart1"))),
-        withSpinner(plotlyOutput(ns("chart2"))),
+        withSpinner(plotlyOutput(ns("chart1"), height = 400)),
+        withSpinner(plotlyOutput(ns("chart2"), height = 440)),
         width = 12
       )
       
@@ -42,19 +42,20 @@ pupil_profile_server <- function(input, output, session, data, school_type) {
   
   output$chart1 <- renderPlotly({
     
+    req(nrow(data()) > 0)
+    
     chart1 <- 
       data() %>%
         filter(measure_category %in% 
                  c("sex", "stage", "deprivation")) %>%
         mutate(value = replace_na(value, 0)) %>%
-        ggplot() + 
-        geom_col(aes(x = measure, y = value, 
-                     text = paste0("Measure: ", measure, "<br>",
-                                   "% of Pupils: ", value_label))) +
+        ggplot(aes(text = paste0("Measure: ", measure, "<br>",
+                                 "% of Pupils: ", value_label))) + 
+        geom_col(aes(x = measure, y = value)) +
         geom_text(aes(x = measure, y = value, label = trimws(value_label)),
                   hjust = 0.5, nudge_y = 5) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        scale_y_continuous(limits = c(0, NA)) +
+        scale_y_continuous(limits = c(0, 105)) +
         scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         labs(x = NULL , y = NULL) +
         theme(axis.text.y = element_blank(),
@@ -77,18 +78,18 @@ pupil_profile_server <- function(input, output, session, data, school_type) {
   
   output$chart2 <- renderPlotly({
     
+    req(nrow(data()) > 0)
+    
     chart2 <-
       data() %>%
       filter(measure_category %in% c2_measures) %>%
-      ggplot() + 
-      geom_col(aes(measure, 
-                   value, 
-                   text = paste0("Measure: ", measure, "<br>",
-                                 "% of Pupils: ", value_label))) +
-      geom_text(aes(x = measure, y = value, label = trimws(value_label), text = ""),
+      ggplot(aes(text = paste0("Measure: ", measure, "<br>",
+                               "% of Pupils: ", value_label))) + 
+      geom_col(aes(measure, value)) +
+      geom_text(aes(x = measure, y = value, label = trimws(value_label)),
                 hjust = 0.5, nudge_y = 5) +
       theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-      scale_y_continuous(limits = c(0, NA)) +
+      scale_y_continuous(limits = c(0, 105)) +
       scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
       labs(x = NULL , y = NULL) +
       theme(axis.text.y = element_blank(),
