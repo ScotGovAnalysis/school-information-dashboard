@@ -6,9 +6,9 @@ primary_attainment_ui <- function(id, year_options) {
   
   max_year <- which.max(as.numeric(substr(year_options, 1, 4)))
   
-  fluidRow(
+  tagList(
     
-    section_header_output(ns("attain_profile")),
+    section_header_output(ns("title_box")),
     
     box(
       
@@ -17,67 +17,77 @@ primary_attainment_ui <- function(id, year_options) {
       collapsible = TRUE,
      
       # Dropdown Filter - Attainment Year
-      fluidRow(column(selectInput(ns("year"), 
-                         label = "Select year",
-                         choices = year_options,
-                         selected = year_options[max_year]), 
-             width = 3),
+      column(
+        selectInput(ns("year"), 
+                    label = "Select year",
+                    choices = year_options,
+                    selected = year_options[max_year]), 
+        width = 3
+      ),
       
       # Dropdown Filter - Attainment BGE Measure
-      column(selectInput(ns("bge"), 
-                         label = "Select attainment measure",
-                         choices = c("Reading", 
-                                     "Listening & Talking",
-                                     "Numeracy", 
-                                     "Writing"),
-                         selected = "Reading"), 
-             width = 4),
+      column(
+        selectInput(ns("bge"), 
+                    label = "Select attainment measure",
+                    choices = c("Reading", 
+                                "Listening & Talking",
+                                "Numeracy", 
+                                "Writing"),
+                    selected = "Reading"), 
+        width = 4
+      ),
       
       # Dropdown Filter - Attainment Stage
-      column(selectInput(ns("stage"), 
-                         label = "Select stage",
-                         choices = c("P1", 
-                                     "P4",
-                                     "P7",
-                                     "P1, P4 & P7 combined"),
-                         selected = "P4"), 
-             width = 3),
+      column(
+        selectInput(ns("stage"), 
+                    label = "Select stage",
+                    choices = c("P1", "P4", "P7", "P1, P4 & P7 combined"),
+                    selected = "P4"), 
+        width = 3
+      ),
       
-      column(br(),
-             download_data_ui(ns("download")),width = 2)),
-      br(),
-      
-             
-      
+      column(
+        br(),
+        download_data_ui(ns("download")),
+        width = 2
+      ),
+
       # Attainment BGE Bar Chart
+      column(
+        br(),
+        h3("Average Curriculum for Excellence Level Achieved",
+           align = "center"),
+        withSpinner(plotlyOutput(ns("bar_chart"))), 
+        width = 7
+      ), 
       
-      fluidRow(column(br(),
-                      (h3("Average Curriculum for Excellence Level Achieved",
-                                      align = "center")),
-                      withSpinner(plotlyOutput(ns("bar_chart"))), 
-                      width = 7),
-               
-               
-               # Attainment BGE Doughnut Chart
-               column(br(),withSpinner(girafeOutput(ns("donut_plot"))), 
-                      width = 4))
-    ))
+      # Attainment BGE Doughnut Chart
+      column(
+        br(),
+        h3("Percentage of Students Meeting Curriculum for Excellence Level",
+           align = "center"),
+        withSpinner(girafeOutput(ns("donut_plot"))), 
+        width = 4)
+    )
     
-  
-  
-    
+  )
+
 }
 
 primary_attainment_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "attain_profile", "Primary Attainment")
+  callModule(section_header_server, "title_box", "Primary Attainment")
   
   callModule(download_data_server, "download", "Attainment Profile", data)
   
   output$bar_chart <- renderPlotly({
-    validate(
-      need(input$stage != "P1, P4 & P7 combined",
-           "            Average curriculum for excellence level achieved by P1, P4 & P7 combined is not recorded" ))
+    
+    req(nrow(data()) > 0)
+    
+    # validate(
+    #   need(input$stage != "P1, P4 & P7 combined",
+    #        "            Average curriculum for excellence level achieved by P1, P4 & P7 combined is not recorded" ))
+    
     ggplotly(
       data() %>%
         filter(dataset == "bge" & year == input$year &
@@ -112,12 +122,16 @@ primary_attainment_server <- function(input, output, session, data) {
   })  
 
   output$donut_plot <- renderGirafe({
+    
+    req(nrow(data()) > 0)
 
     acel_data <-
       data() %>%
       filter(dataset == "acel" & year == input$year &
                str_starts(measure, input$bge) & stage == input$stage) %>%
       mutate(text = paste0(measure, ": ", value_label))
+    
+    req(nrow(acel_data) > 0)
     
     plot <- 
       ggplot(acel_data, aes(y = rev(value), 
@@ -142,10 +156,7 @@ primary_attainment_server <- function(input, output, session, data) {
       scale_fill_manual(values = c("white", "#3182bd")) +
       coord_polar(theta = "y") +
       theme_void() +
-      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-      ggtitle(str_wrap(
-        "Percentage of Students Meeting Curriculum for Excellence Level",
-        width = 30))
+      theme(plot.title = element_text(size = 16, hjust = 0.5))
     
     girafe(
       ggobj = plot,
