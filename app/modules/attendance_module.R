@@ -4,7 +4,7 @@ attendance_ui <- function(id, school_type) {
   # Initiate namespace for module
   ns <- NS(id)
   
-  fluidRow(
+  tagList(
     
     section_header_output(ns("attend_profile")),
     
