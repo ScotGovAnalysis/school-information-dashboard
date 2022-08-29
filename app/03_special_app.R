@@ -94,12 +94,16 @@ ui <-
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes", "Special"),
         
-        pupil_profile_ui("pupil_profile")
+        # Pupil Profile
+        pupil_profile_ui("pupil_profile"),
         
-      ),
-      
-      attendance_ui("attendance", "Special"),
-      population_ui("population", "Special")
+        # Attendance
+        attendance_ui("attendance", "Special"),
+        
+        # Population
+        population_ui("population", "Special")
+        
+      )
       
     )
     
@@ -116,7 +120,7 @@ server <- function(input, output, session) {
   
   # Sidebar filters ----
   filters <- callModule(sidebar_server, "sidebar", school_profile)
-  
+    
   
   # Filter datasets by LA and School ----
   
@@ -124,7 +128,7 @@ server <- function(input, output, session) {
     school_profile %>% 
       filter(la_name == filters()$la & school_name == filters()$school)
   })
-   
+  
   attendance_filtered <- reactive({
     attendance %>% 
       filter(la_name == filters()$la & school_name == filters()$school)
@@ -136,11 +140,10 @@ server <- function(input, output, session) {
   })
   
   
-  # Dashboard heading ----
-  callModule(dashboard_title_server, "title", "Special", filters)
- 
+  # Dashboard content ----
   
-  ## Profile sections ----
+  # Dashboard title
+  callModule(dashboard_title_server, "title", "Special", filters)
   
   # School profile
   callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ, "Special")
@@ -148,10 +151,10 @@ server <- function(input, output, session) {
   
   # Pupil Profile
   callModule(pupil_profile_server, "pupil_profile", population_filtered, "Special")
-  
+
   # Attendance
   callModule(attendance_server, "attendance", attendance_filtered)
-  
+   
   # Population
   callModule(population_server, "population", population_filtered)
   

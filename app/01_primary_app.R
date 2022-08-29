@@ -98,13 +98,19 @@ ui <-
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes", "Primary"),
         
-        pupil_profile_ui("pupil_profile")
+        # Pupil Profile
+        pupil_profile_ui("pupil_profile"),
         
-      ),
-      
-      attendance_ui("attendance", "Primary"),
-      primary_attainment_ui("attainment", unique(attainment$year)),
-      population_ui("population", "Primary")
+        # Attendance
+        attendance_ui("attendance", "Primary"),
+        
+        # Population
+        population_ui("population", "Primary"),
+        
+        # Attainment
+        primary_attainment_ui("attainment", unique(attainment$year))
+        
+      )
       
     )
     
@@ -146,11 +152,10 @@ server <- function(input, output, session) {
   })
   
   
-  # Dashboard heading ----
-  callModule(dashboard_title_server, "title", "Primary", filters)
-
+  # Dashboard content ----
   
-  ## Profile sections ----
+  # Dashboard title
+  callModule(dashboard_title_server, "title", "Primary", filters)
   
   # School profile
   callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ, "Primary")
@@ -162,11 +167,11 @@ server <- function(input, output, session) {
   # Attendance
   callModule(attendance_server, "attendance", attendance_filtered)
   
-  # Attainment
-  callModule(primary_attainment_server, "attainment", attainment_filtered)
-  
   # Population
   callModule(population_server, "population", population_filtered)
+  
+  # Attainment
+  callModule(primary_attainment_server, "attainment", attainment_filtered)
   
 }
 
