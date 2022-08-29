@@ -6,7 +6,7 @@ attendance_ui <- function(id, school_type) {
   
   tagList(
     
-    section_header_output(ns("attend_profile")),
+    section_header_output(ns("title_box")),
     
     box(
       
@@ -15,42 +15,44 @@ attendance_ui <- function(id, school_type) {
       collapsible = TRUE,
       
       # Dropdown Filter - Attendance Measure
-      column(br(),
-        width = 10,
+      column(
         selectInput(ns("measure_filter"), 
                     label = "Select attendance measure",
                     choices = c("Attendance", 
                                 "Authorised Absence",
                                 "Unauthorised Absence"),
-                    selected = "Attendance")
+                    selected = "Attendance"),
+        width = 10
       ),
         
-      column(width = 2, 
-             br(),br(),
-             download_data_ui(ns("download"))
+      # Download data button
+      column( 
+        br(),
+        download_data_ui(ns("download")),
+        width = 2,
       ),
-      
       
       # Attendance Trend Line Chart
       column(
-        withSpinner(uiOutput(ns("pupil_year"))),
+        withSpinner(uiOutput(ns("trend_title"))),
         withSpinner(plotlyOutput(ns("trend"))), 
-             width = ifelse(school_type == "Special", 12, 7)),
+        width = ifelse(school_type == "Special", 12, 7)
+      ),
       
       # Attendance Stage Bar Chart
       column(
-       
-            if(school_type != "Special") {
-              withSpinner(uiOutput(ns("pupil_stage")))}
-          ,
-          
-          if(school_type != "Special") {
-            withSpinner(plotlyOutput(ns("stage")))}
-          ,
-          width = 5),
+        if(school_type != "Special") {
+          tagList(
+            withSpinner(uiOutput(ns("stage_title"))),
+            withSpinner(plotlyOutput(ns("stage")))
+          )
+        }
+        ,
+        width = 5
+      ),
       
-      column(br(), width = 12),
-      br()
+      column(br(), width = 12)
+      
     )
     
   )
@@ -59,11 +61,17 @@ attendance_ui <- function(id, school_type) {
 
 attendance_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "attend_profile", "Attendance")
+  callModule(section_header_server, "title_box", "Attendance")
   
   callModule(download_data_server, "download", "Attendance", data)
   
+  output$trend_title <- renderUI({
+    h3(input$measure_filter, " by Year", align = "center")
+  })
+  
   output$trend <- renderPlotly({
+    
+    req(nrow(data()) > 0)
     
     ggplotly(
       data() %>%
@@ -74,10 +82,6 @@ attendance_server <- function(input, output, session, data) {
                    text = paste0("Year: ", year, "<br>",
                                 input$measure_filter, ": ", value_label))) + 
         geom_line() +
-        geom_text_repel(aes(label = paste(value_label,"%")),
-                        na.rm = TRUE,
-                        nudge_x = 0,
-                        check_overlap = TRUE) +
         scale_y_continuous(limits = c(0,NA)) +
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
         labs(x = "Academic Year", y = paste("%",input$measure_filter)),
@@ -90,7 +94,13 @@ attendance_server <- function(input, output, session, data) {
 
   })
   
+  output$stage_title <- renderUI({
+    h3(input$measure_filter, " by Stage", align = "center")
+  })
+  
   output$stage <- renderPlotly({
+    
+    req(nrow(data()) > 0)
     
     ggplotly(
       data() %>%
@@ -109,22 +119,5 @@ attendance_server <- function(input, output, session, data) {
       layout(yaxis=list(fixedrange=TRUE))
     
   })
-  
-  
-  output$pupil_year <- renderUI({
-    
-    list(
-      h3(input$measure_filter, " by Year", align = "center"))
-    
-  })
-  
-  output$pupil_stage <- renderUI({
-    
-    list(
-      h3(input$measure_filter, " by Stage", align = "center"))
-    
-  })
-  
-  
   
 }
