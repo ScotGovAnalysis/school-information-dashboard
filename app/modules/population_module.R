@@ -13,7 +13,7 @@ population_ui <- function(id,  school_type) {
     pop_measures <- c(pop_measures, "Average Class")
   }
   
-  fluidRow(
+  tagList(
     
     section_header_output(ns("header")),
     
@@ -63,6 +63,8 @@ population_server <- function(input, output, session, data) {
   })
   
   output$chart <- renderPlotly({
+    
+    req(nrow(data()) > 0)
     
     plot <- 
       data() %>%
