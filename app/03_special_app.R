@@ -76,12 +76,8 @@ ui <-
 
     dashboardBody(
       
-      # Recode error messages
-      tags$style(
-        type="text/css",
-        ".shiny-output-error { visibility: hidden; }",
-        ".shiny-output-error:before { visibility: visible; content: 'There is no data for this chart'; }"
-      ),
+      # Set universal error message and fix girafe chart font issue
+      html_tags(),
       
       fluidRow(
         
