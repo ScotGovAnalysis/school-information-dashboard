@@ -75,19 +75,19 @@ cfe_server <- function(input, output, session, data) {
   }
   
   output$reading <- renderGirafe({
-    donut("Reading")
+    donut(data, "Reading")
   })
   
   output$writing <- renderGirafe({
-    donut("Writing")
+    donut(data, "Writing")
   })
   
   output$listening <- renderGirafe({
-    donut("Listening")          
+    donut(data, "Listening")          
   })
   
   output$numeracy <- renderGirafe({
-    donut("Numeracy")        
+    donut(data, "Numeracy")        
   })
   
 }
