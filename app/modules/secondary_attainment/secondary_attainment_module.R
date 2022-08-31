@@ -80,31 +80,10 @@ secondary_attainment_ui <- function(id, year_options) {
           ),
           ns = ns
         ),
-        
+
         conditionalPanel(
           condition = "!['2019/20', '2020/21'].includes(input.year)",
-          
-          column(
-            h3(paste("Percentage of students meeting",
-                     "curriculum for excellence level"),
-               align = "center"), 
-            width = 12
-          ),
-          
-          column(
-            br(),
-            withSpinner(girafeOutput(ns("donut_reading"))),
-            withSpinner(girafeOutput(ns("donut_listening"))),
-            width = 6
-          ),
-          
-          column(
-            br(),
-            withSpinner(girafeOutput(ns("donut_writing"))),
-            withSpinner(girafeOutput(ns("donut_numeracy"))),
-            width = 6
-          ),
-          
+          cfe_ui(ns("cfe")),
           ns = ns
         ),
         
@@ -241,194 +220,12 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   callModule(download_data_server, "download", "Attainment Profile", data)
   
-  # Curriculum for Excellence ----
-  
-  output$donut_reading <- renderGirafe({
-    acel_data <-
-      data() %>%
-      filter(dataset == "acel" 
-             & year == input$year 
-             & str_starts (measure,"Reading") 
-             & stage == "S3") %>%
-      mutate(text = paste0(measure, ": ", value_label))
-    
-    plot <- 
-      ggplot(acel_data, aes(y = rev(value), 
-                            fill = measure, 
-                            tooltip = rev(text))) +
-      geom_bar_interactive(
-        aes(x = 1),
-        width = 0.5,
-        stat = "identity",
-        show.legend = FALSE
-      ) +
-      annotate(
-        geom = "text",
-        x = 0,
-        y = 0,
-        label = 
-          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-          pull(value_label),
-        size = 12,
-        color = "#3182bd"
-      ) +
-      scale_fill_manual(values = c("white", "#3182bd")) +
-      coord_polar(theta = "y") +
-      theme_void() +
-      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-      ggtitle(str_wrap(
-        "Reading",
-        width = 30))
-    
-    girafe(
-      ggobj = plot,
-      width_svg = 5,
-      height_svg = 5,
-      options = list(opts_toolbar(saveaspng = FALSE))
-    )
-    
+  data_filtered <- reactive({
+    data() %>% filter(year == input$year)
   })
   
-  
-  output$donut_writing <- renderGirafe({
-    acel_data <-
-      data() %>%
-      filter(dataset == "acel" 
-             & year == input$year 
-             & str_starts (measure,"Writing") 
-             & stage == "S3") %>%
-      mutate(text = paste0(measure, ": ", value_label))
-    
-    plot <- 
-      ggplot(acel_data, aes(y = rev(value), 
-                            fill = measure, 
-                            tooltip = rev(text))) +
-      geom_bar_interactive(
-        aes(x = 1),
-        width = 0.5,
-        stat = "identity",
-        show.legend = FALSE
-      ) +
-      annotate(
-        geom = "text",
-        x = 0,
-        y = 0,
-        label = 
-          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-          pull(value_label),
-        size = 12,
-        color = "#3182bd"
-      ) +
-      scale_fill_manual(values = c("white","#3182bd")) +
-      coord_polar(theta = "y") +
-      theme_void() +
-      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-      ggtitle(str_wrap(
-        "Writing",
-        width = 30))
-    
-    girafe(
-      ggobj = plot,
-      width_svg = 5,
-      height_svg = 5,
-      options = list(opts_toolbar(saveaspng = FALSE))
-    )
-    
-  })   
-  
-  output$donut_listening <- renderGirafe({
-    acel_data <-
-      data() %>%
-      filter(dataset == "acel" 
-             & year == input$year 
-             & str_starts (measure,"Listening") 
-             & stage == "S3") %>%
-      mutate(text = paste0(measure, ": ", value_label))
-    
-    plot <- 
-      ggplot(acel_data, aes(y = rev(value), 
-                            fill = measure, 
-                            tooltip = rev(text))) +
-      geom_bar_interactive(
-        aes(x = 1),
-        width = 0.5,
-        stat = "identity",
-        show.legend = FALSE
-      ) +
-      annotate(
-        geom = "text",
-        x = 0,
-        y = 0,
-        label = 
-          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-          pull(value_label),
-        size = 12,
-        color = "#3182bd"
-      ) +
-      scale_fill_manual(values = c("white", "#3182bd")) +
-      coord_polar(theta = "y") +
-      theme_void() +
-      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-      ggtitle(str_wrap(
-        "Listening & Talking",
-        width = 30))
-    
-    girafe(
-      ggobj = plot,
-      width_svg = 5,
-      height_svg = 5,
-      options = list(opts_toolbar(saveaspng = FALSE))
-    )
-    
-  })               
-  
-  
-  output$donut_numeracy <- renderGirafe({
-    acel_data <-
-      data() %>%
-      filter(dataset == "acel" 
-             & year == input$year 
-             & str_starts (measure,"Numeracy") 
-             & stage == "S3") %>%
-      mutate(text = paste0(measure, ": ", value_label))
-    
-    plot <- 
-      ggplot(acel_data, aes(y = rev(value), 
-                            fill = measure, 
-                            tooltip = rev(text))) +
-      geom_bar_interactive(
-        aes(x = 1),
-        width = 0.5,
-        stat = "identity",
-        show.legend = FALSE
-      ) +
-      annotate(
-        geom = "text",
-        x = 0,
-        y = 0,
-        label = 
-          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
-          pull(value_label),
-        size = 12,
-        color = "#3182bd"
-      ) +
-      scale_fill_manual(values = c("white", "#3182bd")) +
-      coord_polar(theta = "y") +
-      theme_void() +
-      theme(plot.title = element_text(size = 16, hjust = 0.5)) +
-      ggtitle(str_wrap(
-        "Numeracy",
-        width = 30))
-    
-    girafe(
-      ggobj = plot,
-      width_svg = 5,
-      height_svg = 5,
-      options = list(opts_toolbar(saveaspng = FALSE))
-    )
-    
-  })               
-  
+  # Curriculum for Excellence ----
+  callModule(cfe_server, "cfe", data_filtered)
   
   # Leavers Breadth and Depth Profile ----
   
@@ -453,10 +250,6 @@ secondary_attainment_server <- function(input, output, session, data) {
                    text = paste0("Year: ", year, "<br>",
                                  value_label, "%"))) + 
         geom_line() +
-        geom_text_repel(aes(label = paste(value_label,"%")),
-                        na.rm = TRUE,
-                        nudge_x = 0,
-                        check_overlap = TRUE) +
         scale_color_manual(values=c("#3182bd", "#9ecae1")) +
         scale_y_continuous(limits = c(0,NA)) + 
         theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +

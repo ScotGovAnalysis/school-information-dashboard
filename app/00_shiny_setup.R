@@ -55,6 +55,7 @@ options(scipen = 999)
 
 walk(list.files("modules", pattern = "\\.R$", full.names = TRUE), source)
 walk(list.files("modules/text_content", pattern = "\\.R$", full.names = TRUE), source)
+walk(list.files("modules/secondary_attainment", pattern = "\\.R$", full.names = TRUE), source)
 
 
 ### 5 - Set default ggplot themes and colours ----
