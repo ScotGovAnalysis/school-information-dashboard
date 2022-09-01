@@ -40,6 +40,8 @@ cfe_server <- function(input, output, session, data) {
              & stage == "S3") %>%
       mutate(text = paste0(measure, ": ", value_label))
     
+    req(nrow(acel) > 0)
+    
     plot <- 
       ggplot(acel, 
              aes(y = rev(value), fill = measure, tooltip = rev(text))) +
