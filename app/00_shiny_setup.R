@@ -44,6 +44,8 @@ library(ggiraph)
 library(purrr)
 library(stringr)
 library(shinycssloaders)
+library(forcats)
+library(shinya11y)
 
 
 ### 3 - Turn off scientific notation format ----
