@@ -34,18 +34,20 @@ attendance_ui <- function(id, school_type) {
       
       # Attendance Trend Line Chart
       column(
-        withSpinner(uiOutput(ns("trend_title"))),
-        withSpinner(plotlyOutput(ns("trend"))), 
+        withSpinner(tagList(
+          uiOutput(ns("trend_title")),
+          plotlyOutput(ns("trend"))
+        )), 
         width = ifelse(school_type == "Special", 12, 7)
       ),
       
       # Attendance Stage Bar Chart
       column(
         if(school_type != "Special") {
-          tagList(
-            withSpinner(uiOutput(ns("stage_title"))),
-            withSpinner(plotlyOutput(ns("stage")))
-          )
+          withSpinner(tagList(
+            uiOutput(ns("stage_title")),
+            plotlyOutput(ns("stage"))
+          ))
         }
         ,
         width = 5
@@ -73,24 +75,24 @@ attendance_server <- function(input, output, session, data) {
     
     req(nrow(data()) > 0)
     
-    ggplotly(
+    plot <-
       data() %>%
-        filter(measure == input$measure_filter & stage == "All Stages") %>%
-        ggplot(aes(year, 
-                   value, 
-                   group = 1,
-                   text = paste0("Year: ", year, "<br>",
-                                input$measure_filter, ": ", value_label))) + 
-        geom_line() +
-        scale_y_continuous(limits = c(0,NA)) +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        labs(x = "Academic Year", y = paste("%",input$measure_filter)),
-      tooltip = "text"
-    ) %>%
+      filter(measure == input$measure_filter & stage == "All Stages") %>%
+      mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value)) %>%
+      ggplot(aes(year, 
+                 value, 
+                 group = 1,
+                 text = paste0("Year: ", year, "<br>",
+                               input$measure_filter, ": ", value_label))) + 
+      geom_line() +
+      scale_y_continuous(limits = c(0,NA)) +
+      theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
+      labs(x = "Academic Year", y = paste("%",input$measure_filter))
+    
+    ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      layout(xaxis = list(fixedrange = TRUE),
+             yaxis = list(fixedrange = TRUE))
 
   })
   
@@ -100,23 +102,33 @@ attendance_server <- function(input, output, session, data) {
   
   output$stage <- renderPlotly({
     
-    req(nrow(data()) > 0)
-    
-    ggplotly(
+    dat <-
       data() %>%
-        filter(measure == input$measure_filter & stage != "All Stages") %>%
-        ggplot(aes(value, 
-                   stage,
-                   text = paste0("Stage: ", stage, "<br>",
-                                input$measure_filter, ": ", value_label))) + 
-        geom_col() +
-        labs(x = paste("%",input$measure_filter) , y = "Pupil Stage"),
-      tooltip = "text"
-    ) %>%
+      filter(measure == input$measure_filter & stage != "All Stages") %>%
+      mutate(
+        chart_label = ifelse(value_label %in% c("c", "z", "x"),
+                             value_label,
+                             "")
+      )
+    
+    req(nrow(dat) > 0)
+    
+    text_nudge <- max(dat$value) * 0.1
+    
+    plot <-
+      ggplot(dat, aes(value, 
+                      stage,
+                      text = paste0("Stage: ", stage, "<br>",
+                                    input$measure_filter, ": ", value_label))) + 
+      geom_col() +
+      geom_text(aes(x = value + text_nudge, label = chart_label), vjust = 0.5) +
+      scale_x_continuous(limits = c(0, NA)) +
+      labs(x = paste("%",input$measure_filter) , y = "Pupil Stage")
+    
+    ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      layout(xaxis = list(fixedrange = TRUE),
+             yaxis = list(fixedrange = TRUE))
     
   })
   

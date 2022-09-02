@@ -1,5 +1,5 @@
 
-dashboard_title_output <- function(id, school_type) {
+dashboard_title_output <- function(id) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -9,13 +9,16 @@ dashboard_title_output <- function(id, school_type) {
   
 }
 
-dashboard_title_server <- function(input, output, session, school_type, selected_la_school) {
+dashboard_title_server <- function(input, output, session, 
+                                   school_type, selected_la_school) {
   
-  # Render Value Box
   output$title <- renderValueBox({
-    valueBox(paste(school_type, "School Information Dashboard"),
-             h4(paste(selected_la_school()$la, "-", selected_la_school()$school)),
-             color = "yellow")
+    valueBox(
+      value = paste(school_type, "School Information Dashboard"),
+      subtitle = 
+        h4(paste(selected_la_school()$la, "-", selected_la_school()$school)),
+      color = "yellow"
+    )
   })
   
 }
