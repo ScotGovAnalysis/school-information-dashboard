@@ -41,8 +41,10 @@ population_ui <- function(id,  school_type) {
       
       # Population Trend Line Chart
       column(
-        withSpinner(uiOutput(ns("chart_title"))),
-        withSpinner(plotlyOutput(ns("chart"))),
+        withSpinner(tagList(
+          uiOutput(ns("chart_title")),
+          plotlyOutput(ns("chart"))
+        )),
         br(),
         width = 12
       )
