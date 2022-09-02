@@ -45,7 +45,6 @@ library(purrr)
 library(stringr)
 library(shinycssloaders)
 library(forcats)
-library(shinya11y)
 library(snakecase)
 
 
@@ -70,7 +69,8 @@ update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
 
 ### 6 - Read in FAQ data ----
 
-FAQ <- read_excel("modules/text_content/FAQ.xlsx")
+faq <- read_excel("modules/text_content/FAQ.xlsx")
+faq_sections <- unique(FAQ$Section)
 
 
 ### END OF SCRIPT ###

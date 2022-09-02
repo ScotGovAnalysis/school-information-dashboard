@@ -28,8 +28,7 @@ school_profile <- read_rds(
 
 attendance <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_attendance.rds")
-) %>%
-  mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
+)
 
 population <- read_rds(
   paste0("primary_data/", shiny_run_label, "/primary_population.rds")
@@ -89,7 +88,7 @@ ui <-
         dashboard_title_output("title"),
         
         # School Profile Content Box
-        school_profile_output("school_profile", "Primary"),
+        school_profile_output("school_profile", "Primary", faq_sections),
           
         # School Profile Value Boxes 
         school_value_box_output("school_profile_boxes", "Primary"),
@@ -154,7 +153,7 @@ server <- function(input, output, session) {
   callModule(dashboard_title_server, "title", "Primary", filters)
   
   # School profile
-  callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ, "Primary")
+  callModule(school_profile_server, "school_profile", school_profile_filtered, faq, "Primary")
   callModule(school_value_box_server, "school_profile_boxes", school_profile_filtered)
   
   # Pupil Profile

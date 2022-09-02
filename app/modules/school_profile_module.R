@@ -1,5 +1,5 @@
 
-school_profile_output <- function(id, school_type) {
+school_profile_output <- function(id, school_type, faq_sections) {
   
   # Initiate namespace for module
   ns <- NS(id)
@@ -19,7 +19,7 @@ school_profile_output <- function(id, school_type) {
       # Insert buttons for Covid-19, FAQs and info
       fluidRow(
         covid19_ui(ns("covid19"), school_type),
-        faq_ui(ns("faq"))
+        faq_ui(ns("faq"), faq_sections)
       ),
       br(),
       fluidRow(
