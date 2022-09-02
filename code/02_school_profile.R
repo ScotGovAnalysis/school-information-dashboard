@@ -339,11 +339,12 @@ school_profile <-
   left_join(healthy_living, by = c("seed_code", "school_type")) %>%
   
   # Sort data to order want LA/schools to appear in app filters
-  # First by LA code (Scotland is 0 so will appear first)
-  # Second by length of seed code (All publicly funded schools to appear 
+  # First by LA code (Scotland is 0 and should appear first)
+  # Second by LA name in alphabetical order
+  # Third by length of seed code (All publicly funded schools to appear 
   #    before individual schools)
-  # Third by school name in alphabetical order
-  arrange(as.numeric(la_code), nchar(seed_code), school_name)
+  # Fourth by school name in alphabetical order
+  arrange(desc(la_code == "0"), la_name, nchar(seed_code), school_name)
 
 
 ### 8 - Save data files ----
