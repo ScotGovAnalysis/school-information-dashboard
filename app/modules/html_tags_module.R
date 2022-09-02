@@ -17,6 +17,7 @@ html_tags <- function() {
     tags$head( 
       tags$style(type = "text/css", "text {font-family: sans-serif}")
     )
+    
   )
   
 }

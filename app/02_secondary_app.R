@@ -28,9 +28,7 @@ school_profile <- read_rds(
 
 attendance <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attendance.rds")
-) 
-#%>%
- # mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
+)
 
 population <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_population.rds")
