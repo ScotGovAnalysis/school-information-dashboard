@@ -52,15 +52,30 @@ primary_attainment_ui <- function(id, year_options) {
         width = 2
       ),
 
-      # Attainment BGE Bar Chart
-      column(
-        br(),
-        h3("Average Curriculum for Excellence Level Achieved",
-           align = "center"),
-        withSpinner(plotlyOutput(ns("bar_chart"))), 
-        width = 7
-      ), 
+      conditionalPanel(
+        condition = "'P1, P4 & P7 combined' == input.stage",
+        column(
+          br(),
+          h4("Average curriculum for excellence level achieved by P1, P4 & P7 ",
+             "combined is not recorded."),
+          width = 7
+        ),
+        ns = ns
+      ),
       
+      # Attainment BGE Bar Chart
+      conditionalPanel(
+        condition = "'P1, P4 & P7 combined' != input.stage",
+        column(
+          br(),
+          h3("Average Curriculum for Excellence Level Achieved",
+             align = "center"),
+          withSpinner(plotlyOutput(ns("bar_chart"))), 
+          width = 7
+        ), 
+        ns = ns
+      ),
+        
       # Attainment BGE Doughnut Chart
       column(
         br(),
@@ -84,39 +99,36 @@ primary_attainment_server <- function(input, output, session, data) {
     
     req(nrow(data()) > 0)
     
-    # validate(
-    #   need(input$stage != "P1, P4 & P7 combined",
-    #        "            Average curriculum for excellence level achieved by P1, P4 & P7 combined is not recorded" ))
-    
-    ggplotly(
+    plot <-
       data() %>%
-        filter(dataset == "bge" & year == input$year &
-                 measure == input$bge & stage == input$stage) %>%
-        ggplot(aes(
-          comparator, 
-          value,
-          text = paste0("School: ", 
-                        ifelse(comparator == 0, 
-                               school_name, 
-                               "Virtual Comparator"))
-        )) + 
-        geom_col() +
-        labs(x = NULL , y = NULL) +
-        scale_x_discrete(labels = c("0" = unique(data()$school_name), 
-                                    "1" = "Virtual Comparator")) +
-        scale_y_continuous(limits = c(0, 4),
-                           labels = c("Not yet early level",
-                                      "Early level",
-                                      "1st level",
-                                      "2nd level",
-                                      "3rd level or better")) + 
-        ggtitle(""),
-      tooltip = "text"
-    )%>%
+      filter(dataset == "bge" & year == input$year &
+               measure == input$bge & stage == input$stage) %>%
+      mutate(chart_label = ifelse(value_label %in% c("z", "x", "c"),
+                                  value_label,
+                                  "")) %>%
+      ggplot(aes(x = comparator, 
+                 y = value,
+                 text = paste0("School: ", 
+                               ifelse(comparator == 0, 
+                                      school_name, 
+                                      "Virtual Comparator"))
+      )) + 
+      geom_col() +
+      geom_text(aes(y = value + 0.5, label = chart_label), hjust = 0.5) +
+      labs(x = NULL , y = NULL) +
+      scale_x_discrete(labels = c("0" = unique(data()$school_name), 
+                                  "1" = "Virtual Comparator")) +
+      scale_y_continuous(limits = c(0, 4),
+                         labels = c("Not yet early level",
+                                    "Early level",
+                                    "1st level",
+                                    "2nd level",
+                                    "3rd level or better"))
+    
+    ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
-      
-      layout(xaxis=list(fixedrange=TRUE)) %>% 
-      layout(yaxis=list(fixedrange=TRUE))
+      layout(xaxis = list(fixedrange = TRUE),
+             yaxis = list(fixedrange = TRUE))
       
     
   })  
