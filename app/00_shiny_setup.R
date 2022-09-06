@@ -70,7 +70,7 @@ update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
 ### 6 - Read in FAQ data ----
 
 faq <- read_excel("modules/text_content/FAQ.xlsx")
-faq_sections <- unique(FAQ$Section)
+faq_sections <- unique(faq$Section)
 
 
 ### END OF SCRIPT ###
