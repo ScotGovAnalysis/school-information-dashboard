@@ -25,9 +25,9 @@ primary_attainment_ui <- function(id, year_options) {
         width = 3
       ),
       
-      # Dropdown Filter - Attainment BGE Measure
+      # Dropdown Filter - Attainment Measure
       column(
-        selectInput(ns("bge"), 
+        selectInput(ns("measure"), 
                     label = "Select attainment measure",
                     choices = c("Reading", 
                                 "Listening & Talking",
@@ -52,37 +52,24 @@ primary_attainment_ui <- function(id, year_options) {
         width = 2
       ),
 
-      conditionalPanel(
-        condition = "'P1, P4 & P7 combined' == input.stage",
-        column(
-          br(),
-          h4("Average curriculum for excellence level achieved by P1, P4 & P7 ",
-             "combined is not recorded."),
-          width = 7
-        ),
-        ns = ns
-      ),
-      
       # Attainment BGE Bar Chart
-      conditionalPanel(
-        condition = "'P1, P4 & P7 combined' != input.stage",
-        column(
-          br(),
-          h3("Average Curriculum for Excellence Level Achieved",
-             align = "center"),
-          withSpinner(plotlyOutput(ns("bar_chart"))), 
-          width = 7
-        ), 
-        ns = ns
-      ),
-        
+      column(
+        br(),
+        h3("Average Curriculum for Excellence Level Achieved",
+           align = "center"),
+        withSpinner(plotlyOutput(ns("bar_chart"))), 
+        width = 7
+      ), 
+      
       # Attainment BGE Doughnut Chart
       column(
         br(),
         h3("Percentage of Students Meeting Curriculum for Excellence Level",
            align = "center"),
         withSpinner(girafeOutput(ns("donut_plot"))), 
-        width = 4)
+        width = 4
+      )
+      
     )
     
   )
@@ -97,27 +84,38 @@ primary_attainment_server <- function(input, output, session, data) {
   
   output$bar_chart <- renderPlotly({
     
-    req(nrow(data()) > 0)
+    # Display error message when P1, P4 & P7 combined is selected
+    validate(
+      need(
+        input$stage != "P1, P4 & P7 combined",
+        message = paste(
+          "Average curriculum for excellence level achieved",
+          "is not recorded for P1, P4 & P7 combined."
+        )
+      )
+    )
+    
+    dat <-
+      data() %>%
+      filter(dataset == "bge" & 
+               year == input$year &
+               measure == input$measure & 
+               stage == input$stage) %>%
+      mutate(comparator = 
+               ifelse(comparator == 0, school_name, "Virtual Comparator")
+      )
+    
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
     
     plot <-
-      data() %>%
-      filter(dataset == "bge" & year == input$year &
-               measure == input$bge & stage == input$stage) %>%
-      mutate(chart_label = ifelse(value_label %in% c("z", "x", "c"),
-                                  value_label,
-                                  "")) %>%
-      ggplot(aes(x = comparator, 
-                 y = value,
-                 text = paste0("School: ", 
-                               ifelse(comparator == 0, 
-                                      school_name, 
-                                      "Virtual Comparator"))
+      ggplot(dat, aes(x = comparator, 
+                      y = value,
+                      text = paste("School:", comparator)
       )) + 
       geom_col() +
       geom_text(aes(y = value + 0.5, label = chart_label), hjust = 0.5) +
       labs(x = NULL , y = NULL) +
-      scale_x_discrete(labels = c("0" = unique(data()$school_name), 
-                                  "1" = "Virtual Comparator")) +
       scale_y_continuous(limits = c(0, 4),
                          labels = c("Not yet early level",
                                     "Early level",
@@ -137,18 +135,21 @@ primary_attainment_server <- function(input, output, session, data) {
     
     req(nrow(data()) > 0)
 
-    acel_data <-
+    dat <-
       data() %>%
-      filter(dataset == "acel" & year == input$year &
-               str_starts(measure, input$bge) & stage == input$stage) %>%
+      filter(dataset == "acel" & 
+               year == input$year &
+               str_starts(measure, input$measure) & 
+               stage == input$stage) %>%
       mutate(text = paste0(measure, ": ", value_label))
     
-    req(nrow(acel_data) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
     
     plot <- 
-      ggplot(acel_data, aes(y = rev(value), 
-                            fill = measure, 
-                            tooltip = rev(text))) +
+      ggplot(dat, aes(y = rev(value), 
+                      fill = measure, 
+                      tooltip = rev(text))) +
       geom_bar_interactive(
         aes(x = 1),
         width = 0.5,
@@ -160,7 +161,7 @@ primary_attainment_server <- function(input, output, session, data) {
         x = 0,
         y = 0,
         label = 
-          filter(acel_data, str_ends(measure, "% Meeting Level")) %>%
+          filter(dat, str_ends(measure, "% Meeting Level")) %>%
             pull(value_label),
         size = 12,
         color = "#3182bd"
