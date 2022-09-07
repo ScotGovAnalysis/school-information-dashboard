@@ -74,16 +74,23 @@ attendance <-
     temp_exclusions = "Temporary Exclusions"
   )) %>%
   
-  # Recode missing/suppressed values
-  mutate(value_label = recode_missing_values(value, label = TRUE, label_perc = TRUE),
-         value = recode_missing_values(value)) %>%
+  mutate(
+    
+    # Recode missing/suppressed values
+    value_label = recode_missing_values(value, label = TRUE, label_perc = TRUE),
+    value = recode_missing_values(value),
+    
+    # Add chart_label to show suppressed values on bar chart
+    chart_label = ifelse(value_label %in% c("z", "c", "x"), value_label, "")
+    
+  ) %>%
   
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
   
   # Reorder columns
   select(year, seed_code, la_code, la_name, school_name, school_type,
-         stage, measure, value, value_label)
+         stage, measure, value, value_label, chart_label)
 
 
 ### 2 - Save attendance data sets ----

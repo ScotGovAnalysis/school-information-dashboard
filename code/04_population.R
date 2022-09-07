@@ -157,12 +157,17 @@ population %<>%
     )
   ) %>%
   
+  # Add chart_label to show suppressed values on bar chart
+  mutate(chart_label = ifelse(value_label %in% c("z", "c", "x"),
+                              value_label,
+                              "")) %>%
+  
   # Filter school list and recode names
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
 
   # Reorder columns
   select(year, seed_code, la_code, la_name, school_name, school_type, 
-         measure_category, measure, value, value_label)
+         measure_category, measure, value, value_label, chart_label)
  
 
 ### 2 - Save population data sets ----
