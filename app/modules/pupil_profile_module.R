@@ -6,7 +6,7 @@ pupil_profile_ui <- function(id) {
   
   tagList(
     
-    section_header_output(ns("header")),
+    section_header_output(ns("title_box")),
     
     box(
       
@@ -23,8 +23,10 @@ pupil_profile_ui <- function(id) {
       ),
       
       column(
-        withSpinner(plotlyOutput(ns("chart1"), height = 400)),
-        withSpinner(plotlyOutput(ns("chart2"), height = 440)),
+        withSpinner(tagList(
+          plotlyOutput(ns("chart1"), height = 400),
+          plotlyOutput(ns("chart2"), height = 440)
+        )),
         width = 12
       )
       
@@ -36,37 +38,44 @@ pupil_profile_ui <- function(id) {
 
 pupil_profile_server <- function(input, output, session, data, school_type) {
   
-  callModule(section_header_server, "header", "Pupil", box_colour = "navy")
+  callModule(section_header_server, "title_box", "Pupil", box_colour = "navy")
   
   callModule(download_data_server, "download", "Pupil Profile", data)
   
-  output$chart1 <- renderPlotly({
+  pp_chart <- function(pp_data) {
     
-    req(nrow(data()) > 0)
+    plot <-
+      ggplot(pp_data, aes(text = paste0("Measure: ", measure, "<br>",
+                                    "% of Pupils: ", value_label))) + 
+      geom_col(aes(x = measure, y = value)) +
+      geom_text(aes(x = measure, y = value, label = trimws(value_label)),
+                hjust = 0.5, nudge_y = 5) +
+      theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
+      scale_y_continuous(limits = c(0, 105)) +
+      scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+      labs(x = NULL , y = NULL) +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            axis.line.y = element_blank())
     
-    chart1 <- 
-      data() %>%
-        filter(measure_category %in% 
-                 c("sex", "stage", "deprivation")) %>%
-        mutate(value = replace_na(value, 0)) %>%
-        ggplot(aes(text = paste0("Measure: ", measure, "<br>",
-                                 "% of Pupils: ", value_label))) + 
-        geom_col(aes(x = measure, y = value)) +
-        geom_text(aes(x = measure, y = value, label = trimws(value_label)),
-                  hjust = 0.5, nudge_y = 5) +
-        theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-        scale_y_continuous(limits = c(0, 105)) +
-        scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        labs(x = NULL , y = NULL) +
-        theme(axis.text.y = element_blank(),
-              axis.ticks.y = element_blank(),
-              axis.line.y = element_blank())
-    
-    ggplotly(chart1, tooltip = "text") %>%
+    ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
       layout(xaxis = list(fixedrange = TRUE),
              yaxis = list(fixedrange = TRUE))
     
+  }
+  
+  output$chart1 <- renderPlotly({
+    
+    dat <- 
+      data() %>%
+        filter(measure_category %in% c("sex", "stage", "deprivation"))
+    
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
+    
+    pp_chart(dat)
+
   })
   
   c2_measures <- c("english_additional_language", "ethnicity", "urban_rural")
@@ -78,28 +87,14 @@ pupil_profile_server <- function(input, output, session, data, school_type) {
   
   output$chart2 <- renderPlotly({
     
-    req(nrow(data()) > 0)
-    
-    chart2 <-
+    dat <-
       data() %>%
-      filter(measure_category %in% c2_measures) %>%
-      ggplot(aes(text = paste0("Measure: ", measure, "<br>",
-                               "% of Pupils: ", value_label))) + 
-      geom_col(aes(measure, value)) +
-      geom_text(aes(x = measure, y = value, label = trimws(value_label)),
-                hjust = 0.5, nudge_y = 5) +
-      theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-      scale_y_continuous(limits = c(0, 105)) +
-      scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-      labs(x = NULL , y = NULL) +
-      theme(axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            axis.line.y = element_blank())
+      filter(measure_category %in% c2_measures) 
     
-    ggplotly(chart2, tooltip = "text") %>%
-      config(displayModeBar = F, responsive = FALSE) %>% 
-      layout(xaxis = list(fixedrange = TRUE), 
-             yaxis = list(fixedrange = TRUE))
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
+    
+    pp_chart(dat)
     
   })
   

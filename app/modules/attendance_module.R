@@ -16,7 +16,7 @@ attendance_ui <- function(id, school_type) {
       
       # Dropdown Filter - Attendance Measure
       column(
-        selectInput(ns("measure_filter"), 
+        selectInput(ns("measure"), 
                     label = "Select attendance measure",
                     choices = c("Attendance", 
                                 "Authorised Absence",
@@ -48,8 +48,7 @@ attendance_ui <- function(id, school_type) {
             uiOutput(ns("stage_title")),
             plotlyOutput(ns("stage"))
           ))
-        }
-        ,
+        },
         width = 5
       ),
       
@@ -68,26 +67,30 @@ attendance_server <- function(input, output, session, data) {
   callModule(download_data_server, "download", "Attendance", data)
   
   output$trend_title <- renderUI({
-    h3(input$measure_filter, " by Year", align = "center")
+    h3(input$measure, " by Year", align = "center")
   })
   
   output$trend <- renderPlotly({
     
-    req(nrow(data()) > 0)
+    dat <-
+      data() %>%
+      filter(measure == input$measure & stage == "All Stages") %>%
+      mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
+    
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
     
     plot <-
-      data() %>%
-      filter(measure == input$measure_filter & stage == "All Stages") %>%
-      mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value)) %>%
-      ggplot(aes(year, 
-                 value, 
-                 group = 1,
-                 text = paste0("Year: ", year, "<br>",
-                               input$measure_filter, ": ", value_label))) + 
+      ggplot(
+        dat,
+        aes(x = year, y = value, group = 1,
+            text = paste0("Year: ", year, "<br>",
+                          input$measure, ": ", value_label))
+      ) + 
       geom_line() +
-      scale_y_continuous(limits = c(0,NA)) +
-      theme(axis.text.x = ggplot2::element_text(angle = 40, hjust = 1)) +
-      labs(x = "Academic Year", y = paste("%",input$measure_filter))
+      scale_y_continuous(limits = c(0, NA)) +
+      theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
+      labs(x = "Academic Year", y = paste("%",input$measure))
     
     ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 
@@ -97,33 +100,32 @@ attendance_server <- function(input, output, session, data) {
   })
   
   output$stage_title <- renderUI({
-    h3(input$measure_filter, " by Stage", align = "center")
+    h3(input$measure, " by Stage", align = "center")
   })
   
   output$stage <- renderPlotly({
     
     dat <-
       data() %>%
-      filter(measure == input$measure_filter & stage != "All Stages") %>%
-      mutate(
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
-      )
+      filter(measure == input$measure & stage != "All Stages")
     
-    req(nrow(dat) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data") 
     
     text_nudge <- max(dat$value) * 0.1
     
     plot <-
-      ggplot(dat, aes(value, 
-                      stage,
-                      text = paste0("Stage: ", stage, "<br>",
-                                    input$measure_filter, ": ", value_label))) + 
+      ggplot(
+        dat, 
+        aes(x = value, y = stage,
+            text = paste0("Stage: ", stage, "<br>",
+                          input$measure, ": ", value_label))
+      ) + 
       geom_col() +
-      geom_text(aes(x = value + text_nudge, label = chart_label), vjust = 0.5) +
+      geom_text(aes(x = value + text_nudge, label = chart_label), 
+                vjust = 0.5) +
       scale_x_continuous(limits = c(0, NA)) +
-      labs(x = paste("%",input$measure_filter) , y = "Pupil Stage")
+      labs(x = paste("%",input$measure) , y = "Pupil Stage")
     
     ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, responsive = FALSE) %>% 

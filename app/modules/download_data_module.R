@@ -20,8 +20,10 @@ download_data_server <- function(input, output, session, data_name, data) {
     },
     
     content = function(file) {
-      write_csv(data() %>% select(-value) %>% rename(value = value_label), 
-                file)
+      data() %>% 
+        select(-value) %>% 
+        rename(value = value_label) %>% 
+        write_csv(file)
     }
     
   )

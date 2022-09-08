@@ -5,14 +5,14 @@ dashboard_title_output <- function(id) {
   ns <- NS(id)
   
   # Value Box Output
-  valueBoxOutput(ns("title"), width = 12)
+  valueBoxOutput(ns("title_box"), width = 12)
   
 }
 
 dashboard_title_server <- function(input, output, session, 
                                    school_type, selected_la_school) {
   
-  output$title <- renderValueBox({
+  output$title_box <- renderValueBox({
     valueBox(
       value = paste(school_type, "School Information Dashboard"),
       subtitle = 

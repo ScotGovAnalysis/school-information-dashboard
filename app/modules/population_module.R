@@ -15,7 +15,7 @@ population_ui <- function(id,  school_type) {
   
   tagList(
     
-    section_header_output(ns("header")),
+    section_header_output(ns("title_box")),
     
     box(
       
@@ -25,7 +25,7 @@ population_ui <- function(id,  school_type) {
       
       # Dropdown to select population measure
       column(
-        selectInput(ns("measure_filter"), 
+        selectInput(ns("measure"), 
                      label = "Select population measure",
                      choices = pop_measures,
                      selected = "Pupil Numbers"),
@@ -57,29 +57,33 @@ population_ui <- function(id,  school_type) {
 
 population_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "header", "Population")
+  callModule(section_header_server, "title_box", "Population")
   callModule(download_data_server, "download", "Population Profile", data)
   
   output$chart_title <- renderUI({
-      h3(input$measure_filter, " by Year", align = "center")
+      h3(input$measure, " by Year", align = "center")
   })
   
   output$chart <- renderPlotly({
     
-    req(nrow(data()) > 0)
+    dat <- 
+      data() %>% 
+      filter(measure == input$measure) %>%
+      mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
     
-    plot <- 
-      data() %>%
-      filter(measure == input$measure_filter) %>%
-      ggplot(aes(
-        x = year, y = value, 
-        group = 1,
-        text = paste0("Year: ", year, "<br>",
-                      input$measure_filter, ": ", value_label)
-      )) + 
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
+    
+    plot <-
+      ggplot(
+        dat, 
+        aes(x = year, y = value, group = 1,
+            text = paste0("Year: ", year, "<br>",
+                          input$measure, ": ", value_label))
+      ) + 
       geom_line() +
       scale_y_continuous(limits = c(0, NA)) +
-      labs(x = "Year", y = input$measure_filter)
+      labs(x = "Year", y = input$measure)
     
     ggplotly(plot, tooltip = "text") %>%
       config(displayModeBar = F, 
