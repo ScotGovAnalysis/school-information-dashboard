@@ -45,7 +45,7 @@ insight <-
     value_label = recode_missing_values(
       value, 
       label = TRUE,
-      label_perc = ifelse(str_detect(measure, "[Pp]ercent(age)?"), TRUE, FALSE)
+      label_perc = ifelse(!str_detect(measure, "average"), TRUE, FALSE)
     ),
     value = recode_missing_values(value)
   )
