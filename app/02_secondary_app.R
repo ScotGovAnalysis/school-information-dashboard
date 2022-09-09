@@ -36,8 +36,7 @@ population <- read_rds(
       
 attainment <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attainment.rds")
-) %>%
-  mutate(value = ifelse(value_label %in% c("z", "c", "x") & dataset == "breadth_depth", NA, value))
+)
 
 
 ### 2 - UI ----
