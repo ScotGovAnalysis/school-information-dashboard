@@ -7,13 +7,11 @@ leaver_summary_ui <- function(id) {
     # Attainment leavers destination chart
     h3("Percentage of leavers in a positive destination",
        align = "center"),
-    br(),
     withSpinner(plotlyOutput(ns("leavers_dest_chart"))),
 
     # Attainment leavers total tariff chart
     h3("Average total tarrif score",
        align = "center"),
-    br(),
     withSpinner(plotlyOutput(ns("leavers_tariff_chart"))),
 
     width = 12
@@ -33,13 +31,11 @@ leaver_summary_server <- function(input, output, session, data) {
       mutate(
         comparator = ifelse(comparator == "0",
                                  str_wrap(school_name, width = 20),
-                                 "Virtual Comparator"),
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
+                                 "Virtual Comparator")
       )
     
-    req(nrow(dat) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")    
     
     plot <-
       ggplot(dat, aes(x = comparator, 
@@ -76,13 +72,11 @@ leaver_summary_server <- function(input, output, session, data) {
           to_any_case(word(measure, 4, 5, sep = "_"), case = "title"), "%"
         ),
         measure = factor(measure, 
-                         levels = c("Lowest 20%", "Middle 60%", "Highest 20%")),
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
+                         levels = c("Lowest 20%", "Middle 60%", "Highest 20%"))
       )
     
-    req(nrow(dat) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")    
     
     plot <-
       ggplot(dat,

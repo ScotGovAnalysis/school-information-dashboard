@@ -34,32 +34,32 @@ leaver_lit_num_ui <- function(id) {
 
 leaver_lit_num_server <- function(input, output, session, data) {
   
-  # Leavers literacy and numeracy chart
-  output$lit_num <- renderPlotly({
-
+  chart <- function(data, skill) {
+    
     dat <-
       data() %>%
       filter(dataset == "literacy_numeracy" & 
                str_starts(measure, 
-                          "percentage_achieving_literacy_and_numeracy")) %>%
+                          paste0("percentage_achieving_",
+                                 skill,
+                                 "_at_"))) %>%
       mutate(
         comparator = ifelse(comparator == "0",
                             str_wrap(school_name, width = 20),
                             "Virtual Comparator"),
         measure = to_title_case(word(measure, -4, -1, sep = "_")),
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
+        measure = str_wrap(measure, 
+                           ifelse(!str_detect(skill, "_and_"), 10, 100))
       )
     
-    req(nrow(dat) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")    
     
     plot <-
-      ggplot(dat, aes(
-        measure,
-        value,
-        text = paste0("School: ", comparator, "<br>",
-                      "Value: ", value_label)
+      ggplot(dat, aes(x = measure,
+                      y = value,
+                      text = paste0("School: ", comparator, "<br>",
+                                    "Value: ", value_label)
       )) +
       geom_col(aes(fill = comparator, colour = comparator),
                width = 0.8, position = "dodge2") +
@@ -74,93 +74,22 @@ leaver_lit_num_server <- function(input, output, session, data) {
       config(displayModeBar = F, responsive = FALSE) %>%
       layout(xaxis = list(fixedrange = TRUE),
              yaxis = list(fixedrange = TRUE))
-
+    
+  }
+  
+  # Leavers literacy and numeracy chart
+  output$lit_num <- renderPlotly({
+    chart(data, "literacy_and_numeracy")
   })
 
   # Leavers literacy chart
   output$literacy <- renderPlotly({
-
-    dat <-
-      data() %>%
-      filter(dataset == "literacy_numeracy" & 
-               str_starts(measure, 
-                          "percentage_achieving_literacy_at")) %>%
-      mutate(
-        comparator = ifelse(comparator == "0",
-                            str_wrap(school_name, width = 20),
-                            "Virtual Comparator"),
-        measure = to_title_case(word(measure, -4, -1, sep = "_")),
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
-      )
-    
-    req(nrow(dat) > 0)
-    
-    plot <-
-      ggplot(dat, aes(
-        measure,
-        value,
-        text = paste0("School: ", comparator, "<br>",
-                      "Value: ", value_label)
-      )) +
-      geom_col(aes(fill = comparator, colour = comparator),
-               width = 0.8, position = "dodge2") +
-      geom_text(aes(y = value + 5, label = chart_label, group = comparator),
-                hjust = 0.5, position = position_dodge2(width = 0.8)) +
-      scale_fill_manual(values = c("#3182bd", "#9ecae1")) +
-      scale_colour_manual(values = c("#3182bd", "#9ecae1")) +
-      scale_y_continuous(limits = c(0, 100)) +
-      labs(x = NULL , y = "% Achieving", fill = NULL, colour = NULL)
-    
-    ggplotly(plot, tooltip = "text") %>%
-      config(displayModeBar = F, responsive = FALSE) %>%
-      layout(xaxis = list(fixedrange = TRUE),
-             yaxis = list(fixedrange = TRUE))
-
+    chart(data, "literacy")
   })
 
   # Leavers numeracy chart
   output$numeracy <- renderPlotly({
-
-    dat <-
-      data() %>%
-      filter(dataset == "literacy_numeracy" & 
-               str_starts(measure, 
-                          "percentage_achieving_numeracy_at")) %>%
-      mutate(
-        comparator = ifelse(comparator == "0",
-                            str_wrap(school_name, width = 20),
-                            "Virtual Comparator"),
-        measure = to_title_case(word(measure, -4, -1, sep = "_")),
-        chart_label = ifelse(value_label %in% c("c", "z", "x"),
-                             value_label,
-                             "")
-      )
-    
-    req(nrow(dat) > 0)
-    
-    plot <-
-      ggplot(dat, aes(
-        measure,
-        value,
-        text = paste0("School: ", comparator, "<br>",
-                      "Value: ", value_label)
-      )) +
-      geom_col(aes(fill = comparator, colour = comparator),
-               width = 0.8, position = "dodge2") +
-      geom_text(aes(y = value + 5, label = chart_label, group = comparator),
-                hjust = 0.5, position = position_dodge2(width = 0.8)) +
-      scale_fill_manual(values = c("#3182bd", "#9ecae1")) +
-      scale_colour_manual(values = c("#3182bd", "#9ecae1")) +
-      scale_y_continuous(limits = c(0, 100)) +
-      labs(x = NULL , y = "% Achieving", fill = NULL, colour = NULL)
-    
-    ggplotly(plot, tooltip = "text") %>%
-      config(displayModeBar = F, responsive = FALSE) %>%
-      layout(xaxis = list(fixedrange = TRUE),
-             yaxis = list(fixedrange = TRUE))
-
+    chart(data, "numeracy")
   })
   
   

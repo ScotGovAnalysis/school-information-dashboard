@@ -8,7 +8,7 @@ secondary_attainment_ui <- function(id, year_options) {
   
   tagList(
     
-    section_header_output(ns("sec_attain_profile")),
+    section_header_output(ns("title_box")),
            
     box(
       
@@ -36,10 +36,12 @@ secondary_attainment_ui <- function(id, year_options) {
         
         conditionalPanel(
           condition = "input.measure != 'Leavers Breadth and Depth Profile'",
-          selectInput(ns("year"), 
-                      label = "Select year",
-                      choices = year_options,
-                      selected = year_options[max_year]),
+          selectInput(
+            ns("year"), 
+            label = "Select year",
+            choices = year_options,
+            selected = year_options[max_year]
+          ),
           ns = ns
         ),
         
@@ -138,7 +140,7 @@ secondary_attainment_ui <- function(id, year_options) {
 
 secondary_attainment_server <- function(input, output, session, data) {
   
-  callModule(section_header_server, "sec_attain_profile", "Secondary Attainment")
+  callModule(section_header_server, "title_box", "Secondary Attainment")
   
   callModule(download_data_server, "download", "Attainment Profile", data)
   
@@ -148,13 +150,16 @@ secondary_attainment_server <- function(input, output, session, data) {
   
   data_scqf <- reactive({
     data() %>%         
-      filter(dataset == "breadth_depth"
-             & minimum_scqf_level == str_extract(input$minimum_scqf_level, "\\d")
-             & minimum_number_of_awards == "1")
+      filter(
+        dataset == "breadth_depth" &
+          minimum_scqf_level == str_extract(input$minimum_scqf_level, "\\d{1,2}") &
+          minimum_number_of_awards == "1")
   })
   
+  scqf_level <- reactive({input$minimum_scqf_level})
+  
   # Leavers Breadth and Depth Profile ----
-  callModule(breadth_depth_server, "breadth_depth", data_scqf)
+  callModule(breadth_depth_server, "breadth_depth", data_scqf, scqf_level)
   
   # Curriculum for Excellence ----
   callModule(cfe_server, "cfe", data_year)

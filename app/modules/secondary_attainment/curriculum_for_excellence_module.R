@@ -4,47 +4,44 @@ cfe_ui <- function(id) {
   
   tagList(
     
-      column(
-        h3(paste("Percentage of students meeting",
-                 "curriculum for excellence level"),
-           align = "center"), 
-        width = 12
-      ),
-      
-      column(
-        br(),
-        withSpinner(girafeOutput(ns("reading"))),
-        withSpinner(girafeOutput(ns("listening"))),
-        width = 6
-      ),
-      
-      column(
-        br(),
-        withSpinner(girafeOutput(ns("writing"))),
-        withSpinner(girafeOutput(ns("numeracy"))),
-        width = 6
-      )
+    column(
+      h3("Percentage of students meeting curriculum for excellence level",
+         align = "center"), 
+      width = 12
+    ),
+    
+    column(
+      br(),
+      withSpinner(girafeOutput(ns("reading"))),
+      withSpinner(girafeOutput(ns("listening"))),
+      width = 6
+    ),
+    
+    column(
+      br(),
+      withSpinner(girafeOutput(ns("writing"))),
+      withSpinner(girafeOutput(ns("numeracy"))),
+      width = 6
+    )
     
   )
-    
+  
 }
 
 cfe_server <- function(input, output, session, data) {
   
   donut <- function(data, skill) {
     
-    acel <- 
+    dat <- 
       data() %>%
-      filter(dataset == "acel" 
-             & str_starts(measure, skill) 
-             & stage == "S3") %>%
+      filter(dataset == "acel" & str_starts(measure, skill) & stage == "S3") %>%
       mutate(text = paste0(measure, ": ", value_label))
     
-    req(nrow(acel) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(dat) > 0, label = "data"), errorClass = "no-data")
     
     plot <- 
-      ggplot(acel, 
-             aes(y = rev(value), fill = measure, tooltip = rev(text))) +
+      ggplot(dat, aes(y = rev(value), fill = measure, tooltip = rev(text))) +
       geom_bar_interactive(
         aes(x = 1),
         width = 0.5,
@@ -56,7 +53,7 @@ cfe_server <- function(input, output, session, data) {
         x = 0,
         y = 0,
         label = 
-          filter(acel, str_ends(measure, "% Meeting Level")) %>%
+          filter(dat, str_ends(measure, "% Meeting Level")) %>%
           pull(value_label),
         size = 12,
         color = "#3182bd"

@@ -10,7 +10,6 @@ school_profile_output <- function(id, school_type, faq_sections) {
     collapsible = FALSE,
   
     column(
-      width = 4,
       
       # Insert map
       map_output(ns("map")),
@@ -22,15 +21,19 @@ school_profile_output <- function(id, school_type, faq_sections) {
         faq_ui(ns("faq"), faq_sections)
       ),
       br(),
+      
       fluidRow(
         important_info_ui(ns("important_info"))
-      )
+      ),
+      
+      width = 4,
+      
     ),
     
     # Create column for school profile text
     column(
-      width = 8,
-      school_profile_text_output(ns("text"))
+      school_profile_text_output(ns("text")),
+      width = 8
     )
     
   )

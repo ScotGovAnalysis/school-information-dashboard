@@ -12,7 +12,8 @@ school_profile_text_server <- function(input, output, session, data, school_type
   
   output$school_profile <- renderUI({
     
-    req(nrow(data()) > 0)
+    # Display error message if no data returned
+    validate(need(nrow(data()) > 0, label = "data"), errorClass = "no-data")    
     
     list(
       
@@ -43,8 +44,9 @@ school_profile_text_server <- function(input, output, session, data, school_type
       },
 
       if(!is.na(data()$email)) {
-        h3(strong("Email:  "), a(href = paste0("mailto:", data()$email),
-                       data()$email))
+        h3(strong("Email:  "), 
+           a(href = paste0("mailto:", data()$email), data()$email)
+        )
       },
 
       if(!is.na(data()$website)) {
@@ -53,8 +55,8 @@ school_profile_text_server <- function(input, output, session, data, school_type
 
       if(!is.na(data()$la_website)) {
         h3(strong("Local Authority Website:  "),
-           a(href = data()$la_website,
-             data()$la_website))
+           a(href = data()$la_website, data()$la_website)
+        )
       }
       
     )
