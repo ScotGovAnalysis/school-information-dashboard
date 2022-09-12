@@ -75,6 +75,10 @@ ui <-
 
     dashboardBody(
       
+      # Set up app to use shinyjs (javascript)
+      # This is required for value boxes to be clickable
+      useShinyjs(),
+      
       # Set universal error message and fix girafe chart font issue
       html_tags(),
       
