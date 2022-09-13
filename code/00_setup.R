@@ -18,7 +18,7 @@
 ## This should be changed for every update to name the new output folder. 
 ## Follow the naming convention: "year-month of publish" e.g. 2021-May 
 
-run_label <- "2022-July"
+run_label <- "2022-September"
 
 
 ### 2 - Dates - TO UPDATE ----
