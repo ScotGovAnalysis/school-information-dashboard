@@ -8,7 +8,7 @@ school_filter_input <- function(id, la_names) {
     
     # Local Authority dropdown filter
     selectInput(
-      inputId = ns("la_filter"),
+      inputId = ns("la"),
       label = "Local Authority",
       choices = la_names,
       selected = "Scotland"
@@ -18,7 +18,7 @@ school_filter_input <- function(id, la_names) {
     # Choices are NULL as these are determined in server side by what
     # Local Authority is selected
     selectInput(
-      inputId = ns("school_filter"),
+      inputId = ns("school"),
       label = "School",
       choices = NULL,
       selected = "All publicly funded schools"
@@ -33,19 +33,18 @@ school_filter_server <- function(input, output, session, data) {
   # When the Local Authority selection changes, update the school filter
   # to give choice of schools within that local authority
   observeEvent(
-    input$la_filter,
+    input$la,
     {updateSelectInput(session,
-                       input = "school_filter",
+                       input = "school",
                        choices = data %>%
-                         filter(la_name == input$la_filter) %>%
+                         filter(la_name == input$la) %>%
                          pull(school_name))
     }
   )
   
   # Return a list of the selected Local Authority and School to be used
   # to filter other elements of dashboard
-  return(reactive(list(la = input$la_filter,
-                       school = input$school_filter)))
+  return(reactive(list(la = input$la, school = input$school)))
   
 }
 

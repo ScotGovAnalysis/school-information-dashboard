@@ -51,7 +51,7 @@ contacts <-
   
   # Match on Local Authority code
   left_join(
-    here("lookups", "la_websites.xlsx") %>% 
+    here("lookups", "local_authorities.xlsx") %>% 
       read_excel() %>%
       select(-la_website) %>%
       mutate(la_code = as.character(la_code)), 
@@ -64,7 +64,7 @@ contacts <-
 
 if(any(is.na(contacts$la_code))) {
   abort(paste(sum(is.na(contacts$la_code)), "rows do not have a match in",
-              "`lookups/la_websites.xlsx`."))
+              "`lookups/local_authorities.xlsx`."))
 }
 
 

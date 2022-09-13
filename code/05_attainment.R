@@ -42,7 +42,11 @@ insight <-
   # Recode missing values and add value label
   mutate(
     number_of_leavers = recode_missing_values(number_of_leavers),
-    value_label = recode_missing_values(value, label = TRUE),
+    value_label = recode_missing_values(
+      value, 
+      label = TRUE,
+      label_perc = ifelse(!str_detect(measure, "average"), TRUE, FALSE)
+    ),
     value = recode_missing_values(value)
   )
   
@@ -114,7 +118,7 @@ bge <-
   # Remove LA and School names - these will be added later from school_lookup
   clean_names() %>%
   rename_with(~ "seed_code", matches("seedcode")) %>%
-  select(-la_and_school, -matches("(score|level)")) %>%
+  select(-la_and_school, -matches("score|level")) %>%
   
   # Keep primary school stages only and recode some other variables
   filter(str_starts(stage, "P")) %>%
@@ -160,12 +164,10 @@ attainment <-
   # Combine Insight, ACEL and BGE data into one dataset
   bind_rows(insight, acel, bge) %>%
   
-  # # Recode missing / suppressed values; this will create both a numeric value 
-  # # column with all missing/suppressed values coded as NA and a character value 
-  # # column with all missing/suppressed values coded as z/x/c
-  # mutate(number_of_leavers = recode_missing_values(number_of_leavers),
-  #        value_label = recode_missing_values(value, label = TRUE),
-  #        value = recode_missing_values(value)) %>%
+  # Add chart_label to show suppressed values on bar chart
+  mutate(chart_label = ifelse(value_label %in% c("z", "c", "x"),
+                              value_label,
+                              "")) %>%
   
   # Filter school list and recode names using school_lookup
   inner_join(school_lookup, by = c("seed_code", "school_type")) %>%
@@ -173,7 +175,7 @@ attainment <-
   # Reorder columns
   select(year, seed_code, la_code, la_name, school_name, school_type,
          stage, comparator, minimum_scqf_level, minimum_number_of_awards,
-         number_of_leavers, dataset, measure, value, value_label)
+         number_of_leavers, dataset, measure, value, value_label, chart_label)
 
 
 ### 5 - Save attainment data sets ----

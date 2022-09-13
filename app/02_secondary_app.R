@@ -24,14 +24,11 @@ source("00_shiny_setup.R")
 
 school_profile <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_school_profile.rds")
-) %>%
-  # TEMP - This can be removed when lat and long added to school profile data
-  mutate(lat = 1, long = 1)
+)
 
 attendance <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attendance.rds")
-) %>%
-  mutate(value = ifelse(value_label %in% c("z", "c", "x"), NA, value))
+)
 
 population <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_population.rds")
@@ -39,8 +36,7 @@ population <- read_rds(
       
 attainment <- read_rds(
   paste0("secondary_data/", shiny_run_label, "/secondary_attainment.rds")
-) %>%
-  mutate(value = ifelse(value_label %in% c("z", "c", "x") & dataset == "breadth_depth", NA, value))
+)
 
 
 ### 2 - UI ----
@@ -83,12 +79,12 @@ ui <-
 
     dashboardBody(
       
-      # Recode error messages
-      tags$style(
-        type="text/css",
-        ".shiny-output-error { visibility: hidden; }",
-        ".shiny-output-error:before { visibility: visible; content: 'There is no data for this chart'; }"
-      ),
+      # Set up app to use shinyjs (javascript)
+      # This is required for value boxes to be clickable
+      useShinyjs(),
+      
+      # Set universal error message and fix girafe chart font issue
+      html_tags(),
       
       fluidRow(
         
@@ -96,17 +92,24 @@ ui <-
         dashboard_title_output("title"),
         
         # School Profile Content Box
-        school_profile_output("school_profile", "Secondary"),
+        school_profile_output("school_profile", "Secondary", faq_sections),
           
         # School Profile Value Boxes 
-        school_value_box_output("school_profile_boxes", "Secondary")
+        school_value_box_output("school_profile_boxes", "Secondary"),
         
-      ),
-      
-      pupil_profile_ui("pupil_profile", "Secondary"),
-      attendance_ui("attendance", "Secondary"),
-      population_ui("population", "Secondary"),
-      secondary_attainment_ui("attainment", unique(attainment$year))
+        # Pupil Profile
+        pupil_profile_ui("pupil_profile"),
+        
+        # Attendance
+        attendance_ui("attendance", "Secondary"),
+        
+        # Population
+        population_ui("population", "Secondary"),
+        
+        # Attainment
+        secondary_attainment_ui("attainment", unique(attainment$year))
+        
+      )
       
     )
     
@@ -155,11 +158,11 @@ server <- function(input, output, session) {
   ## Profile sections ----
   
   # School profile
-  callModule(school_profile_server, "school_profile", school_profile_filtered, FAQ, "Secondary")
+  callModule(school_profile_server, "school_profile", school_profile_filtered, faq, "Secondary")
   callModule(school_value_box_server, "school_profile_boxes", school_profile_filtered)
   
   # Pupil Profile
-  callModule(pupil_profile_server, "pupil_profile", population_filtered)
+  callModule(pupil_profile_server, "pupil_profile", population_filtered, "Secondary")
   
   # Attendance
   callModule(attendance_server, "attendance", attendance_filtered)

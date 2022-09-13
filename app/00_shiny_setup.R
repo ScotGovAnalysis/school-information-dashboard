@@ -22,7 +22,7 @@
 ## match a folder in all of the following; app/primary_data/, 
 ## app/secondary_data/, app/special_data/.
 
-shiny_run_label <- "2022-July"
+shiny_run_label <- "2022-September"
 
 
 ### 2 - Load packages ----
@@ -41,10 +41,11 @@ library(shinydashboard)
 library(tidyverse)
 library(plotly)
 library(ggiraph)
-library(ggrepel)
 library(purrr)
 library(stringr)
 library(shinycssloaders)
+library(forcats)
+library(snakecase)
 
 
 ### 3 - Turn off scientific notation format ----
@@ -56,6 +57,7 @@ options(scipen = 999)
 
 walk(list.files("modules", pattern = "\\.R$", full.names = TRUE), source)
 walk(list.files("modules/text_content", pattern = "\\.R$", full.names = TRUE), source)
+walk(list.files("modules/secondary_attainment", pattern = "\\.R$", full.names = TRUE), source)
 
 
 ### 5 - Set default ggplot themes and colours ----
@@ -67,7 +69,8 @@ update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
 
 ### 6 - Read in FAQ data ----
 
-FAQ <- read_excel("modules/text_content/FAQ.xlsx")
+faq <- read_excel("modules/text_content/FAQ.xlsx")
+faq_sections <- unique(faq$Section)
 
 
 ### END OF SCRIPT ###

@@ -84,6 +84,13 @@ import_insight_data <- function(dataset, calendar_year) {
                         names_to = "measure", 
                         values_to = "value") %>%
     
+    dplyr::mutate(flag = ifelse(dataset == "attainment_by_deprivation" &
+                                  stringr::str_detect(measure, "percent") &
+                                  comparator == 1,
+                                "remove", "keep")) %>%
+    dplyr::filter(flag == "keep") %>%
+    dplyr::select(-flag) %>%
+    
     # Add extra variables required
     dplyr::mutate(
       year = format_year(calendar_year, academic = TRUE),

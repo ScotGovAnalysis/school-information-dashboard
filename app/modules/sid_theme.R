@@ -1,18 +1,4 @@
-#' @title School Information Dashboard theme for ggplot2 charts.
-#'
-#' @examples
-#' library(ggplot2)
-#' ggplot(mpg, aes(x = manufacturer, y = cty)) +
-#'    geom_col() +
-#'    sid_theme()
-#'
-#' @export
-
-
 sid_theme <- function() {
-  
-  #colour of menu bar and tabs
-
 
   # Use theme_grey as base theme
   ggplot2::theme_grey() +
@@ -21,8 +7,6 @@ sid_theme <- function() {
       
       # Set panel background to blank
       panel.background = ggplot2::element_blank(),
-      
-      
         
       # Grid/axis lines:
       # Removes minor grid lines and vertical (x-axis) grid lines

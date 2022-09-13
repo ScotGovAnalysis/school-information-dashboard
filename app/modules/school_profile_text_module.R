@@ -12,6 +12,9 @@ school_profile_text_server <- function(input, output, session, data, school_type
   
   output$school_profile <- renderUI({
     
+    # Display error message if no data returned
+    validate(need(nrow(data()) > 0, label = "data"), errorClass = "no-data")    
+    
     list(
       
       h3(strong("School Name:  "), data()$school_name),
@@ -31,28 +34,29 @@ school_profile_text_server <- function(input, output, session, data, school_type
                   " in A or B",
                   ""))
       },
-      
+
       if(!is.na(data()$address)) {
         h3(strong("Address:  "), data()$address)
       },
-      
+
       if(!is.na(data()$phone_number)) {
         h3(strong("Telephone:  "), data()$phone_number)
       },
-      
+
       if(!is.na(data()$email)) {
-        h3(strong("Email:  "), a(href = paste0("mailto:", data()$email),
-                       data()$email))
+        h3(strong("Email:  "), 
+           a(href = paste0("mailto:", data()$email), data()$email)
+        )
       },
-      
+
       if(!is.na(data()$website)) {
         h3(strong("Website:  "), a(href = data()$website, data()$website))
       },
-      
+
       if(!is.na(data()$la_website)) {
         h3(strong("Local Authority Website:  "),
-           a(href = data()$la_website,
-             data()$la_website))
+           a(href = data()$la_website, data()$la_website)
+        )
       }
       
     )

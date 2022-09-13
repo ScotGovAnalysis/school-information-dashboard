@@ -1,4 +1,4 @@
-faq_ui <- function(id) {
+faq_ui <- function(id, sections) {
   
   ns <- NS(id)
   
@@ -13,39 +13,37 @@ faq_ui <- function(id) {
     
     # Popup window to display FAQs
     bsModal(
+      
       id = ns("popup_window"), 
       title = "FAQ", 
       trigger = ns("button"), 
       size = "large",
       
+      # Dropdown to select FAQ section
       selectInput(inputId = ns("section"),
                   label = "Section:",
-                  choices = NULL),
+                  choices = c("Select", sections),
+                  selected = "Select"),
       
+      # Table of FAQs
       dataTableOutput(ns("table"))
+      
     )
+    
   )
   
 }
 
 faq_server <- function(input, output, session, data) {
   
-  observeEvent(
-    input$popup_window,
-    {updateSelectInput(
-      session = session,
-      inputId = "section", 
-      choices = c("Select", unique(data$Section)),
-      selected = "Select")}
-  )
-  
-  # Table format   
   output$table <- 
     renderDataTable(
       data %>% filter(Section == input$section),
       rownames = FALSE,
-      options = list(columnDefs = list(list(targets = '_all', className = 'dt-center'),
-                        list(targets = 0, visible = FALSE)))
+      options = list(columnDefs = list(
+        list(targets = '_all', className = 'dt-center'),
+        list(targets = 0, visible = FALSE)
+      ))
     )
-  }
   
+}
