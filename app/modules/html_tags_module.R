@@ -8,6 +8,14 @@ html_tags <- function() {
     # https://github.com/davidgohel/ggiraph/issues/91
     tags$style(type = "text/css", "text {font-family: sans-serif}"),
     
+    # Edit background colour of value boxes to meet required colour contrast
+    tags$style(".small-box.bg-yellow { ",
+               "background-color: #DC730B !important; ",
+               "color: #FFFFFF !important; }"),
+    tags$style(".small-box.bg-teal { ",
+               "background-color: #298477 !important; ",
+               "color: #FFFFFF !important; }"),
+    
     # Recode error messages resulting from data validation
     tags$style(
       type = "text/css",
