@@ -12,14 +12,14 @@ introduction_server <- function(input, output, session) {
     # Complete blank href arguments with URLs to apps when published
     p("There are three dashboards - ",
       a("Primary,", 
-        href = "",
+        href = "https://scotland.shinyapps.io/sg-primary_school_information_dashboard",
         target = "_blank"), 
       a("Secondary,", 
-        href = "",
+        href = "https://scotland.shinyapps.io/sg-secondary_school_information_dashboard",
         target = "_blank"),
       "and",
       a("Special", 
-        href = "",
+        href = "https://scotland.shinyapps.io/sg-special_school_information_dashboard",
         target = "_blank"),
       "School Dashboards."),
     
