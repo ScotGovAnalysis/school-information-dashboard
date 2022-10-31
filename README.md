@@ -23,13 +23,11 @@ The following datasets are included in the dashboards:
 
 ## Dashboards
 
-_Links to the dashboards will be added when published._
+* [Primary School Information Dashboard](https://scotland.shinyapps.io/sg-primary_school_information_dashboard)
 
-* Primary School Information Dashboard
+* [Secondary School Information Dashboard](https://scotland.shinyapps.io/sg-secondary_school_information_dashboard)
 
-* Secondary School Information Dashboard
-
-* Special School Information Dashboard
+* [Special School Information Dashboard](https://scotland.shinyapps.io/sg-special_school_information_dashboard)
 
 
 ## Licence
