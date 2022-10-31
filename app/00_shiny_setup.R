@@ -46,6 +46,7 @@ library(stringr)
 library(shinycssloaders)
 library(forcats)
 library(snakecase)
+library(rsconnect)
 
 
 ### 3 - Turn off scientific notation format ----
