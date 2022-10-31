@@ -17,7 +17,7 @@ dashboard_title_server <- function(input, output, session,
       value = paste(school_type, "School Information Dashboard"),
       subtitle = 
         h4(paste(selected_la_school()$la, "-", selected_la_school()$school)),
-      color = "yellow"
+      color = "orange"
     )
   })
   
