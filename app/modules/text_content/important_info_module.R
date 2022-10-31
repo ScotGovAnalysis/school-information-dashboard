@@ -99,8 +99,7 @@ important_info_ui <- function(id) {
                     understand.")
         ),
         
-        p("This website is fully compliant with the Web Content Accessibility
-           Guidelines version 2.1 AA standard. This website is partially 
+        p("This website is partially 
            compliant with the Web Content Accessibility Guidelines version 
            2.1 AA standard, due to [insert one of the following: 
            'the non-compliances', 'the exemptions' or 'the non-compliances 
@@ -112,13 +111,15 @@ important_info_ui <- function(id) {
           tags$li("interactive charts are not accessible to those using a 
                     screen reader. We have however made the data downloadable
                     in an excel format for this purpose"),
-          tags$li("you cannot modify the line height or spacing of text")
-        ),
+          tags$li("you cannot modify the line height or spacing of text"),
+        
+       
+         ),
 
-        p("This statement was prepared on [date when it was first published]. 
-            It was last reviewed on [date when it was last reviewed]."),
-        p("This website was last tested on [date]. 
-            The test was carried out by the digital accessibility team at the 
+        p("This statement was prepared on 31/10/2022. 
+            It was last reviewed on 31/10/2022."),
+        p("This website is schedualed for testing on 21/11/2022. 
+            The test will be carried out by the digital accessibility team at the 
             Scottish Government."),
         
         strong("Feedback and contact information"),
