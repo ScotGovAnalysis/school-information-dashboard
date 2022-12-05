@@ -76,7 +76,8 @@ library(odbc)
 
 # Load functions from functions folder of Rproject
 
-walk(list.files(here("functions"), full.names = TRUE), source)
+walk(list.files(here("functions"), pattern = "\\.R$", full.names = TRUE), 
+     source)
 
 
 ### 2 - Create folders ----
