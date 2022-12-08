@@ -21,6 +21,11 @@ import_summary_data <- function(sheet_name, calendar_year) {
   # within the function even if magrittr package is not loaded.
   `%>%` <- magrittr::`%>%`
   
+  # Check sheet_name is valid
+  if(!sheet_name %in% c("SCH", "LA and SCOT")) {
+    stop("Invalid sheet_name argument. Must be one of 'SCH' or 'LA and SCOT'.")
+  }
+  
   filepath <- here::here("data", 
                           "school_summary_statistics", 
                           paste0(calendar_year, 
@@ -32,8 +37,10 @@ import_summary_data <- function(sheet_name, calendar_year) {
     stop("File does not exist:\n", filepath, ".")
   }
   
-  # Read in data
-  here::here("data", "school_summary_statistics", 
+  dat <-
+    
+    # Read in data
+    here::here("data", "school_summary_statistics", 
              paste0(calendar_year, "_school_summary_statistics.xlsx")) %>%
     readxl::read_excel(sheet = sheet_name, col_types = "text") %>%
     
@@ -43,12 +50,41 @@ import_summary_data <- function(sheet_name, calendar_year) {
     dplyr::rename_with(~ "male", tidyselect::matches("^m$")) %>%
     dplyr::rename_with(~ "fte_teacher_numbers", 
                        tidyselect::matches("^fte$")) %>%
-    dplyr::rename_with(~ "fsm", tidyselect::matches("^universal_fsm$")) %>%
-    dplyr::rename_with(~ "no_fsm", tidyselect::matches("^other_fsm$")) %>%
+    # dplyr::rename_with(~ "fsm", tidyselect::matches("^universal_fsm$")) %>%
+    # dplyr::rename_with(~ "no_fsm", tidyselect::matches("^other_fsm$")) %>%
     dplyr::rename_with(~ "stage", tidyselect::matches("^student_stage$")) %>%
     
     # Ensure school_type is capitalised
-    dplyr::mutate(across(any_of("school_type"), ~ stringr::str_to_title(.)))
+    dplyr::mutate(dplyr::across(tidyselect::any_of("school_type"), 
+                                ~ stringr::str_to_title(.)))
+  
+  # For school level data, calculate total # receiving free school meals;
+  # this is sum of those receiving universal FSM and other FSM
+  # The number not receiving FSM is calculated by subtracting this figure from
+  # total school roll
+  if(sheet_name == "SCH") {
+    
+    dat <- dat %>%
+      dplyr::mutate(
+        dplyr::across(c(roll, universal_fsm, other_fsm), as.numeric),
+        dplyr::across(c(universal_fsm, other_fsm), ~ tidyr::replace_na(., 0)),
+        fsm = universal_fsm + other_fsm,
+        no_fsm = roll - fsm
+      ) %>%
+      dplyr::select(-universal_fsm, -other_fsm) %>%
+      dplyr::mutate(roll = as.character(roll))
+    
+  }
+  
+  # For LA and SCOT level data, remove free school meal variables
+  # These figures will be calculated from school level data elsewhere
+  if(sheet_name == "LA and SCOT") {
+    
+    dat <- dat %>% dplyr::select(-tidyselect::any_of(c("fsm", "no_fsm")))
+    
+  }
+  
+  dat
   
 }
 
