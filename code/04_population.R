@@ -39,24 +39,49 @@ small_la <-
 
 ### 1 - School Summary data ----
 
-# This code creates a table of every combination of year and sheet name
-# of data to be read in.
+## Read in school level summary data
 
-population_files <-    
-    expand_grid(year = c(year_summary, "timeseries"),
-                sheet = c("SCH", "LA and SCOT"))
- 
+population_school <- 
+  map_dfr(
+    c(year_summary, "timeseries"),
+    ~ import_summary_data("SCH", .x)
+  )
+
+## Calculate Local Authority and Scotland level free school meals data
+
+fsm_la <- 
+  population_school %>%
+  filter(year == max(year_summary)) %>%
+  group_by(la_code, school_type) %>%
+  summarise(across(contains("fsm"), 
+                   ~ sum(as.numeric(.), na.rm = TRUE)),
+            .groups = "drop") %>%
+  bind_rows(
+    group_by(., school_type) %>%
+      summarise(
+        la_code = "0",
+        across(contains("fsm"), sum),
+        .groups = "drop"
+      )
+  ) %>%
+  mutate(year = as.character(max(year_summary)))
+
+## Combine school level data with local authority and Scotland level data
 
 population <- 
   
-  # This combines the population tabs in all of the school summary data sheets
-  # .x refers to the first column of population files (year)
-  # .y refers to the second column of population files (sheet name)
-  
-  pmap_dfr(
-    population_files,
-    ~ import_summary_data(.y, .x)
+  # Read in Local Authority and Scotland level data
+  map_dfr(
+    c(year_summary, "timeseries"),
+    ~ import_summary_data("LA and SCOT", .x)
   ) %>%
+  
+  # Join free school meals data calculated from school level data
+  left_join(fsm_la, by = c("year", "school_type", "la_code")) %>%
+
+  # Add school level data
+  bind_rows(population_school) %>%
+  mutate(across(contains("fsm"), as.character)) %>%
 
   # Recode seed_code for LA/Scotland summary rows
   mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
