@@ -99,12 +99,7 @@ important_info_ui <- function(id) {
                     understand.")
         ),
         
-        p("This website is partially 
-           compliant with the Web Content Accessibility Guidelines version 
-           2.1 AA standard, due to [insert one of the following: 
-           'the non-compliances', 'the exemptions' or 'the non-compliances 
-           and exemptions']."),
-        
+     
         p("We know some parts of this website are not fully accessible. The 
             content listed below is non-accessible for the following reasons."),
         tags$ul(
@@ -118,7 +113,7 @@ important_info_ui <- function(id) {
 
         p("This statement was prepared on 31/10/2022. 
             It was last reviewed on 31/10/2022."),
-        p("This website is schedualed for testing on 21/11/2022. 
+        p("This website is scheduled for testing on 17/12/2022. 
             The test will be carried out by the digital accessibility team at the 
             Scottish Government."),
         
