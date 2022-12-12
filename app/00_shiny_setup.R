@@ -22,7 +22,7 @@
 ## match a folder in all of the following; app/primary_data/, 
 ## app/secondary_data/, app/special_data/.
 
-shiny_run_label <- "2022-September"
+shiny_run_label <- "2022-December"
 
 
 ### 2 - Load packages ----
