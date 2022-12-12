@@ -109,7 +109,7 @@ school_value_box_server <- function(input, output, session, data) {
       p("Information is collected in February every year in the Healthy Living 
           Survey. A link to the Healthy Living Survey can be found here:",
         a("Healthy Living Survey Link", 
-          href="https://www.gov.scot/publications/attainment-leaver-destinations-healthy-living-summary-statistics/pages/2/)",
+          href="https://www.gov.scot/collections/school-education-statistics/#schoolhealthylivingsurveystatistics(mealsandpe)",
           target = "_blank")
       )
     ))
