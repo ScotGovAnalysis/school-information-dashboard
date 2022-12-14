@@ -22,8 +22,9 @@ import_summary_data <- function(sheet_name, calendar_year) {
   `%>%` <- magrittr::`%>%`
   
   # Check sheet_name is valid
-  if(!sheet_name %in% c("SCH", "LA and SCOT")) {
-    stop("Invalid sheet_name argument. Must be one of 'SCH' or 'LA and SCOT'.")
+  if(!sheet_name %in% c("SCH", "LA and SCOT", "Attendance", "Att by Stage")) {
+    stop("Invalid sheet_name argument. Must be one of 'SCH', 'LA and SCOT', ",
+         "'Attendance' or 'Att by Stage'.")
   }
   
   filepath <- here::here("data", 

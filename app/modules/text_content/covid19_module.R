@@ -22,10 +22,13 @@ covid19_ui <- function(id, school_type) {
         
         HTML(paste0(
           p("S3 Attainment in literacy and numeracy statistics - 
-            Impact on data collection for 2019/20 and 2020/21:"),
-          p("The Scottish Government did not collect Achievement of CfE Levels 
-              data for S3 pupils. More detail is available by following this 
-              link to ACEL publication:",
+            Impact on data collection for 2019/20 and 2021/22:"),
+          p("Achievement of CfE Levels data for secondary school pupils were 
+              not collected in 2020/21 due to other pressures on these schools 
+              including implementation of the SQA NationalQualifications 
+              Alternative Certification Model which was used to award 
+              National 5s, Highers and Advanced Highers in 2021 More detail 
+              is available by following this link to ACEL publication:",
               a("ACEL publication", 
                 href="https://www.gov.scot/publications/scottish-exchange-of-data-achievement-of-curriculum-for-excellence-levels")),
           p("School leavers attainment statistics:"),
@@ -68,18 +71,14 @@ covid19_ui <- function(id, school_type) {
       } else {
         
         HTML(paste0(
-          p("Impact on data collection: The Scottish Government did not collect 
-            Achievement of CfE Levels data for any pupils in 2019/20."),
-          p("Schools were closed in Scotland in March 2020 and January 2021 as 
-              a result of the pandemic. This is likely to have had a
-              negative effect on some pupils' progress and attainment. 
-              Attainment of socio-economically deprived children may have been
-              amongst those most negatively affected."),
-          p("It is therefore likely to have had an impact on the CfE levels some 
-              children have achieved. This will be reflected in the
-              2020/21 figures and should be kept in mind when interpreting 
-              these. In particular, when comparing with figures for 2018/19 and
-              before."),
+          p("Impact on data collection: In 2019/20, Achievement of Curriculum for
+          Excellence data were not collected for any pupils due to difficulties 
+          in collecting data whilst schools were closed due to the COVID-19 pandemic."),
+          p("Pupils' achievement of CfE levels in 2020/21 were affected by the 
+          coronavirus (COVID-19) pandemic. It is likely that 2021/22 results may 
+          also be affected by the ongoing impact of the pandemic on young people's 
+          learning."),
+          p("This should be kept in mind when making comparisons over time"),
           p("More detail is available using this link here: ",
             a("Scottish Exchange of Data: achievement of Curriculum for Excellence levels",
               href="https://www.gov.scot/publications/scottish-exchange-of-data-achievement-of-curriculum-for-excellence-levels"))

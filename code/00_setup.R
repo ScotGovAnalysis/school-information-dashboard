@@ -18,7 +18,7 @@
 ## This should be changed for every update to name the new output folder. 
 ## Follow the naming convention: "year-month of publish" e.g. 2021-May 
 
-run_label <- "2022-September"
+run_label <- "2022-December"
 
 
 ### 2 - Dates - TO UPDATE ----
@@ -54,9 +54,9 @@ year_insight  <- 2017:2021
 ## 2b - Datasets typically updated in December ----
 
 # Datasets that require a single file, update with a single year
-year_estate         <- 2021
-year_acel           <- 2021
-year_healthy_living <- 2021
+year_estate         <- 2022
+year_acel           <- 2022
+year_healthy_living <- 2022
 
 
 ### 1 - Load packages ----
