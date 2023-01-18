@@ -56,9 +56,10 @@ options(scipen = 999)
 
 ### 4 - Load shiny modules ----
 
-walk(list.files("modules", pattern = "\\.R$", full.names = TRUE), source)
-walk(list.files("modules/text_content", pattern = "\\.R$", full.names = TRUE), source)
-walk(list.files("modules/secondary_attainment", pattern = "\\.R$", full.names = TRUE), source)
+walk(
+  list.files("modules", pattern = "\\.R$", full.names = TRUE, recursive = TRUE), 
+  source
+)
 
 
 ### 5 - Set default ggplot themes and colours ----
