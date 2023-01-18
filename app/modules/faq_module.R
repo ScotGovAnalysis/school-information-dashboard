@@ -1,49 +1,47 @@
+
 faq_ui <- function(id, sections) {
   
   ns <- NS(id)
   
-  tagList(
-    
-    # FAQ Button
-    actionButton(
-      ns("button"),
-      "FAQ's",
-      style="color: white; background-color: purple; border-color:purple",
-      width = "49%"),
-    
-    # Popup window to display FAQs
-    bsModal(
-      
-      id = ns("popup_window"), 
-      title = "FAQ", 
-      trigger = ns("button"), 
-      size = "large",
-      
-      # Dropdown to select FAQ section
-      selectInput(inputId = ns("section"),
-                  label = "Section:",
-                  choices = c("Select", sections),
-                  selected = "Select"),
-      
-      # Table of FAQs
-      dataTableOutput(ns("table"))
-      
-    )
-    
+  # FAQ Button
+  actionButton(
+    ns("button"),
+    "FAQ's",
+    style="color: white; background-color: purple; border-color:purple",
+    width = "49%"
   )
   
 }
 
 faq_server <- function(input, output, session, data) {
   
-  output$table <- 
-    renderDataTable(
-      data %>% filter(Section == input$section),
-      rownames = FALSE,
-      options = list(columnDefs = list(
-        list(targets = '_all', className = 'dt-left'),
-        list(targets = 0, visible = FALSE)
-      ))
+  output$table <- renderDataTable(
+    data %>% filter(Section == {input$section_filter}),
+    rownames = FALSE,
+    options = list(columnDefs = list(
+      list(targets = '_all', className = 'dt-left'),
+      list(targets = 0, visible = FALSE)
+    ))
+  )
+  
+  onclick(
+    "button",
+    showModal(
+      modal_with_x(
+        title = "FAQ",
+        size = "l",
+        content = tagList(
+          # Dropdown to select FAQ section
+          selectInput(inputId = session$ns("section_filter"),
+                      label = "Section:",
+                      choices = c("Select", sections),
+                      selected = "Select"),
+      
+          # Table of FAQs
+          dataTableOutput(outputId = session$ns("table"))
+        )
+      )
     )
+  )
   
 }
