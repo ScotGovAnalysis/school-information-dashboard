@@ -41,7 +41,7 @@ faq_server <- function(input, output, session, data) {
       data %>% filter(Section == input$section),
       rownames = FALSE,
       options = list(columnDefs = list(
-        list(targets = '_all', className = 'dt-center'),
+        list(targets = '_all', className = 'dt-left'),
         list(targets = 0, visible = FALSE)
       ))
     )
