@@ -45,15 +45,17 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "attendance", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Attendance",
-      p("The attendance rate for your chosen school/area. Attendance and 
+      content = tagList(
+        p("The attendance rate for your chosen school/area. Attendance and 
           absence data is collected from publicly funded schools every 
           two years"),
-      p("More information can be found here:",
-        a("Schools Summary Statistics Link", 
-          href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
-          target = "_blank"))
+        p("More information can be found here:",
+          a("Schools Summary Statistics Link", 
+            href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
+            target = "_blank"))
+      )
     ))
   )
   
@@ -68,23 +70,25 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "average_class", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Average Class Size",
-      p("Information on the pupil numbers, teacher numbers and class sizes 
+      content = tagList(
+        p("Information on the pupil numbers, teacher numbers and class sizes 
           are collected from publicly funded schools every year."),
-      p("The information shown here is from the Pupil and Teacher Census a 
+        p("The information shown here is from the Pupil and Teacher Census a 
           link to which is here:",
-        a("School Education Statistics",
-          href = "https://www.gov.scot/collections/school-education-statistics/",
-          target = "_blank")),
-      p("Note that overall local authority level data may not be the same as 
+          a("School Education Statistics",
+            href = "https://www.gov.scot/collections/school-education-statistics/",
+            target = "_blank")),
+        p("Note that overall local authority level data may not be the same as 
           the sum of all school data within that local authority, 
           as local authorities may have teachers recorded at virtual schools."),
-      p("For more information please see Section 7 in the Frequently Asked 
+        p("For more information please see Section 7 in the Frequently Asked 
           Questions or you can find the data publication here:",
-        a("Schools Summary Statistics Link",
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
-          target = "_blank")
+          a("Schools Summary Statistics Link",
+            href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+            target = "_blank")
+        )
       )
     ))
   )
@@ -100,17 +104,19 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "pe", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Meeting PE Target",
-      p("Primary schools have a target to provide 120 minutes of Physical 
+      content = tagList(
+        p("Primary schools have a target to provide 120 minutes of Physical 
           Education (PE) a week for pupils. This shows whether the school 
           (or the percentage of schools in your chosen area) is meeting this 
           target or not."),
-      p("Information is collected in February every year in the Healthy Living 
+        p("Information is collected in February every year in the Healthy Living 
           Survey. A link to the Healthy Living Survey can be found here:",
-        a("Healthy Living Survey Link", 
-          href="https://www.gov.scot/collections/school-education-statistics/#schoolhealthylivingsurveystatistics(mealsandpe)",
-          target = "_blank")
+          a("Healthy Living Survey Link", 
+            href="https://www.gov.scot/collections/school-education-statistics/#schoolhealthylivingsurveystatistics(mealsandpe)",
+            target = "_blank")
+        )
       )
     ))
   )
@@ -126,24 +132,26 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "pup_num", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Pupil Numbers",
-      p("Information on the pupil numbers, teacher numbers and Class sizes are 
+      content = tagList(
+        p("Information on the pupil numbers, teacher numbers and Class sizes are 
         collected from publicly funded schools every year."),
-      p("The information shown here is from the Pupil and Teacher Census a 
+        p("The information shown here is from the Pupil and Teacher Census a 
         link to which is here:",
-        a("School Education Statistics",
-          href = "https://www.gov.scot/collections/school-education-statistics/",
-          target = "_blank")
-      ),
-      p("Note that overall local authority level data may not be the same as 
+          a("School Education Statistics",
+            href = "https://www.gov.scot/collections/school-education-statistics/",
+            target = "_blank")
+        ),
+        p("Note that overall local authority level data may not be the same as 
           the sum of all school data within that local authority, as local 
           authorities may have teachers recorded at virtual schools."),
-      p("For more information please see Section 7 in the Frequently Asked 
+        p("For more information please see Section 7 in the Frequently Asked 
         Questions or you can find the data publication here:",
-        a("Schools Summary Statistics Link", 
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
-          target = "_blank")
+          a("Schools Summary Statistics Link", 
+            href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+            target = "_blank")
+        )
       )
     ))
   )
@@ -159,22 +167,24 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "teach_num", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Teacher Numbers",
-      p("Information on the pupil numbers, teacher numbers and Class sizes are 
+      content = tagList(
+        p("Information on the pupil numbers, teacher numbers and Class sizes are 
         collected from publicly funded schools every year."),
-      p("The information shown here is from the Pupil and Teacher Census a link 
+        p("The information shown here is from the Pupil and Teacher Census a link 
         to which is here:",
-        a("School Education Statistics",
-          href = "https://www.gov.scot/collections/school-education-statistics/",
-          target = "_blank")
-      ),
-      p("Note that overall local authority level data may not be the same as the 
+          a("School Education Statistics",
+            href = "https://www.gov.scot/collections/school-education-statistics/",
+            target = "_blank")
+        ),
+        p("Note that overall local authority level data may not be the same as the 
         sum of all school data within that local authority, as local authorities 
         may have teachers recorded at virtual schools."),
-      p("For more information please see Section 7 in the Frequently Asked 
+        p("For more information please see Section 7 in the Frequently Asked 
         Questions or you can find the data publication here:",
-        a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+          a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+      )
     ))
   )
   
@@ -189,24 +199,26 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     'ptr', 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Pupil Teacher Ratio",
-      p("Information on the pupil numbers, teacher numbers and Class sizes are 
+      content = tagList(
+        p("Information on the pupil numbers, teacher numbers and Class sizes are 
           collected from publicly funded schools every year."),
-      p("The information shown here is from the Pupil and Teacher Census a link 
+        p("The information shown here is from the Pupil and Teacher Census a link 
           to which is here:",
-        a("School Education Statistics",
-          href = "https://www.gov.scot/collections/school-education-statistics/",
-          target = "_blank")
-      ),
-      p("Note that overall local authority level data may not be the same as 
+          a("School Education Statistics",
+            href = "https://www.gov.scot/collections/school-education-statistics/",
+            target = "_blank")
+        ),
+        p("Note that overall local authority level data may not be the same as 
           the sum of all school data within that local authority, as local 
           authorities may have teachers recorded at virtual schools."),
-      p("For more information please see Section 7 in the Frequently Asked 
+        p("For more information please see Section 7 in the Frequently Asked 
           Questions or you can find the data publication here:",
-        a("Schools Summary Statistics Link", 
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
-          target = "_blank")
+          a("Schools Summary Statistics Link", 
+            href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+            target = "_blank")
+        )
       )
     ))
   )
@@ -226,20 +238,22 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "condition", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "School Condition",
-      p("The recorded condition of your chosen school/area."),
-      tags$ul(
-        tags$li("A - Good"),
-        tags$li("B - Satisfactory"),
-        tags$li("C - Poor"),
-        tags$li("D - Bad"),
-      ),
-      p("Information is collected in April every year as part of the schools 
+      content = tagList(
+        p("The recorded condition of your chosen school/area."),
+        tags$ul(
+          tags$li("A - Good"),
+          tags$li("B - Satisfactory"),
+          tags$li("C - Poor"),
+          tags$li("D - Bad"),
+        ),
+        p("Information is collected in April every year as part of the schools 
           estate collection which can be found using this link:",
-        a("School Estate Statistics Link",
-          href="https://www.gov.scot/collections/school-education-statistics/#schoolestatesstatistics",
-          target = "_blank")
+          a("School Estate Statistics Link",
+            href="https://www.gov.scot/collections/school-education-statistics/#schoolestatesstatistics",
+            target = "_blank")
+        )
       )
     ))
   )
@@ -258,13 +272,15 @@ school_value_box_server <- function(input, output, session, data) {
   
   onclick(
     "denomination", 
-    showModal(modalDialog(
+    showModal(modal_with_x(
       title = "Denomination",
-      p("This reports the denomination of the school."),
-      p("The publication can be found using this link:",
-        a("Schools Summary Statistics Link", 
-          href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
-          target = "_blank")
+      content = tagList(
+        p("This reports the denomination of the school."),
+        p("The publication can be found using this link:",
+          a("Schools Summary Statistics Link", 
+            href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
+            target = "_blank")
+        )
       )
     ))
   )

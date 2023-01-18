@@ -256,9 +256,9 @@ section_header_server <- function(input, output, session, section_name, box_colo
   # When user clicks value box, display pop up with information text
   onclick(
     id = "header",
-    expr = showModal(modalDialog(
+    expr = showModal(modal_with_x(
       title = section_header,
-      HTML(text)
+      content = HTML(text)
     ))
   )
   

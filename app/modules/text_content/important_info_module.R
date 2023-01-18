@@ -2,24 +2,26 @@ important_info_ui <- function(id) {
   
   ns <- NS(id)
   
-  tagList(
-    
-    # Important information Button
-    actionButton(
-      ns("button"), 
-      "Important Information", 
-      style = "color: white; background-color: purple; border-color:purple",
-      width = "98%"),
-    
-    # Pop-up window
-    bsModal(
-      
-      id = ns("popup_window"), 
-      title = "Important Information", 
-      trigger = ns("button"), 
-      size = "large",
-      
-      HTML(paste0(
+  # Important information Button
+  actionButton(
+    ns("button"), 
+    "Important Information", 
+    style = "color: white; background-color: purple; border-color:purple",
+    width = "98%"
+  )
+  
+}
+
+
+important_info_server <- function(input, output, session) {
+  
+  # Pop-up window
+  onclick(
+    "button", 
+    showModal(modal_with_x(
+      title = "Important Information",
+      size = "l",
+      content = tagList(
         
         # Missing data symbols ----
         
@@ -32,7 +34,7 @@ important_info_ui <- function(id) {
           tags$li("x = This data was not available at the time of publishing"),
           tags$li("w = No data was recorded"),
         ),
-
+        
         hr(),
         
         # Useful links ----
@@ -75,7 +77,7 @@ important_info_ui <- function(id) {
               living publication",
             href="https://www.gov.scot/collections/school-education-statistics/#schoolleaverinitialdestinationsandattainment",
             target = "_blank")),
-
+        
         hr(),
         
         # Accessibility statement ----
@@ -99,7 +101,7 @@ important_info_ui <- function(id) {
                     understand.")
         ),
         
-     
+        
         p("We know some parts of this website are not fully accessible. The 
             content listed below is non-accessible for the following reasons."),
         tags$ul(
@@ -107,10 +109,10 @@ important_info_ui <- function(id) {
                     screen reader. We have however made the data downloadable
                     in an excel format for this purpose"),
           tags$li("you cannot modify the line height or spacing of text"),
+          
+          
+        ),
         
-       
-         ),
-
         p("This statement was prepared on 31/10/2022. 
             It was last reviewed on 31/10/2022."),
         p("This website is scheduled for testing on 17/12/2022. 
@@ -127,13 +129,13 @@ important_info_ui <- function(id) {
         # Link to GitHub code ----
         
         p("The code used to produce this dashboard is publicly available on",
-        a("GitHub.", 
-          href="https://github.com/DataScienceScotland/school-information-dashboard",
-          target = "_blank"))
+          a("GitHub.", 
+            href="https://github.com/DataScienceScotland/school-information-dashboard",
+            target = "_blank"))
         
-      ))
+      )
       
-    )
+    ))
     
   )
   
