@@ -1,5 +1,5 @@
 
-faq_ui <- function(id, sections) {
+faq_ui <- function(id) {
   
   ns <- NS(id)
   
@@ -34,7 +34,7 @@ faq_server <- function(input, output, session, data) {
           # Dropdown to select FAQ section
           selectInput(inputId = session$ns("section_filter"),
                       label = "Section:",
-                      choices = c("Select", sections),
+                      choices = c("Select", unique(data$Section)),
                       selected = "Select"),
       
           # Table of FAQs

@@ -18,7 +18,7 @@ school_profile_output <- function(id, school_type, faq_sections) {
       # Insert buttons for Covid-19, FAQs and info
       fluidRow(
         covid19_ui(ns("covid19")),
-        faq_ui(ns("faq"), faq_sections)
+        faq_ui(ns("faq"))
       ),
       br(),
       
