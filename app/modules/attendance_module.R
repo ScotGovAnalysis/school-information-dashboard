@@ -12,7 +12,6 @@ attendance_ui <- function(id, school_type) {
       
       title = NULL,
       width = 12,
-      collapsible = TRUE,
       
       # Dropdown Filter - Attendance Measure
       column(

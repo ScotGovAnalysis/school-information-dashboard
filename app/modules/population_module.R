@@ -21,7 +21,6 @@ population_ui <- function(id,  school_type) {
       
       title = NULL,
       width = 12,
-      collapsible = TRUE,
       
       # Dropdown to select population measure
       column(

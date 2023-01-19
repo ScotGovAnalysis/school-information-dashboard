@@ -14,7 +14,6 @@ secondary_attainment_ui <- function(id, year_options) {
       
       title = NULL,
       width = 12,
-      collapsible = TRUE,
       
       column(
         selectInput(

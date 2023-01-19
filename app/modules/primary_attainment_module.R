@@ -14,7 +14,6 @@ primary_attainment_ui <- function(id, year_options) {
       
       title = NULL,
       width = 12,
-      collapsible = TRUE,
      
       # Dropdown Filter - Attainment Year
       column(
