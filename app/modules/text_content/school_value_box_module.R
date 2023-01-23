@@ -39,7 +39,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$attendance <- renderValueBox({
     valueBox(value = p("Attendance", style = "font-size: 75%;"),
              subtitle = h3(data()$attendance),
-             icon = icon("line-chart"), 
+             icon = icon("line-chart", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -64,7 +64,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$average_class <- renderValueBox({
     valueBox(value = p("Average Class Size", style = "font-size: 75%;"),
              subtitle = h3(data()$average_class),
-             icon = icon("user"), 
+             icon = icon("user", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -98,7 +98,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$pe <- renderValueBox({
     valueBox(value = p("Meeting PE Target", style = "font-size: 75%;"),
              subtitle = h3(data()$pe_target),
-             icon = icon("fa-solid fa-bullseye"), 
+             icon = icon("bullseye", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -126,7 +126,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$pup_num <- renderValueBox({
     valueBox(value = p("Pupil Numbers", style = "font-size: 75%;"),
              subtitle = h3(data()$roll),
-             icon = icon("bar-chart-o"), 
+             icon = icon("chart-column", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -161,7 +161,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$teach_num <- renderValueBox({
     valueBox(value = p("Teacher Numbers", style = "font-size: 75%;"),
              subtitle = h3(data()$fte_teacher_numbers),
-             icon = icon("fa-regular fa-user-graduate"), 
+             icon = icon("user-graduate", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -193,7 +193,7 @@ school_value_box_server <- function(input, output, session, data) {
   output$ptr <- renderValueBox({
     valueBox(value = p("Pupil Teacher Ratio", style = "font-size: 75%;"),
              subtitle = h3(data()$ptr),
-             icon = icon("fa-solid fa-chart-pie"), 
+             icon = icon("chart-pie", class = "fa-solid"), 
              color = "teal")
   })
   
@@ -232,7 +232,7 @@ school_value_box_server <- function(input, output, session, data) {
                           ifelse(str_starts(data()$school_name, "All "),
                                  "in A or B",
                                  ""))),
-      icon = icon("fa-solid fa-school"), 
+      icon = icon("school", class = "fa-solid"), 
       color = "teal")
   })
   
@@ -266,7 +266,7 @@ school_value_box_server <- function(input, output, session, data) {
       subtitle = h3(ifelse(str_starts(data()$school_name, "All "),
                            "z",
                            data()$denomination)),
-      icon = icon("fa-solid fa-users"), 
+      icon = icon("users", class = "fa-solid"), 
       color = "teal")
   })
   
