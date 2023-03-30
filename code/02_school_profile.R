@@ -279,7 +279,7 @@ summary <-
 
 attendance <-
   
-  import_summary_data("Attendance", year_summary) %>%
+  import_summary_data("Attendance", max(year_attendance)) %>%
   
   # For LA and Scotland rows, use la_code in seed_code column
   mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
