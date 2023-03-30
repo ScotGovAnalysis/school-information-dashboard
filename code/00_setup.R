@@ -32,15 +32,19 @@ run_label <- "2023-April"
 ## 2a - Datasets typically updated in April ----
 
 # Datasets that require a single file, update with a single year
+
 year_contacts <- 2023
 year_bge      <- 2023
 
-# Summary data requires multiple files but is typically only updated in 
-# odd-numbered years for AAE (attendance, absence, exclusion); e.g. 2021, 2023, etc.
 # School summary data updated every year
-# Update the vector (list) with the new year; e.g. c(2021, 2023)
+# Update the vector (list) with the new year; e.g. c(2021, 2022)
 
-year_summary  <- c(2021,2022)
+year_summary  <- c(2021, 2022)
+
+# Attendance data requires multiple files but is typically only updated in 
+# odd-numbered years; e.g. c(2021, 2023)
+
+year_attendance <- c(2021)
 
 # Insight data uses a rolling five year trend; ensure both start and
 # end years are updated following the convention: year_start:year_end
