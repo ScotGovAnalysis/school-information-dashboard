@@ -47,11 +47,11 @@ import_summary_data <- function(sheet_name, calendar_year) {
     
     # Clean column names
     janitor::clean_names() %>%
-    dplyr::rename_with(~ "female", tidyselect::matches("^f$")) %>%
-    dplyr::rename_with(~ "male", tidyselect::matches("^m$")) %>%
-    dplyr::rename_with(~ "fte_teacher_numbers", 
+    dplyr::rename(female = tidyselect::matches("^f$")) %>%
+    dplyr::rename(male = tidyselect::matches("^m$")) %>%
+    dplyr::rename(fte_teacher_numbers =
                        tidyselect::matches("^fte$")) %>%
-    dplyr::rename_with(~ "stage", tidyselect::matches("^student_stage$")) %>%
+    dplyr::rename(stage = tidyselect::matches("^student_stage$")) %>%
     
     # Ensure school_type is capitalised
     dplyr::mutate(dplyr::across(tidyselect::any_of("school_type"), 

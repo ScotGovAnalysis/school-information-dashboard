@@ -50,8 +50,7 @@ import_insight_data <- function(dataset, calendar_year) {
                paste0(calendar_year, "_", dataset, ".xlsx")) %>%
     readxl::read_excel(col_types = "text") %>%
     janitor::clean_names() %>%
-    dplyr::rename_with(~ "seed_code", 
-                       tidyselect::matches("^see(d)?code$")) %>%
+    dplyr::rename(seed_code = tidyselect::matches("^see(d)?code$")) %>%
     
     # Remove LA and School names - these will be added later from school_lookup
     dplyr::select(-any_of(c("la_name", "school")))

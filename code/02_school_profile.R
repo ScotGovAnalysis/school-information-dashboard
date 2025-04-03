@@ -119,6 +119,8 @@ estate %<>%
       str_detect(school_name, "West Loan") ~ 1,
     seed_code == "5553024" & school_type == "Primary" & 
       str_detect(school_name, "Lochend Campus") ~ 1,
+    seed_code == "1004905" & school_type == "Primary" & 
+      str_detect(school_name, "- Preston Road Campus") ~ 1,
     TRUE ~ 0
   )) %>%
   filter(remove == 0) %>%
@@ -141,6 +143,8 @@ if(nrow(dupes) > 0) {
     i = "To view these duplicates, run `print(dupes)` in the R console."
   ))
 }
+
+print(dupes)
 
 # Once there are no duplicates remaining, remove school name
 estate %<>% select(-school_name)
@@ -181,17 +185,17 @@ estate_la_scot <-
 estate %<>% bind_rows(estate_la_scot)
 
 
-### 3 - Healthy Living Data ----
+### 3 - PE target Data ----
 
-## Code to pull in the Healthy Living Survey data. This data includes a flag to
+## Code to pull in the PE target data. This data includes a flag to
 ## indicate whether a school is meeting the PE target. 
 
-healthy_living <-
+PE_targets <-
   
   # Read in school level data
-  here("data", "healthy_living_survey", 
-       paste0(year_healthy_living, "_healthy_living_survey.xlsx")) %>%
-  read_excel(sheet = "Table 6", col_types = "text") %>%
+  here("data", "PE_targets", 
+       paste0(year_PE_targets, "_PE_targets.xlsx")) %>%
+  read_excel(sheet = "school PE provision", col_types = "text") %>%
   
   # Clean names and remove columns not needed
   clean_names() %>%
@@ -203,9 +207,7 @@ healthy_living <-
   # Derive Target Met / Not Met for each school
   mutate(pe_target = case_when(
     school_type == "Primary" & primary_pe_provision == 1 ~ "Target Met",
-    school_type == "Secondary" & 
-      reduce(select(., matches("^s[1-4]_pe_provision")), `+`) == 4 ~ 
-      "Target Met",
+    school_type == "Secondary" & secondary_pe_provision == 1 ~ "Target Met",
     TRUE ~ "Target Not Met"
   )) %>%
   select(-matches("pe_provision$"))
@@ -216,7 +218,7 @@ healthy_living <-
 
 hl_la_scot <-
   
-  healthy_living %>%
+  PE_targets %>%
   
   # Join school lookup to get Local Authority for each school
   inner_join(school_lookup %>% select(seed_code, la_code, school_type),
@@ -243,7 +245,7 @@ hl_la_scot <-
   select(-target_met, -n)
 
 # Add Local Authority and Scotland level data to schools level data
-healthy_living %<>% bind_rows(hl_la_scot)
+PE_targets %<>% bind_rows(hl_la_scot)
 
 
 ### 4 - School Summary Statistics ----
@@ -279,7 +281,7 @@ summary <-
 
 attendance <-
   
-  import_summary_data("Attendance", year_summary) %>%
+  import_summary_data("Attendance", max(year_attendance)) %>%
   
   # For LA and Scotland rows, use la_code in seed_code column
   mutate(seed_code = ifelse(is.na(seed_code) | seed_code == "NA", 
@@ -335,8 +337,8 @@ school_profile <-
   # Join attendance data
   left_join(attendance, by = c("seed_code", "school_type")) %>%
   
-  # Join healthy living survey data
-  left_join(healthy_living, by = c("seed_code", "school_type")) %>%
+  # Join PE target data
+  left_join(PE_targets, by = c("seed_code", "school_type")) %>%
   
   # Sort data to order want LA/schools to appear in app filters
   # First by LA code (Scotland is 0 and should appear first)

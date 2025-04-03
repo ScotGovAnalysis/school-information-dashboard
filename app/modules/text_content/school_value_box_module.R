@@ -51,8 +51,8 @@ school_value_box_server <- function(input, output, session, data) {
           absence data is collected from publicly funded schools every 
           two years"),
       p("More information can be found here:",
-        a("Schools Summary Statistics Link", 
-          href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
+        a("Pupil Attendance and Absence Statistics Link", 
+          href= "https://www.gov.scot/collections/school-education-statistics/#pupilattendanceandabsencestatistics",
           target = "_blank"))
     ))
   )
@@ -83,7 +83,7 @@ school_value_box_server <- function(input, output, session, data) {
       p("For more information please see Section 7 in the Frequently Asked 
           Questions or you can find the data publication here:",
         a("Schools Summary Statistics Link",
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+          href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
           target = "_blank")
       )
     ))
@@ -106,10 +106,10 @@ school_value_box_server <- function(input, output, session, data) {
           Education (PE) a week for pupils. This shows whether the school 
           (or the percentage of schools in your chosen area) is meeting this 
           target or not."),
-      p("Information is collected in February every year in the Healthy Living 
-          Survey. A link to the Healthy Living Survey can be found here:",
-        a("Healthy Living Survey Link", 
-          href="https://www.gov.scot/collections/school-education-statistics/#schoolhealthylivingsurveystatistics(mealsandpe)",
+      p("Data on the provision of PE is now collected as part of the Establishments 
+        Collection and is published as part of the quarterly release of school contact details.",
+        a("School Contact Details Link", 
+          href="https://www.gov.scot/publications/school-contact-details/",
           target = "_blank")
       )
     ))
@@ -142,7 +142,7 @@ school_value_box_server <- function(input, output, session, data) {
       p("For more information please see Section 7 in the Frequently Asked 
         Questions or you can find the data publication here:",
         a("Schools Summary Statistics Link", 
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+          href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
           target = "_blank")
       )
     ))
@@ -174,7 +174,7 @@ school_value_box_server <- function(input, output, session, data) {
         may have teachers recorded at virtual schools."),
       p("For more information please see Section 7 in the Frequently Asked 
         Questions or you can find the data publication here:",
-        a("Schools Summary Statistics Link", href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/"))
+        a("Schools Summary Statistics Link", href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland"))
     ))
   )
   
@@ -205,7 +205,7 @@ school_value_box_server <- function(input, output, session, data) {
       p("For more information please see Section 7 in the Frequently Asked 
           Questions or you can find the data publication here:",
         a("Schools Summary Statistics Link", 
-          href="https://www.gov.scot/publications/summary-statistics-attainment-initial-leaver-destinations-no-4-2022-edition/pages/3/",
+          href="https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
           target = "_blank")
       )
     ))

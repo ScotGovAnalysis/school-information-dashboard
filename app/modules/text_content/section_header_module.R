@@ -60,21 +60,16 @@ section_header_server <- function(input, output, session, section_name, box_colo
             section 9 question 9.2 of the frequently asked questions."),
         p(strong("FSM: "), 
           "This chart shows the percentage of pupils in your chosen school/area 
-            who were registered for free school meals.  Please note that there 
+            who were registered for free school meals. Note that eligibility for 
+            free school meals was extended to all pupils in P1-P3 in January 2015, 
+            to all pupils in P4 in August 2021 and then to all pupils in P5 in 
+            January 2022, regardless of their personal circumstances. Please note that there 
             may be some pupils who are entitled to free school meals but have 
             not registered. These pupils will be included in the 'No FSM' 
-            category. Since January 2015, all pupils in Primary 1, Primary 2 
-            and Primary 3 are provided with free school meals, regardless of 
-            their personal circumstances. Therefore, the information shown here 
-            is only for the pupils in Primary 4 to Primary 7 inclusive - as 
-            these children and young people are to meet the required criteria 
-            to register for free school meals. In some rare cases, schools may 
+            category. In some rare cases, schools may 
             have their own local initiatives to give free school meals to pupils 
             who are not eligible to register for free school meals under the 
-            national criteria. Note that in Glasgow City, free school meals are 
-            also provided for all pupils in Primary 4. Therefore the percentage 
-            of pupils registered for free school meals data in Glasgow is based 
-            on pupils in Primary 5 to Primary 7 inclusive. For more information, 
+            national criteria. For more information, 
             please see the Section 9, Question 9.3 in the Frequently Asked 
             Questions"),
         p(strong("EAL: "), 
@@ -125,8 +120,8 @@ section_header_server <- function(input, output, session, section_name, box_colo
             school/area. Attendance and absence data is collected from publicly 
             funded schools every two years."),
         p("For more information follow this link to the publication: ",
-          a("Schools Summary Statistics Link",
-            href= "https://www.gov.scot/collections/school-education-statistics/#summarystatisticsforschoolsinscotland",
+          a("Pupil Attendance and Absence Statistics Link",
+            href= "https://www.gov.scot/collections/school-education-statistics/#pupilattendanceandabsencestatistics",
             target = "_blank")
         )
       ),
@@ -234,7 +229,13 @@ section_header_server <- function(input, output, session, section_name, box_colo
             They show the attainment of school leavers from this school 
             alongside its virtual comparator. For more information on the 
             virtual comparator, please see the Section 7, Question 7.2 in 
-            the Frequently Asked Questions tab.")
+            the Frequently Asked Questions tab."),
+        p("For more information, please see the Section 7 in the Frequently 
+            Asked Questions or follow this link to the publication: ",
+          a("Achievement of Curriculum for Excellence Levels Link",
+            href= "https://www.gov.scot/collections/school-education-statistics/#achievementofcurriculumforexcellencelevels",
+            target = "_blank")
+        )
       ),
     
     ### Population ----
