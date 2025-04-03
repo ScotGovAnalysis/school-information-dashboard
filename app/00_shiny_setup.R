@@ -22,7 +22,7 @@
 ## match a folder in all of the following; app/primary_data/, 
 ## app/secondary_data/, app/special_data/.
 
-shiny_run_label <- "2022-December"
+shiny_run_label <- "2025-April"
 
 
 ### 2 - Load packages ----
@@ -63,7 +63,10 @@ walk(list.files("modules/secondary_attainment", pattern = "\\.R$", full.names = 
 
 ### 5 - Set default ggplot themes and colours ----
 
+# source(here("app", "modules", "sid_theme.R"))
 theme_set(sid_theme())
+
+
 update_geom_defaults("line", list(colour = "#3182bd", size = 1))
 update_geom_defaults("col", list(colour = "#3182bd", fill = "#3182bd"))
 

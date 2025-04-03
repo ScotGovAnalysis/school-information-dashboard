@@ -81,7 +81,6 @@ acel <-
     dataset = "acel",
     year = format_year(year, academic = TRUE)
   ) %>%
-  select(-variable) %>%
   
   # Recode missing values and add value label
   mutate(
@@ -89,19 +88,33 @@ acel <-
     value = recode_missing_values(value)
   ) %>%
  
-  # Apply percentage bandings to school level data
-  # NOTE: School level data in the ACEL file has already been rounded up to the
+  # Apply percentage bandings to school level data - meeting level
+  # NOTE: School level "meeting level" data in the ACEL file has already been rounded up to the
   # nearest 10 (value to be plotted in charts) and so percentage bands are 
   # applied on this value minus 10.
   # e.g. Value in data file, 90; True value, 80; Percentage band, 80-90%
   mutate(
     value_label = case_when(
-      nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") ~
+      nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") & (variable == "Meeting level"| variable == "Meeting Level") ~
         percentage_band(value - 10),
-      TRUE ~ value_label
-    )
-  )
-
+      TRUE ~ value_label 
+    ) 
+  ) %>%
+  
+  # Apply percentage bandings to school level data - not meeting level
+  # NOTE: School level "not meeting level" data in the ACEL file has already been rounded down to the
+  # nearest 10 (value to be plotted in charts) and so percentage bands are 
+  # applied on this value directly.
+  # e.g. Value in data file, 10; True value in Percentage band, 10-20%
+  mutate(
+    value_label = case_when(
+      nchar(seed_code) > 3 & !value_label %in% c("z", "x", "c") & (variable == "Not meeting level"| variable == "Not Meeting Level") ~
+        percentage_band(value),
+      TRUE ~ value_label 
+    ) 
+  ) %>%
+  select(-variable) 
+  
 
 ### 3 - BGE data ----
 

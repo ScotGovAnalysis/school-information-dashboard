@@ -18,7 +18,7 @@
 ## This should be changed for every update to name the new output folder. 
 ## Follow the naming convention: "year-month of publish" e.g. 2021-May 
 
-run_label <- "2022-December"
+run_label <- "2025-April"
 
 
 ### 2 - Dates - TO UPDATE ----
@@ -32,14 +32,19 @@ run_label <- "2022-December"
 ## 2a - Datasets typically updated in April ----
 
 # Datasets that require a single file, update with a single year
-year_contacts <- 2022
-year_bge      <- 2021
 
-# Summary data requires multiple files but is typically only updated in 
-# odd-numbered years; e.g. 2021, 2023, etc.
-# Update the vector (list) with the new year; e.g. c(2021, 2023)
+year_contacts <- 2025
+year_bge      <- 2025
 
-year_summary  <- c(2021)
+# School summary data updated every year
+# Update the vector (list) with the new year; e.g. c(2021, 2022)
+
+year_summary  <- c(2022, 2023, 2024)
+
+# Attendance data requires multiple files but is typically only updated in 
+# odd-numbered years; e.g. c(2021, 2023)
+
+year_attendance <- c(2024)
 
 # Insight data uses a rolling five year trend; ensure both start and
 # end years are updated following the convention: year_start:year_end
@@ -48,15 +53,15 @@ year_summary  <- c(2021)
 # Insights datasets include; attainment by deprivation, 
 # attainment for all, breadth/depth, destinations and literacy/numeracy data
 
-year_insight  <- 2017:2021
+year_insight  <- 2020:2024
 
 
 ## 2b - Datasets typically updated in December ----
 
 # Datasets that require a single file, update with a single year
-year_estate         <- 2022
-year_acel           <- 2022
-year_healthy_living <- 2022
+year_estate         <- 2024
+year_acel           <- 2024
+year_PE_targets <- 2024
 
 
 ### 1 - Load packages ----

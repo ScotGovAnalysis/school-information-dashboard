@@ -11,8 +11,7 @@
 
 
 ### 0 - Setup ----
-
-source("00_shiny_setup.R")
+ source("00_shiny_setup.R")
 
 # Check scotland.shinyapps.io account registered on local system 
 # and if not, set up
@@ -36,6 +35,7 @@ deployApp(
     "modules",
     "www"
   ),
+  appDir = here("app"),
   appPrimaryDoc = "01_primary_app.R",
   appTitle = "sg-primary_school_information_dashboard",
   account = "scotland"
@@ -52,6 +52,7 @@ deployApp(
     "modules",
     "www"
   ),
+  appDir = here("app"),
   appPrimaryDoc = "02_secondary_app.R",
   appTitle = "sg-secondary_school_information_dashboard",
   account = "scotland"
@@ -68,6 +69,7 @@ deployApp(
     "modules",
     "www"
   ),
+  appDir = here("app"),
   appPrimaryDoc = "03_special_app.R",
   appTitle = "sg-special_school_information_dashboard",
   account = "scotland"

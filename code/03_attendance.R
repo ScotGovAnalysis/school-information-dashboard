@@ -33,13 +33,13 @@ school_lookup <- read_rds(
 
 attendance_files <-
   expand_grid(
-    year = c(year_summary, "timeseries"),
+    year = c(year_attendance, "timeseries"),
     sheet = c("Attendance", "Att by Stage")
   ) %>%
   
   # Attendance by stage is required for latest year only
   # Remove Att by Stage rows for any other years
-  filter(!(year != max(year_summary) & sheet == "Att by Stage"))
+  filter(!(year != max(year_attendance) & sheet == "Att by Stage"))
 
 
 attendance <- 

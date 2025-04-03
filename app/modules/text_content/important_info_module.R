@@ -45,7 +45,7 @@ important_info_ui <- function(id) {
             href="https://education.gov.scot/parentzone",
             target = "_blank")),
         p(a("Parentzone Education Glossary",
-            href="https://education.gov.scot/parentzone/my-school/Education%20glossary",
+            href="https://education.gov.scot/parentzone/my-school/education-glossary/",
             target = "_blank")),
         p(a("Scottish Credit and Qualifications Framework (SCQF)",
             href="https://scqf.org.uk/",
@@ -75,7 +75,12 @@ important_info_ui <- function(id) {
               living publication",
             href="https://www.gov.scot/collections/school-education-statistics/#schoolleaverinitialdestinationsandattainment",
             target = "_blank")),
-
+        p(a("School Contact Details",
+            href = "https://www.gov.scot/collections/school-education-statistics/#schoolcontactdetails",
+            target = "_blank")),
+        p(a("School Information Dashboards",
+            href = "https://www.gov.scot/collections/school-education-statistics/#interactivedashboards",
+            target = "_blank")),
         hr(),
         
         # Accessibility statement ----
@@ -113,8 +118,8 @@ important_info_ui <- function(id) {
 
         p("This statement was prepared on 31/10/2022. 
             It was last reviewed on 31/10/2022."),
-        p("This website is scheduled for testing on 17/12/2022. 
-            The test will be carried out by the digital accessibility team at the 
+        p("This website was scheduled for testing on 17/12/2022. 
+            The test was carried out by the digital accessibility team at the 
             Scottish Government."),
         
         strong("Feedback and contact information"),
