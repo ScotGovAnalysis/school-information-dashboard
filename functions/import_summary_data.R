@@ -62,13 +62,25 @@ import_summary_data <- function(sheet_name, calendar_year) {
   # The number not receiving FSM is calculated by subtracting this figure from
   # total school roll
   if(sheet_name == "SCH") {
-    
+ 
     dat <- dat %>%
       dplyr::mutate(
         dplyr::across(c(roll, universal_fsm, other_fsm), as.numeric),
         dplyr::across(c(universal_fsm, other_fsm), ~ tidyr::replace_na(., 0)),
-        fsm = universal_fsm + other_fsm,
-        no_fsm = roll - fsm
+        
+        # Conditional logic for fsm
+        fsm = dplyr::if_else(
+          School_Type == "Primary",
+          other_fsm,
+          universal_fsm + other_fsm
+        ),
+        
+        # Conditional logic for no_fsm
+        no_fsm = dplyr::if_else(
+          School_Type == "Primary",
+          P6 + P7 - other_fsm,
+          roll - (universal_fsm + other_fsm)
+        )
       ) %>%
       dplyr::select(-universal_fsm, -other_fsm) %>%
       dplyr::mutate(roll = as.character(roll))

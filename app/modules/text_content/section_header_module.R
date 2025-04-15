@@ -63,7 +63,8 @@ section_header_server <- function(input, output, session, section_name, box_colo
             who were registered for free school meals. Note that eligibility for 
             free school meals was extended to all pupils in P1-P3 in January 2015, 
             to all pupils in P4 in August 2021 and then to all pupils in P5 in 
-            January 2022, regardless of their personal circumstances. Please note that there 
+            January 2022, regardless of their personal circumstances. This chart 
+            excludes P1 - P5 pupils. Please note that there 
             may be some pupils who are entitled to free school meals but have 
             not registered. These pupils will be included in the 'No FSM' 
             category. In some rare cases, schools may 
