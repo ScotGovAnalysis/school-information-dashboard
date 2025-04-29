@@ -94,20 +94,20 @@ population <-
   pivot_longer(cols = !c(year, seed_code, school_type),
                names_to = "measure",
                values_to = "value") %>%
-  
+
   # Remove data for stage and demographic measures that is not for latest year
   filter(
     !(!measure %in% c("roll", "fte_teacher_numbers", "ptr", "average_class") &
         year != max(year_summary))
   ) %>%
-  
+
   # Recode measure to readable format and add measure category
   mutate(
     measure_category = recode_population_measures(measure, category = TRUE),
     measure = recode_population_measures(measure),
     .before = measure
   ) %>%
-  
+ 
   # Remove stage rows not applicable for school type
   filter(
     !(str_detect(measure_category, "stage") &
@@ -126,14 +126,24 @@ population <-
     value_label = recode_missing_values(value, label = TRUE),
     value = recode_missing_values(value)
   ) %>%
-  
+
   # Add roll as seperate column to allow percentage calculations
   mutate(roll = ifelse(measure == "Pupil Numbers", value, NA)) %>%
   group_by(year, seed_code, school_type) %>%
   # Some roll values are missing or suppressed, code these as NA
   mutate(roll = ifelse(all(is.na(roll)), NA, max(roll, na.rm = TRUE))) %>%
   ungroup()
-  
+
+# Summing FSM and No FSM by group
+fsm_summary <- population %>%
+  filter(measure %in% c("FSM", "No FSM")) %>%
+  group_by(year, school_type, seed_code) %>%
+  summarise(eligible_fsm = sum(value), .groups = 'drop')
+
+# Join back to original dataframe if you want to keep it in the same structure
+population <- population %>%
+  left_join(fsm_summary, by = c("year", "school_type", "seed_code"))
+ 
 
 ## Apply suppression rules (to both value and value_label)
 ## Stage Meaures - 
@@ -149,14 +159,22 @@ population %<>%
     value_label = case_when(
       str_detect(measure_category, "stage") & value < 5 ~ "c",
       !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ "c",
-      measure_category != "trend" ~ 
+      # measure_category != "trend" ~ 
+      #   recode_missing_values(value / roll * 100, label = TRUE, label_perc = TRUE),
+      measure_category == "free_school_meals" ~ 
+        recode_missing_values(value / eligible_fsm * 100, label = TRUE, label_perc = TRUE),
+      !measure_category %in% c("trend", "free_school_meals") ~ 
         recode_missing_values(value / roll * 100, label = TRUE, label_perc = TRUE),
       TRUE ~ value_label
     ),
     value = case_when(
       str_detect(measure_category, "stage") & value < 5 ~ 0,
       !str_detect(measure_category, "(stage|trend)") & roll <= 20 ~ 0,
-      measure_category != "trend" ~ value / roll * 100,
+      # measure_category != "trend" ~ value / roll * 100,
+      measure_category == "free_school_meals" ~ 
+        value / eligible_fsm * 100,
+      !measure_category %in% c("trend", "free_school_meals") ~ 
+        value / roll * 100,
       TRUE ~ value
     )
   ) %>%

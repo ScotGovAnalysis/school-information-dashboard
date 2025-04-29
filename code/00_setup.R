@@ -41,10 +41,9 @@ year_bge      <- 2025
 
 year_summary  <- c(2022, 2023, 2024)
 
-# Attendance data requires multiple files but is typically only updated in 
-# odd-numbered years; e.g. c(2021, 2023)
+# Attendance data requires multiple files; e.g. c(2021, 2023)
 
-year_attendance <- c(2024)
+year_attendance <- c(2021, 2023, 2024)
 
 # Insight data uses a rolling five year trend; ensure both start and
 # end years are updated following the convention: year_start:year_end

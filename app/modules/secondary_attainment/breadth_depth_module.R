@@ -16,7 +16,7 @@ breadth_depth_server <- function(input, output, session, data, scqf_level) {
   
   output$title <- renderUI({
     
-    h3("School Leavers achieving ", scqf_level(), " by Year", 
+    h3("School Leavers achieving 1+ award at ", scqf_level(), " by Year", 
        align = "center")
     
   })
